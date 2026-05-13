@@ -1,0 +1,164 @@
+<div class="mis-citas-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h2>Mis citas</h2>
+      <p class="text-muted mb-0">Gestiona tus citas médicas programadas</p>
+    </div>
+    <button class="btn btn-outline-primary btn-sm" (click)="cargarCitas()">
+      <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if (cargando()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="text-muted mt-2">Cargando tus citas...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (errorMsg() && !cargando()) {
+    <div class="alert alert-danger d-flex align-items-center gap-2">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>{{ errorMsg() }}</span>
+      <button class="btn btn-outline-danger btn-sm ms-auto" (click)="cargarCitas()">Reintentar</button>
+    </div>
+  }
+
+  @if (!cargando() && !errorMsg()) {
+    <!-- Próximas citas -->
+    <div class="mb-4">
+      <h5 class="section-title">
+        <i class="bi bi-calendar-check me-2"></i>Próximas citas
+        @if (citasPendientes().length > 0) {
+          <span class="badge bg-primary ms-2">{{ citasPendientes().length }}</span>
+        }
+      </h5>
+
+      @if (citasPendientes().length === 0) {
+        <div class="empty-state">
+          <i class="bi bi-calendar-plus fs-1 text-muted"></i>
+          <p class="text-muted mb-0">No tienes citas programadas</p>
+          <small class="text-muted">Agenda una cita desde la página principal</small>
+        </div>
+      }
+
+      @for (cita of citasPendientes(); track cita.idCita) {
+        <div class="cita-card">
+          <div class="cita-left">
+            <div class="cita-date">
+              <span class="cita-day">{{ cita.fecha | date:'dd' }}</span>
+              <span class="cita-month">{{ cita.fecha | date:'MMM' }}</span>
+            </div>
+          </div>
+          <div class="cita-body">
+            <div class="cita-header-row">
+              <strong>{{ cita.especialidad }}</strong>
+              <span class="cita-estado {{ getEstadoClass(cita.estado) }}">{{ cita.estado }}</span>
+            </div>
+            <div class="cita-details">
+              <span><i class="bi bi-clock me-1"></i>{{ cita.hora }} hrs</span>
+              <span><i class="bi bi-person-badge me-1"></i>{{ cita.medico }}</span>
+              @if (cita.paciente) {
+                <span><i class="bi bi-person me-1"></i>{{ cita.paciente }}</span>
+              }
+            </div>
+          </div>
+          <div class="cita-actions">
+            <button class="btn btn-sm btn-outline-primary" (click)="abrirReprogramar(cita)"
+                    [disabled]="cancelandoId() === cita.idCita">
+              <i class="bi bi-arrow-clockwise"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" (click)="cancelarCita(cita.idCita!)"
+                    [disabled]="cancelandoId() === cita.idCita">
+              @if (cancelandoId() === cita.idCita) {
+                <span class="spinner-border spinner-border-sm"></span>
+              } @else {
+                <i class="bi bi-x-lg"></i>
+              }
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Historial -->
+    <div>
+      <h5 class="section-title">
+        <i class="bi bi-clock-history me-2"></i>Historial
+      </h5>
+
+      @if (citasCompletadas().length === 0) {
+        <p class="text-muted small">No hay citas anteriores</p>
+      }
+
+      @for (cita of citasCompletadas(); track cita.idCita) {
+        <div class="cita-card cita-card--muted">
+          <div class="cita-left">
+            <div class="cita-date">
+              <span class="cita-day">{{ cita.fecha | date:'dd' }}</span>
+              <span class="cita-month">{{ cita.fecha | date:'MMM' }}</span>
+            </div>
+          </div>
+          <div class="cita-body">
+            <div class="cita-header-row">
+              <strong>{{ cita.especialidad }}</strong>
+              <span class="cita-estado {{ getEstadoClass(cita.estado) }}">{{ cita.estado }}</span>
+            </div>
+            <div class="cita-details">
+              <span><i class="bi bi-clock me-1"></i>{{ cita.hora }} hrs</span>
+              <span><i class="bi bi-person-badge me-1"></i>{{ cita.medico }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Modal reprogramar -->
+@if (reprogId() !== null) {
+  <div class="modal-overlay" (click)="cerrarReprogramar()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h6 class="fw-bold mb-0">Reprogramar cita</h6>
+        <button class="btn-close" (click)="cerrarReprogramar()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Nueva fecha</label>
+          <input type="date" class="form-control"
+                 [ngModel]="reprogFecha()" (ngModelChange)="reprogFecha.set($event)" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Nuevo horario</label>
+          <div class="d-flex flex-wrap gap-2">
+            @for (slot of slotsDisponibles; track slot) {
+              <button type="button" class="btn btn-sm slot-btn"
+                      [class.btn-primary]="reprogHora() === slot"
+                      [class.btn-outline-secondary]="reprogHora() !== slot"
+                      (click)="reprogHora.set(slot)">
+                {{ slot }}
+              </button>
+            }
+          </div>
+        </div>
+        @if (reprogError()) {
+          <div class="alert alert-danger py-2 small">{{ reprogError() }}</div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-outline-secondary" (click)="cerrarReprogramar()">Cancelar</button>
+        <button class="btn btn-sm btn-primary" (click)="confirmarReprogramar()" [disabled]="reprogLoading()">
+          @if (reprogLoading()) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+          }
+          {{ reprogLoading() ? 'Guardando...' : 'Confirmar reprogramación' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

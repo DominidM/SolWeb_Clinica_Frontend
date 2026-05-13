@@ -31,7 +31,7 @@
         y comunidad UPN. Especialistas comprometidos con tu bienestar.
       </p>
 
-      <a routerLink="/login" class="hero-cta">
+      <a href="#agendar-cita" class="hero-cta">
         Solicitar cita <i class="bi bi-arrow-right"></i>
       </a>
     </div>
@@ -129,6 +129,216 @@
     </div>
   </div>
 
+</section>
+
+<!-- AGENDAR CITA -->
+<section id="agendar-cita" class="py-5" style="background:#fff;">
+  <div class="container">
+    <div class="row align-items-center g-5">
+
+      <!-- Info -->
+      <div class="col-lg-5">
+        <span class="badge text-uppercase mb-3"
+              style="background:#E6F1FB; color:#0C447C; font-weight:500; letter-spacing:.05em;">
+          Clínica UPN
+        </span>
+        <h2 class="fw-bold mb-3">Agenda tu cita médica</h2>
+        <p class="text-muted mb-4">
+          Reserva una consulta con nuestros especialistas de forma rápida y sencilla.
+          Solo completa el formulario y te confirmaremos tu cita.
+        </p>
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="rounded-2 p-2 flex-shrink-0" style="background:#E6F1FB;">
+              <i class="bi bi-shield-check" style="color:#185FA5;"></i>
+            </div>
+            <small class="text-muted">Atención segura y confidencial</small>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <div class="rounded-2 p-2 flex-shrink-0" style="background:#EAF3DE;">
+              <i class="bi bi-clock" style="color:#3B6D11;"></i>
+            </div>
+            <small class="text-muted">Confirmación en menos de 24 horas</small>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <div class="rounded-2 p-2 flex-shrink-0" style="background:#EEEDFE;">
+              <i class="bi bi-people" style="color:#534AB7;"></i>
+            </div>
+            <small class="text-muted">+50 profesionales a tu servicio</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario -->
+      <div class="col-lg-7">
+        @if (paso() === 'exito') {
+          <div class="text-center py-5">
+            <div class="mb-3">
+              <i class="bi bi-check-circle-fill" style="font-size:4rem; color:#198754;"></i>
+            </div>
+            <h4 class="fw-bold mb-2">¡Cita registrada!</h4>
+            <p class="text-muted mb-4">Te enviaremos la confirmación a tu correo electrónico.</p>
+            <button class="btn btn-outline-primary btn-sm" (click)="reiniciarFormulario()">
+              Agendar otra cita
+            </button>
+          </div>
+
+        } @else if (paso() === 'elegir') {
+          <div class="text-center py-4">
+            <h5 class="fw-bold mb-3">¿Ya eres paciente de Clínica UPN?</h5>
+            <div class="d-flex gap-3 justify-content-center">
+              <button class="btn btn-outline-primary px-4 py-2" (click)="elegirPacienteExistente()">
+                <i class="bi bi-person-check me-2"></i>Sí, ya tengo cuenta
+              </button>
+              <button class="btn btn-primary px-4 py-2" (click)="elegirPacienteNuevo()">
+                <i class="bi bi-person-plus me-2"></i>No, soy nuevo
+              </button>
+            </div>
+          </div>
+
+        } @else if (paso() === 'existente') {
+          <div>
+            <button class="btn btn-sm btn-link text-decoration-none p-0 mb-3" (click)="reiniciarFormulario()">
+              <i class="bi bi-arrow-left me-1"></i>Volver
+            </button>
+            <h5 class="fw-bold mb-3">Buscar mis datos</h5>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label small fw-semibold">Correo electrónico</label>
+                <input type="email" class="form-control" placeholder="correo@ejemplo.com"
+                       [ngModel]="formEmail()" (ngModelChange)="formEmail.set($event)" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label small fw-semibold">Código de estudiante</label>
+                <input type="text" class="form-control" placeholder="Ej: U12345678"
+                       [ngModel]="formCodigo()" (ngModelChange)="formCodigo.set($event)" />
+              </div>
+              @if (formError()) {
+                <div class="col-12">
+                  <div class="alert alert-danger py-2 mb-0 small">{{ formError() }}</div>
+                </div>
+              }
+              <div class="col-12">
+                <button class="btn btn-primary w-100 py-2" (click)="buscarPaciente()" [disabled]="formLoading()">
+                  @if (formLoading()) {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                  }
+                  {{ formLoading() ? 'Buscando...' : 'Buscar mis datos' }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+        } @else if (paso() === 'nuevo') {
+          <div>
+            <button class="btn btn-sm btn-link text-decoration-none p-0 mb-3" (click)="reiniciarFormulario()">
+              <i class="bi bi-arrow-left me-1"></i>Volver
+            </button>
+            <h5 class="fw-bold mb-3">Registrar mis datos</h5>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label small fw-semibold">Nombre</label>
+                <input type="text" class="form-control" placeholder="Tu nombre"
+                       [ngModel]="formNombre()" (ngModelChange)="formNombre.set($event)" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label small fw-semibold">Apellido</label>
+                <input type="text" class="form-control" placeholder="Tu apellido"
+                       [ngModel]="formApellido()" (ngModelChange)="formApellido.set($event)" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label small fw-semibold">Correo electrónico</label>
+                <input type="email" class="form-control" placeholder="correo@ejemplo.com"
+                       [ngModel]="formEmail()" (ngModelChange)="formEmail.set($event)" />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label small fw-semibold">Teléfono</label>
+                <input type="tel" class="form-control" placeholder="999 999 999"
+                       [ngModel]="formTelefono()" (ngModelChange)="formTelefono.set($event)" />
+              </div>
+              @if (formError()) {
+                <div class="col-12">
+                  <div class="alert alert-danger py-2 mb-0 small">{{ formError() }}</div>
+                </div>
+              }
+              <div class="col-12">
+                <button class="btn btn-primary w-100 py-2" (click)="irACita()">
+                  Continuar <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        } @else if (paso() === 'cita') {
+          <div>
+            <button class="btn btn-sm btn-link text-decoration-none p-0 mb-3" (click)="reiniciarFormulario()">
+              <i class="bi bi-arrow-left me-1"></i>Volver
+            </button>
+            <h5 class="fw-bold mb-3">Selecciona tu cita</h5>
+            <div class="bg-light rounded-3 p-3 mb-3">
+              <small class="text-muted d-block">Paciente:</small>
+              <strong>{{ formNombre() }} {{ formApellido() }}</strong>
+              <small class="text-muted d-block mt-1">{{ formEmail() }} | {{ formTelefono() }}</small>
+            </div>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label small fw-semibold">Especialidad</label>
+                <select class="form-select"
+                        [ngModel]="formEspecialidad()" (ngModelChange)="formEspecialidad.set($event); formMedico.set('')">
+                  <option value="">Selecciona una especialidad</option>
+                  @for (s of servicios; track s.titulo) {
+                    <option [value]="s.titulo">{{ s.titulo }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label small fw-semibold">Médico</label>
+                <select class="form-select"
+                        [ngModel]="formMedico()" (ngModelChange)="formMedico.set($event)">
+                  <option value="">Selecciona un médico</option>
+                  @for (d of doctoresDisponibles(); track d.nombre) {
+                    <option [value]="d.nombre">{{ d.nombre }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label small fw-semibold">Fecha</label>
+                <input type="date" class="form-control"
+                       [ngModel]="formFecha()" (ngModelChange)="formFecha.set($event)" />
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Horario disponible</label>
+                <div class="d-flex flex-wrap gap-2">
+                  @for (slot of slotsDisponibles; track slot) {
+                    <button type="button" class="btn btn-sm slot-btn"
+                            [class.btn-primary]="formHora() === slot"
+                            [class.btn-outline-secondary]="formHora() !== slot"
+                            (click)="formHora.set(slot)">
+                      {{ slot }}
+                    </button>
+                  }
+                </div>
+              </div>
+              @if (formError()) {
+                <div class="col-12">
+                  <div class="alert alert-danger py-2 mb-0 small">{{ formError() }}</div>
+                </div>
+              }
+              <div class="col-12">
+                <button class="btn btn-primary w-100 py-2" (click)="agendarCita()" [disabled]="formLoading()">
+                  @if (formLoading()) {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                  }
+                  {{ formLoading() ? 'Agendando...' : 'Confirmar y agendar cita' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
 </section>
 
 <!-- NOSOTROS -->

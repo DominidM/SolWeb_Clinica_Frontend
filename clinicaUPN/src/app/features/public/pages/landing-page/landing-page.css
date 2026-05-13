@@ -632,6 +632,17 @@
   border-radius: 4px;
 }
 
+/* ── Agendar Cita ──────────────────────────────── */
+.slot-btn {
+  min-width: 72px;
+  transition: all .2s ease;
+  font-size: .82rem;
+}
+.slot-btn.btn-outline-secondary:hover {
+  background: #e9ecef;
+  border-color: #ced4da;
+}
+
 /* ── Especialidades ─────────────────────────────── */
 .esp-section {
   background: #f8f9fa;

@@ -14,15 +14,168 @@ export class SidebarComponent {
 
   constructor(private authService: AuthService) {}
 
+  // ──────────────────────────────────────────
+  // Datos del usuario
+  // ──────────────────────────────────────────
+
+  get usuarioCargado(): boolean {
+    return !!this.authService.getUser();
+  }
+
   get nombreUsuario(): string {
-    return this.authService.getUser()?.nombre ?? 'Usuario';
+    const u = this.authService.getUser();
+    if (!u) return 'Usuario';
+    return `${u.nombre}`.trim(); // ← Bug corregido: se eliminó ''}
   }
 
   get rolUsuario(): string {
     return this.authService.getUser()?.rol ?? '';
   }
 
+  get rolUsuarioLabel(): string {
+    const labels: Record<string, string> = {
+      ADMINISTRADOR: 'Administrador',
+      ADMINISTRATIVO: 'Administrativo',
+      DOCTOR: 'Doctor',
+      DIRECTOR: 'Director',
+      PRACTICANTE: 'Practicante',
+      PACIENTE: 'Paciente',
+    };
+    return labels[this.rolUsuario] || this.rolUsuario;
+  }
+
+  get iniciales(): string {
+    const u = this.authService.getUser();
+    if (!u) return 'U';
+    const nombre = u.nombre?.[0] ?? '';
+    return nombre.toUpperCase() || 'U';
+  }
+
+  // ──────────────────────────────────────────
+  // Helpers de rol
+  // ──────────────────────────────────────────
+
+  get esAdmin(): boolean          { return this.rolUsuario === 'ADMINISTRADOR'; }
+  get esDoctor(): boolean         { return this.rolUsuario === 'DOCTOR'; }
+  get esDirector(): boolean       { return this.rolUsuario === 'DIRECTOR'; }
+  get esPracticante(): boolean    { return this.rolUsuario === 'PRACTICANTE'; }
+  get esPaciente(): boolean       { return this.rolUsuario === 'PACIENTE'; }
+  get esAdministrativo(): boolean { return this.rolUsuario === 'ADMINISTRATIVO'; }
+
+  // ──────────────────────────────────────────
+  // Visibilidad de ítems del menú
+  // ──────────────────────────────────────────
+
+  /** Dashboard/KPIs: solo director y admin */
+  get verDashboard(): boolean {
+    return this.esDirector || this.esAdmin;
+  }
+
+  /** Pacientes: admin, doctor, administrativo, director */
+  get verPacientes(): boolean {
+    return this.esAdmin || this.esDoctor || this.esAdministrativo || this.esDirector;
+  }
+
+  /** Mis Citas: solo paciente */
+  get verMisCitas(): boolean {
+    return this.esPaciente;
+  }
+
+  /** Citas: todos excepto director */
+  get verCitas(): boolean {
+    return !this.esDirector && !this.esPaciente;
+  }
+
+  /** Mi Perfil: solo paciente */
+  get verMiPerfil(): boolean {
+    return this.esPaciente;
+  }
+
+  /** Mi Historia Clínica: solo paciente */
+  get verMiHistoria(): boolean {
+    return this.esPaciente;
+  }
+
+  /** Mi Agenda: solo practicante */
+  get verMiAgenda(): boolean {
+    return this.esPracticante;
+  }
+
+  /** Registrar Consulta: solo practicante */
+  get verRegistrarConsulta(): boolean {
+    return this.esPracticante;
+  }
+
+  /** Mis Evaluaciones: solo practicante */
+  get verMisEvaluaciones(): boolean {
+    return this.esPracticante;
+  }
+
+  /** Historia Clínica: admin, doctor, practicante */
+  get verHistoriaClinica(): boolean {
+    return (this.esAdmin || this.esDoctor || this.esPracticante) && !this.esPaciente;
+  }
+
+  /** Teleconsulta: admin, doctor, paciente, practicante */
+  get verTeleconsulta(): boolean {
+    return this.esAdmin || this.esDoctor || this.esPaciente || this.esPracticante;
+  }
+
+  /** Consultorios: admin, administrativo */
+  get verConsultorios(): boolean {
+    return this.esAdmin || this.esAdministrativo;
+  }
+
+  /** Doctores: solo admin y director */
+  get verDoctores(): boolean {
+    return this.esAdmin || this.esDirector;
+  }
+
+  /** Practicantes: admin, doctor, director */
+  get verPracticantes(): boolean {
+    return this.esAdmin || this.esDoctor || this.esDirector;
+  }
+
+  /** Evaluaciones de Practicantes: admin, doctor, director */
+  get verEvaluaciones(): boolean {
+    return this.esAdmin || this.esDoctor || this.esDirector;
+  }
+
+  /** Reportes: admin, director, administrativo */
+  get verReportes(): boolean {
+    return this.esAdmin || this.esDirector || this.esAdministrativo;
+  }
+
+  /** Usuarios: solo admin */
+  get verUsuarios(): boolean {
+    return this.esAdmin;
+  }
+
+  // ──────────────────────────────────────────
+  // Ruta de inicio dinámica por rol
+  // ──────────────────────────────────────────
+
+  get rutaInicio(): string {
+    const rutas: Record<string, string> = {
+      ADMINISTRADOR:  '/',
+      DIRECTOR:       '/',
+      DOCTOR:         '/',
+      PRACTICANTE:    '/app/practicantes/agenda',
+      PACIENTE:       '/',
+      ADMINISTRATIVO: '/',
+    };
+    return rutas[this.rolUsuario] ?? '/inicio';
+  }
+
+  // ──────────────────────────────────────────
+  // Acciones
+  // ──────────────────────────────────────────
+
   cerrarSesion(): void {
-    this.authService.logout(); // ya limpia localStorage y redirige al login
+    try {
+      this.authService.logout();
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
   }
 }

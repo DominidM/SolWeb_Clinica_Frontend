@@ -1,1 +1,27 @@
-<p>chat works!</p>
+<div class="chat-container">
+  <div class="chat-header">
+    <i class="bi bi-chat-dots-fill me-2"></i>Chat
+  </div>
+
+  <div class="chat-messages">
+    @for (m of mensajes(); track m.id) {
+      <div class="msg" [class.msg--propio]="m.propio">
+        <div class="msg-bubble">
+          @if (!m.propio) { <small class="msg-author">{{ m.usuario }}</small> }
+          <p class="msg-text">{{ m.texto }}</p>
+          <small class="msg-time">{{ m.hora }}</small>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="chat-input">
+    <input type="text" class="form-control form-control-sm"
+           placeholder="Escribe un mensaje..."
+           [ngModel]="nuevoTexto()" (ngModelChange)="nuevoTexto.set($event)"
+           (keydown.enter)="enviar()" />
+    <button class="btn btn-primary btn-sm" (click)="enviar()" [disabled]="!nuevoTexto().trim()">
+      <i class="bi bi-send-fill"></i>
+    </button>
+  </div>
+</div>

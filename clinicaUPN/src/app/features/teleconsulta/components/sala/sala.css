@@ -1,0 +1,26 @@
+.sala-container { height: calc(100vh - 100px); display: flex; flex-direction: column; }
+.sala-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid #e9ecef; }
+.sala-main { flex: 1; display: flex; gap: 1rem; padding-top: 1rem; min-height: 0; }
+.sala-video { flex: 1; display: flex; flex-direction: column; background: #1a1a2e; border-radius: 16px; overflow: hidden; }
+.video-placeholder { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,.4); font-size: 3rem; }
+.sala-chat { width: 320px; flex-shrink: 0; }
+
+.sala-controls {
+  display: flex; justify-content: center; gap: .75rem; padding: 1rem;
+  background: rgba(0,0,0,.3);
+}
+.control-btn {
+  width: 44px; height: 44px; border-radius: 50%; border: none;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.15); color: #fff; font-size: 1.1rem;
+  cursor: pointer; transition: background .2s;
+}
+.control-btn:hover { background: rgba(255,255,255,.25); }
+.control-btn.active { background: #185FA5; }
+.control-btn--danger { background: #dc3545; }
+.control-btn--danger:hover { background: #bb2d3b; }
+
+@media (max-width: 768px) {
+  .sala-main { flex-direction: column; }
+  .sala-chat { width: 100%; height: 250px; }
+}

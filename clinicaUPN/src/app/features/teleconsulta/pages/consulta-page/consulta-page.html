@@ -1,1 +1,137 @@
-<p>consulta-page works!</p>
+<div class="tc-container">
+
+  <div class="page-header">
+    <div>
+      <h2>Teleconsultas</h2>
+      <p class="text-muted mb-0">Atención médica desde donde estés</p>
+    </div>
+    <button class="btn btn-primary btn-sm" (click)="abrirFormulario()">
+      <i class="bi bi-plus-lg me-1"></i>Solicitar teleconsulta
+    </button>
+  </div>
+
+  @if (cargando()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary"></div>
+      <p class="text-muted mt-2">Cargando...</p>
+    </div>
+  }
+
+  @if (errorMsg() && !cargando()) {
+    <div class="alert alert-danger">{{ errorMsg() }}</div>
+  }
+
+  @if (!cargando() && !errorMsg()) {
+    <!-- Pendientes -->
+    <div class="mb-4">
+      <h6 class="fw-bold mb-3"><i class="bi bi-camera-video me-2"></i>Próximas teleconsultas</h6>
+      @if (pendientes().length === 0) {
+        <div class="empty-state">
+          <i class="bi bi-camera-video-off fs-1 text-muted"></i>
+          <p class="text-muted mb-0">No tienes teleconsultas programadas</p>
+        </div>
+      }
+      @for (t of pendientes(); track t.idTeleconsulta) {
+        <div class="tc-card">
+          <div class="tc-body">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+              <strong>{{ t.especialidad }}</strong>
+              <span class="tc-estado {{ getEstadoClass(t.estado) }}">{{ t.estado }}</span>
+            </div>
+            <div class="tc-details">
+              <span><i class="bi bi-person-badge me-1"></i>{{ t.medico }}</span>
+              <span><i class="bi bi-calendar me-1"></i>{{ t.fecha | date:'dd/MM/yyyy' }}</span>
+              <span><i class="bi bi-clock me-1"></i>{{ t.hora }} hrs</span>
+            </div>
+          </div>
+          @if (t.estado === 'CONFIRMADA') {
+            <div class="tc-action">
+              <button class="btn btn-success btn-sm" (click)="unirse(t)">
+                <i class="bi bi-camera-video-fill me-1"></i>Unirse
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Historial -->
+    <div>
+      <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-2"></i>Historial</h6>
+      @for (t of completadas(); track t.idTeleconsulta) {
+        <div class="tc-card tc-card--muted">
+          <div class="tc-body">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+              <strong>{{ t.especialidad }}</strong>
+              <span class="tc-estado {{ getEstadoClass(t.estado) }}">{{ t.estado }}</span>
+            </div>
+            <div class="tc-details">
+              <span><i class="bi bi-person-badge me-1"></i>{{ t.medico }}</span>
+              <span><i class="bi bi-calendar me-1"></i>{{ t.fecha | date:'dd/MM/yyyy' }}</span>
+              <span><i class="bi bi-clock me-1"></i>{{ t.hora }} hrs</span>
+            </div>
+          </div>
+        </div>
+      }
+      @if (completadas().length === 0) {
+        <p class="text-muted small">Sin historial</p>
+      }
+    </div>
+  }
+</div>
+
+<!-- Modal solicitar -->
+@if (mostrarFormulario()) {
+  <div class="modal-overlay" (click)="mostrarFormulario.set(false)">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h6 class="fw-bold mb-0">Solicitar teleconsulta</h6>
+        <button class="btn-close" (click)="mostrarFormulario.set(false)"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Especialidad</label>
+          <select class="form-select" [ngModel]="formEspecialidad()" (ngModelChange)="formEspecialidad.set($event); formMedico.set('')">
+            <option value="">Seleccionar</option>
+            @for (s of servicios; track s) { <option [value]="s">{{ s }}</option> }
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Médico</label>
+          <select class="form-select" [ngModel]="formMedico()" (ngModelChange)="formMedico.set($event)">
+            <option value="">Seleccionar</option>
+            @for (m of medicos[formEspecialidad()] || []; track m) { <option [value]="m">{{ m }}</option> }
+          </select>
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <label class="form-label small fw-semibold">Fecha</label>
+            <input type="date" class="form-control" [ngModel]="formFecha()" (ngModelChange)="formFecha.set($event)" />
+          </div>
+          <div class="col-6">
+            <label class="form-label small fw-semibold">Hora</label>
+            <select class="form-select" [ngModel]="formHora()" (ngModelChange)="formHora.set($event)">
+              <option value="">Seleccionar</option>
+              @for (s of slots; track s) { <option [value]="s">{{ s }}</option> }
+            </select>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Motivo (opcional)</label>
+          <textarea class="form-control" rows="2" placeholder="Describe tus síntomas o motivo..."
+                    [ngModel]="formMotivo()" (ngModelChange)="formMotivo.set($event)"></textarea>
+        </div>
+        @if (formError()) {
+          <div class="alert alert-danger py-2 small">{{ formError() }}</div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-outline-secondary" (click)="mostrarFormulario.set(false)">Cancelar</button>
+        <button class="btn btn-sm btn-primary" (click)="solicitar()" [disabled]="formLoading()">
+          @if (formLoading()) { <span class="spinner-border spinner-border-sm me-1"></span> }
+          Solicitar
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -15,7 +15,6 @@ export class HcePacientePageComponent implements OnInit {
   documentos = signal<DocumentoHCE[]>([]);
   cargando = signal(true);
   error = signal('');
-  descargando = signal<number | null>(null);
 
   ngOnInit() {
     this.cargar();
@@ -30,29 +29,27 @@ export class HcePacientePageComponent implements OnInit {
     });
   }
 
-  descargar(doc: DocumentoHCE) {
-    this.descargando.set(doc.id);
-    this.hceService.descargar(doc.id);
-    setTimeout(() => this.descargando.set(null), 2000);
+  getIcon(especialidad: string): string {
+    const m: Record<string, string> = {
+      'Psicología':        'bi-brain',
+      'Medicina General':  'bi-heart-pulse',
+      'Nutrición':         'bi-egg-fried',
+      'Rehabilitación':    'bi-activity',
+      'Fisioterapia':      'bi-person-walking',
+      'Obstetricia':       'bi-gender-female',
+    };
+    return m[especialidad] || 'bi-file-earmark-medical';
   }
 
-  getIcon(tipo: string): string {
+  getColor(especialidad: string): string {
     const m: Record<string, string> = {
-      'RECETA': 'bi-file-text',
-      'RESULTADO': 'bi-file-earmark-medical',
-      'INFORME': 'bi-file-earmark-pdf',
-      'ORDEN': 'bi-file-earmark-check',
+      'Psicología':        '#534AB7',
+      'Medicina General':  '#185FA5',
+      'Nutrición':         '#3B6D11',
+      'Rehabilitación':    '#dc3545',
+      'Fisioterapia':      '#854F0B',
+      'Obstetricia':       '#d63384',
     };
-    return m[tipo] || 'bi-file-earmark';
-  }
-
-  getColor(tipo: string): string {
-    const m: Record<string, string> = {
-      'RECETA': '#185FA5',
-      'RESULTADO': '#198754',
-      'INFORME': '#dc3545',
-      'ORDEN': '#6f42c1',
-    };
-    return m[tipo] || '#6c757d';
+    return m[especialidad] || '#6c757d';
   }
 }

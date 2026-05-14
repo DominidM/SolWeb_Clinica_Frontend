@@ -1,18 +1,19 @@
 <!-- HERO -->
 <section id="inicio" class="hero-section">
-
   <!-- IZQUIERDA -->
   <div class="hero-left">
-
     <!-- Bloque central -->
     <div>
       <!-- Logo -->
       <div class="hero-logo d-flex align-items-center gap-3">
-        <img [src]="logoUpn" alt="Logo UPN"
-             style="height:48px; width:auto; object-fit:contain;" />
+        <img
+          [src]="logoUpn"
+          alt="Logo UPN"
+          style="height: 48px; width: auto; object-fit: contain"
+        />
         <div>
-          <p class="fw-bold mb-0" style="font-size:1.1rem;">Clínica UPN</p>
-          <p class="text-muted mb-0" style="font-size:11px; letter-spacing:2px;">
+          <p class="fw-bold mb-0" style="font-size: 1.1rem">Clínica UPN</p>
+          <p class="text-muted mb-0" style="font-size: 11px; letter-spacing: 2px">
             SALUD UNIVERSITARIA
           </p>
         </div>
@@ -20,15 +21,15 @@
 
       <!-- Título -->
       <h1 class="hero-title fw-bold">
-        Tu salud,<br>
+        Tu salud,<br />
         <span class="text-primary">nuestra prioridad</span>
       </h1>
 
       <div class="hero-line"></div>
 
       <p class="hero-subtitle">
-        Atención médica integral con tecnología de vanguardia para estudiantes
-        y comunidad UPN. Especialistas comprometidos con tu bienestar.
+        Atención médica integral con tecnología de vanguardia para estudiantes y comunidad UPN.
+        Especialistas comprometidos con tu bienestar.
       </p>
 
       <a href="#agendar-cita" class="hero-cta">
@@ -51,46 +52,48 @@
         <span>Av. Universitaria, Lima</span>
       </div>
     </div>
-
   </div>
 
   <!-- DERECHA -->
   <div class="hero-right"></div>
-
 </section>
 <!-- SERVICIOS -->
-<section id="servicios" class="py-5" style="background:#f8f9fa; overflow:hidden;">
+<section id="servicios" class="py-5" style="background: #f8f9fa; overflow: hidden">
   <div class="container">
-
     <!-- Header -->
     <div class="d-flex align-items-end justify-content-between mb-5">
       <div>
         <h2 class="fw-bold mb-2">Nuestros Servicios</h2>
-        <p class="text-muted mb-0" style="max-width:480px;">
+        <p class="text-muted mb-0" style="max-width: 480px">
           Especialidades disponibles para toda la comunidad universitaria UPN.
         </p>
       </div>
       <!-- Flechas desktop -->
       <div class="d-none d-md-flex gap-2">
-        <button class="btn btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center"
-                style="width:40px; height:40px;"
-                (click)="servicioScrollPrev()">
-          <i class="bi bi-arrow-left" style="font-size:.9rem;"></i>
+        <button
+          class="btn btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center"
+          style="width: 40px; height: 40px"
+          (click)="servicioScrollPrev()"
+        >
+          <i class="bi bi-arrow-left" style="font-size: 0.9rem"></i>
         </button>
-        <button class="btn btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center"
-                style="width:40px; height:40px;"
-                (click)="servicioScrollNext()">
-          <i class="bi bi-arrow-right" style="font-size:.9rem;"></i>
+        <button
+          class="btn btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center"
+          style="width: 40px; height: 40px"
+          (click)="servicioScrollNext()"
+        >
+          <i class="bi bi-arrow-right" style="font-size: 0.9rem"></i>
         </button>
       </div>
     </div>
-
   </div>
 
   <!-- Carrusel full-width -->
   <div class="servicios-track-wrapper">
-    <div class="servicios-track"
-         [style.transform]="'translateX(calc(-' + servicioIndex() + ' * 340px))'">
+    <div
+      class="servicios-track"
+      [style.transform]="'translateX(calc(-' + servicioIndex() + ' * 340px))'"
+    >
       @for (s of servicios; track s.titulo; let i = $index) {
         <div class="servicio-card" [class.servicio-card--active]="i === servicioIndex()">
           <!-- Imagen con overlay -->
@@ -103,7 +106,10 @@
                 <i class="bi {{ s.icon }}"></i>
               </div>
               <h5 class="fw-bold text-white mb-2">{{ s.titulo }}</h5>
-              <p class="text-white mb-3" style="font-size:.85rem; opacity:.85; line-height:1.6;">
+              <p
+                class="text-white mb-3"
+                style="font-size: 0.85rem; opacity: 0.85; line-height: 1.6"
+              >
                 {{ s.desc }}
               </p>
               <a href="#contacto" class="servicio-cta">
@@ -120,49 +126,50 @@
   <div class="container">
     <div class="d-flex justify-content-center gap-2 mt-4">
       @for (s of servicios; track s.titulo; let i = $index) {
-        <button class="servicio-dot"
-                [class.servicio-dot--active]="i === servicioIndex()"
-                (click)="servicioGoTo(i)"
-                [attr.aria-label]="'Ir a ' + s.titulo">
-        </button>
+        <button
+          class="servicio-dot"
+          [class.servicio-dot--active]="i === servicioIndex()"
+          (click)="servicioGoTo(i)"
+          [attr.aria-label]="'Ir a ' + s.titulo"
+        ></button>
       }
     </div>
   </div>
-
 </section>
 
 <!-- AGENDAR CITA -->
-<section id="agendar-cita" class="py-5" style="background:#fff;">
+<section id="agendar-cita" class="py-5" style="background: #fff">
   <div class="container">
     <div class="row align-items-center g-5">
-
       <!-- Info -->
       <div class="col-lg-5">
-        <span class="badge text-uppercase mb-3"
-              style="background:#E6F1FB; color:#0C447C; font-weight:500; letter-spacing:.05em;">
+        <span
+          class="badge text-uppercase mb-3"
+          style="background: #e6f1fb; color: #0c447c; font-weight: 500; letter-spacing: 0.05em"
+        >
           Clínica UPN
         </span>
         <h2 class="fw-bold mb-3">Agenda tu cita médica</h2>
         <p class="text-muted mb-4">
-          Reserva una consulta con nuestros especialistas de forma rápida y sencilla.
-          Solo completa el formulario y te confirmaremos tu cita.
+          Reserva una consulta con nuestros especialistas de forma rápida y sencilla. Solo completa
+          el formulario y te confirmaremos tu cita.
         </p>
         <div class="d-flex flex-column gap-3">
           <div class="d-flex align-items-center gap-3">
-            <div class="rounded-2 p-2 flex-shrink-0" style="background:#E6F1FB;">
-              <i class="bi bi-shield-check" style="color:#185FA5;"></i>
+            <div class="rounded-2 p-2 flex-shrink-0" style="background: #e6f1fb">
+              <i class="bi bi-shield-check" style="color: #185fa5"></i>
             </div>
             <small class="text-muted">Atención segura y confidencial</small>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <div class="rounded-2 p-2 flex-shrink-0" style="background:#EAF3DE;">
-              <i class="bi bi-clock" style="color:#3B6D11;"></i>
+            <div class="rounded-2 p-2 flex-shrink-0" style="background: #eaf3de">
+              <i class="bi bi-clock" style="color: #3b6d11"></i>
             </div>
             <small class="text-muted">Confirmación en menos de 24 horas</small>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <div class="rounded-2 p-2 flex-shrink-0" style="background:#EEEDFE;">
-              <i class="bi bi-people" style="color:#534AB7;"></i>
+            <div class="rounded-2 p-2 flex-shrink-0" style="background: #eeedfe">
+              <i class="bi bi-people" style="color: #534ab7"></i>
             </div>
             <small class="text-muted">+50 profesionales a tu servicio</small>
           </div>
@@ -174,7 +181,7 @@
         @if (paso() === 'exito') {
           <div class="text-center py-5">
             <div class="mb-3">
-              <i class="bi bi-check-circle-fill" style="font-size:4rem; color:#198754;"></i>
+              <i class="bi bi-check-circle-fill" style="font-size: 4rem; color: #198754"></i>
             </div>
             <h4 class="fw-bold mb-2">¡Cita registrada!</h4>
             <p class="text-muted mb-4">Te enviaremos la confirmación a tu correo electrónico.</p>
@@ -182,7 +189,6 @@
               Agendar otra cita
             </button>
           </div>
-
         } @else if (paso() === 'elegir') {
           <div class="text-center py-4">
             <h5 class="fw-bold mb-3">¿Ya eres paciente de Clínica UPN?</h5>
@@ -195,23 +201,35 @@
               </button>
             </div>
           </div>
-
         } @else if (paso() === 'existente') {
           <div>
-            <button class="btn btn-sm btn-link text-decoration-none p-0 mb-3" (click)="reiniciarFormulario()">
+            <button
+              class="btn btn-sm btn-link text-decoration-none p-0 mb-3"
+              (click)="reiniciarFormulario()"
+            >
               <i class="bi bi-arrow-left me-1"></i>Volver
             </button>
             <h5 class="fw-bold mb-3">Buscar mis datos</h5>
             <div class="row g-3">
               <div class="col-sm-6">
                 <label class="form-label small fw-semibold">Correo electrónico</label>
-                <input type="email" class="form-control" placeholder="correo@ejemplo.com"
-                       [ngModel]="formEmail()" (ngModelChange)="formEmail.set($event)" />
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="correo@ejemplo.com"
+                  [ngModel]="formEmail()"
+                  (ngModelChange)="formEmail.set($event)"
+                />
               </div>
               <div class="col-sm-6">
                 <label class="form-label small fw-semibold">Código de estudiante</label>
-                <input type="text" class="form-control" placeholder="Ej: U12345678"
-                       [ngModel]="formCodigo()" (ngModelChange)="formCodigo.set($event)" />
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Ej: U12345678"
+                  [ngModel]="formCodigo()"
+                  (ngModelChange)="formCodigo.set($event)"
+                />
               </div>
               @if (formError()) {
                 <div class="col-12">
@@ -219,7 +237,11 @@
                 </div>
               }
               <div class="col-12">
-                <button class="btn btn-primary w-100 py-2" (click)="buscarPaciente()" [disabled]="formLoading()">
+                <button
+                  class="btn btn-primary w-100 py-2"
+                  (click)="buscarPaciente()"
+                  [disabled]="formLoading()"
+                >
                   @if (formLoading()) {
                     <span class="spinner-border spinner-border-sm me-2"></span>
                   }
@@ -228,33 +250,79 @@
               </div>
             </div>
           </div>
-
         } @else if (paso() === 'nuevo') {
           <div>
-            <button class="btn btn-sm btn-link text-decoration-none p-0 mb-3" (click)="reiniciarFormulario()">
+            <button
+              class="btn btn-sm btn-link text-decoration-none p-0 mb-3"
+              (click)="reiniciarFormulario()"
+            >
               <i class="bi bi-arrow-left me-1"></i>Volver
             </button>
             <h5 class="fw-bold mb-3">Registrar mis datos</h5>
             <div class="row g-3">
               <div class="col-sm-6">
                 <label class="form-label small fw-semibold">Nombre</label>
-                <input type="text" class="form-control" placeholder="Tu nombre"
-                       [ngModel]="formNombre()" (ngModelChange)="formNombre.set($event)" />
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Tu nombre"
+                  [ngModel]="formNombre()"
+                  (ngModelChange)="formNombre.set($event)"
+                />
               </div>
               <div class="col-sm-6">
                 <label class="form-label small fw-semibold">Apellido</label>
-                <input type="text" class="form-control" placeholder="Tu apellido"
-                       [ngModel]="formApellido()" (ngModelChange)="formApellido.set($event)" />
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Tu apellido"
+                  [ngModel]="formApellido()"
+                  (ngModelChange)="formApellido.set($event)"
+                />
               </div>
               <div class="col-sm-6">
                 <label class="form-label small fw-semibold">Correo electrónico</label>
-                <input type="email" class="form-control" placeholder="correo@ejemplo.com"
-                       [ngModel]="formEmail()" (ngModelChange)="formEmail.set($event)" />
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="correo@ejemplo.com"
+                  [ngModel]="formEmail()"
+                  (ngModelChange)="formEmail.set($event)"
+                />
               </div>
               <div class="col-sm-6">
                 <label class="form-label small fw-semibold">Teléfono</label>
-                <input type="tel" class="form-control" placeholder="999 999 999"
-                       [ngModel]="formTelefono()" (ngModelChange)="formTelefono.set($event)" />
+                <input
+                  type="tel"
+                  class="form-control"
+                  placeholder="999 999 999"
+                  [ngModel]="formTelefono()"
+                  (ngModelChange)="formTelefono.set($event)"
+                />
+              </div>
+              <!-- NUEVOS CAMPOS REQUERIDOS POR LA BD -->
+              <div class="col-sm-6">
+                <label class="form-label small fw-semibold">Fecha de nacimiento</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  [ngModel]="formFechaNacimiento()"
+                  (ngModelChange)="formFechaNacimiento.set($event)"
+                  [max]="today"
+                />
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label small fw-semibold">Género</label>
+                <select
+                  class="form-select"
+                  [ngModel]="formGenero()"
+                  (ngModelChange)="formGenero.set($event)"
+                >
+                  <option value="">Selecciona</option>
+                  <option value="M">Masculino</option>
+                  <option value="F">Femenino</option>
+                  <option value="OTRO">Prefiero no decir</option>
+                </select>
               </div>
               @if (formError()) {
                 <div class="col-12">
@@ -268,64 +336,113 @@
               </div>
             </div>
           </div>
-
         } @else if (paso() === 'cita') {
           <div>
-            <button class="btn btn-sm btn-link text-decoration-none p-0 mb-3" (click)="reiniciarFormulario()">
+            <button
+              class="btn btn-sm btn-link text-decoration-none p-0 mb-3"
+              (click)="reiniciarFormulario()"
+            >
               <i class="bi bi-arrow-left me-1"></i>Volver
             </button>
             <h5 class="fw-bold mb-3">Selecciona tu cita</h5>
             <div class="bg-light rounded-3 p-3 mb-3">
               <small class="text-muted d-block">Paciente:</small>
               <strong>{{ formNombre() }} {{ formApellido() }}</strong>
-              <small class="text-muted d-block mt-1">{{ formEmail() }} | {{ formTelefono() }}</small>
+              <small class="text-muted d-block mt-1"
+                >{{ formEmail() }} | {{ formTelefono() }}</small
+              >
             </div>
             <div class="row g-3">
+              <!-- Especialidad -->
               <div class="col-sm-6">
                 <label class="form-label small fw-semibold">Especialidad</label>
-                <select class="form-select"
-                        [ngModel]="formEspecialidad()" (ngModelChange)="formEspecialidad.set($event); formMedico.set('')">
+                <select
+                  class="form-select"
+                  [ngModel]="formEspecialidad()"
+                  (ngModelChange)="formEspecialidad.set($event); cargarDoctores($event)"
+                >
                   <option value="">Selecciona una especialidad</option>
                   @for (s of servicios; track s.titulo) {
                     <option [value]="s.titulo">{{ s.titulo }}</option>
                   }
                 </select>
               </div>
+
+              <!-- Médico (dinámico desde el backend) -->
               <div class="col-sm-6">
                 <label class="form-label small fw-semibold">Médico</label>
-                <select class="form-select"
-                        [ngModel]="formMedico()" (ngModelChange)="formMedico.set($event)">
-                  <option value="">Selecciona un médico</option>
-                  @for (d of doctoresDisponibles(); track d.nombre) {
-                    <option [value]="d.nombre">{{ d.nombre }}</option>
+                @if (cargandoDoctores()) {
+                  <div class="form-control d-flex align-items-center gap-2 text-muted">
+                    <span class="spinner-border spinner-border-sm"></span> Cargando...
+                  </div>
+                } @else {
+                  <select
+                    class="form-select"
+                    [ngModel]="formMedico()"
+                    (ngModelChange)="formMedico.set($event)"
+                    [disabled]="doctoresDisponibles().length === 0"
+                  >
+                    <option value="">
+                      {{
+                        formEspecialidad() ? 'Selecciona un médico' : 'Primero elige especialidad'
+                      }}
+                    </option>
+                    @for (d of doctoresDisponibles(); track d.idDoctor) {
+                      <option [value]="d.nombre">{{ d.nombre }}</option>
+                    }
+                  </select>
+                  @if (
+                    formEspecialidad() && doctoresDisponibles().length === 0 && !cargandoDoctores()
+                  ) {
+                    <small class="text-danger"
+                      >No hay doctores disponibles para esta especialidad.</small
+                    >
                   }
-                </select>
+                }
               </div>
+
+              <!-- Fecha -->
               <div class="col-sm-6">
                 <label class="form-label small fw-semibold">Fecha</label>
-                <input type="date" class="form-control"
-                       [ngModel]="formFecha()" (ngModelChange)="formFecha.set($event)" />
+                <input
+                  type="date"
+                  class="form-control"
+                  [ngModel]="formFecha()"
+                  (ngModelChange)="formFecha.set($event)"
+                  [min]="today"
+                />
               </div>
+
+              <!-- Horario -->
               <div class="col-12">
                 <label class="form-label small fw-semibold">Horario disponible</label>
                 <div class="d-flex flex-wrap gap-2">
                   @for (slot of slotsDisponibles; track slot) {
-                    <button type="button" class="btn btn-sm slot-btn"
-                            [class.btn-primary]="formHora() === slot"
-                            [class.btn-outline-secondary]="formHora() !== slot"
-                            (click)="formHora.set(slot)">
+                    <button
+                      type="button"
+                      class="btn btn-sm slot-btn"
+                      [class.btn-primary]="formHora() === slot"
+                      [class.btn-outline-secondary]="formHora() !== slot"
+                      (click)="formHora.set(slot)"
+                    >
                       {{ slot }}
                     </button>
                   }
                 </div>
               </div>
+
               @if (formError()) {
                 <div class="col-12">
                   <div class="alert alert-danger py-2 mb-0 small">{{ formError() }}</div>
                 </div>
               }
+
               <div class="col-12">
-                <button class="btn btn-primary w-100 py-2" (click)="agendarCita()" [disabled]="formLoading()">
+                <button
+                  class="btn btn-primary w-100 py-2"
+                  (click)="agendarCita()"
+                  [disabled]="formLoading()"
+                >
                   @if (formLoading()) {
                     <span class="spinner-border spinner-border-sm me-2"></span>
                   }
@@ -336,7 +453,6 @@
           </div>
         }
       </div>
-
     </div>
   </div>
 </section>
@@ -345,11 +461,12 @@
 <section id="nosotros" class="py-5">
   <div class="container">
     <div class="row align-items-start g-5">
-
       <!-- Columna izquierda: texto -->
       <div class="col-md-6">
-        <span class="badge text-uppercase mb-3"
-          style="background:#E6F1FB; color:#0C447C; font-weight:500; letter-spacing:.05em;">
+        <span
+          class="badge text-uppercase mb-3"
+          style="background: #e6f1fb; color: #0c447c; font-weight: 500; letter-spacing: 0.05em"
+        >
           Universidad Privada del Norte
         </span>
         <h2 class="fw-bold mb-3">¿Quiénes somos?</h2>
@@ -363,11 +480,11 @@
           @for (f of features; track f.title) {
             <li class="d-flex align-items-center gap-3 bg-light rounded-3 p-3">
               <div class="rounded-2 p-2 flex-shrink-0" [style.background]="f.bg">
-                <i class="bi {{ f.icon }}" [style.color]="f.color" style="font-size:1.1rem;"></i>
+                <i class="bi {{ f.icon }}" [style.color]="f.color" style="font-size: 1.1rem"></i>
               </div>
               <div>
-                <strong class="d-block" style="font-size:.9rem;">{{ f.title }}</strong>
-                <span class="text-muted" style="font-size:.8rem;">{{ f.desc }}</span>
+                <strong class="d-block" style="font-size: 0.9rem">{{ f.title }}</strong>
+                <span class="text-muted" style="font-size: 0.8rem">{{ f.desc }}</span>
               </div>
             </li>
           }
@@ -376,26 +493,34 @@
 
       <!-- Columna derecha -->
       <div class="col-md-6 d-flex flex-column gap-3">
-
         <!-- Card identidad -->
         <div class="card border shadow-sm">
           <div class="card-body d-flex align-items-center gap-3 p-3">
-            <div class="rounded-3 p-2 flex-shrink-0 d-flex align-items-center justify-content-center"
-                 style="background:#f0f4ff; width:56px; height:56px;">
-              <img [src]="logoUpn" alt="Logo UPN" style="height:36px; width:auto; object-fit:contain;" />
+            <div
+              class="rounded-3 p-2 flex-shrink-0 d-flex align-items-center justify-content-center"
+              style="background: #f0f4ff; width: 56px; height: 56px"
+            >
+              <img
+                [src]="logoUpn"
+                alt="Logo UPN"
+                style="height: 36px; width: auto; object-fit: contain"
+              />
             </div>
             <div>
               <strong>Clínica UPN</strong>
-              <p class="text-muted mb-0" style="font-size:.85rem;">Salud universitaria de calidad</p>
+              <p class="text-muted mb-0" style="font-size: 0.85rem">
+                Salud universitaria de calidad
+              </p>
             </div>
           </div>
         </div>
 
         <!-- Spline 3D -->
-        <div class="rounded-3 overflow-hidden" style="height:420px; background:#000;">
+        <div class="rounded-3 overflow-hidden" style="height: 420px; background: #000">
           <spline-viewer
             url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-            style="width:100%; height:100%;">
+            style="width: 100%; height: 100%"
+          >
           </spline-viewer>
         </div>
 
@@ -410,26 +535,19 @@
             </div>
           }
         </div>
-
       </div>
-      
     </div>
   </div>
 </section>
-
 
 <!-- ESPECIALIDADES CIRCULAR -->
 <!-- ESPECIALIDADES -->
 <section id="especialidades" class="py-5 esp-section">
   <div class="container">
-
     <h2 class="text-center fw-bold mb-2">Atención especializada</h2>
-    <p class="text-center text-muted mb-5">
-      Conoce a los profesionales de la Clínica UPN
-    </p>
+    <p class="text-center text-muted mb-5">Conoce a los profesionales de la Clínica UPN</p>
 
     <div class="circular-wrapper">
-
       <!-- Imágenes -->
       <div class="circular-images">
         @for (e of especialidades; track e.nombre; let i = $index) {
@@ -443,7 +561,6 @@
 
       <!-- Contenido activo -->
       <div class="circular-content">
-
         <!-- Avatar grande -->
         <div class="circ-avatar-wrap mb-3">
           <img
@@ -455,7 +572,7 @@
         </div>
 
         <h3 class="fw-bold mb-1">{{ especialidades[activeIndex()].nombre }}</h3>
-        <p class="fw-semibold mb-3" style="font-size:14px; color:#185FA5;">
+        <p class="fw-semibold mb-3" style="font-size: 14px; color: #185fa5">
           {{ especialidades[activeIndex()].cargo }}
         </p>
         <p class="circ-quote">{{ especialidades[activeIndex()].testimonio }}</p>
@@ -463,10 +580,7 @@
         <!-- Dots -->
         <div class="circ-dots mt-3">
           @for (e of especialidades; track e.nombre; let i = $index) {
-            <span
-              class="circ-dot"
-              [class.active]="i === activeIndex()"
-              (click)="servicioGoTo(i)">
+            <span class="circ-dot" [class.active]="i === activeIndex()" (click)="servicioGoTo(i)">
             </span>
           }
         </div>
@@ -480,10 +594,8 @@
             <i class="bi bi-arrow-right"></i>
           </button>
         </div>
-
       </div>
     </div>
-
   </div>
 </section>
 
@@ -591,29 +703,43 @@
 </section>
 
 <!-- FOOTER -->
-<footer class="py-5" style="background:#0a0a0a;">
+<footer class="py-5" style="background: #0a0a0a">
   <div class="container">
-
     <!-- Fila principal -->
-    <div class="row g-5 pb-4" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
-
+    <div class="row g-5 pb-4" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08)">
       <!-- Marca -->
       <div class="col-md-4">
         <div class="d-flex align-items-center gap-3 mb-3">
-          <div class="rounded-3 p-2 d-flex align-items-center justify-content-center"
-               style="background:#f0f4ff; width:44px; height:44px;">
-            <img [src]="logoUpn" alt="Logo UPN" style="height:28px; width:auto; object-fit:contain;" />
+          <div
+            class="rounded-3 p-2 d-flex align-items-center justify-content-center"
+            style="background: #f0f4ff; width: 44px; height: 44px"
+          >
+            <img
+              [src]="logoUpn"
+              alt="Logo UPN"
+              style="height: 28px; width: auto; object-fit: contain"
+            />
           </div>
           <div>
-            <p class="fw-bold mb-0 text-white" style="font-size:1rem;">Clínica UPN</p>
-            <p class="mb-0" style="font-size:10px; letter-spacing:2px; color:rgba(255,255,255,0.4);">
+            <p class="fw-bold mb-0 text-white" style="font-size: 1rem">Clínica UPN</p>
+            <p
+              class="mb-0"
+              style="font-size: 10px; letter-spacing: 2px; color: rgba(255, 255, 255, 0.4)"
+            >
               SALUD UNIVERSITARIA
             </p>
           </div>
         </div>
-        <p style="font-size:.85rem; color:rgba(255,255,255,0.45); line-height:1.7; max-width:280px;">
-          Centro de salud universitario comprometido con brindar atención médica de calidad
-          a toda la comunidad UPN.
+        <p
+          style="
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.45);
+            line-height: 1.7;
+            max-width: 280px;
+          "
+        >
+          Centro de salud universitario comprometido con brindar atención médica de calidad a toda
+          la comunidad UPN.
         </p>
         <!-- Redes -->
         <div class="d-flex gap-3 mt-3">
@@ -634,16 +760,20 @@
 
       <!-- Links: Servicios -->
       <div class="col-6 col-md-2">
-        <h6 class="text-uppercase fw-semibold mb-3"
-            style="font-size:.7rem; letter-spacing:.1em; color:rgba(255,255,255,0.35);">
+        <h6
+          class="text-uppercase fw-semibold mb-3"
+          style="font-size: 0.7rem; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.35)"
+        >
           Servicios
         </h6>
         <ul class="list-unstyled d-flex flex-column gap-2">
           @for (s of servicios; track s.titulo) {
             <li>
-              <a href="#servicios"
-                 style="font-size:.85rem; color:rgba(255,255,255,0.5); text-decoration:none;"
-                 class="footer-link">
+              <a
+                href="#servicios"
+                style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); text-decoration: none"
+                class="footer-link"
+              >
                 {{ s.titulo }}
               </a>
             </li>
@@ -653,61 +783,78 @@
 
       <!-- Links: Navegación -->
       <div class="col-6 col-md-2">
-        <h6 class="text-uppercase fw-semibold mb-3"
-            style="font-size:.7rem; letter-spacing:.1em; color:rgba(255,255,255,0.35);">
+        <h6
+          class="text-uppercase fw-semibold mb-3"
+          style="font-size: 0.7rem; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.35)"
+        >
           Navegación
         </h6>
         <ul class="list-unstyled d-flex flex-column gap-2">
-          <li><a href="#inicio"       class="footer-link">Inicio</a></li>
-          <li><a href="#servicios"    class="footer-link">Servicios</a></li>
-          <li><a href="#nosotros"     class="footer-link">Nosotros</a></li>
+          <li><a href="#inicio" class="footer-link">Inicio</a></li>
+          <li><a href="#servicios" class="footer-link">Servicios</a></li>
+          <li><a href="#nosotros" class="footer-link">Nosotros</a></li>
           <li><a href="#especialidades" class="footer-link">Especialidades</a></li>
-          <li><a href="#contacto"     class="footer-link">Contacto</a></li>
+          <li><a href="#contacto" class="footer-link">Contacto</a></li>
         </ul>
       </div>
 
       <!-- Contacto -->
       <div class="col-md-4">
-        <h6 class="text-uppercase fw-semibold mb-3"
-            style="font-size:.7rem; letter-spacing:.1em; color:rgba(255,255,255,0.35);">
+        <h6
+          class="text-uppercase fw-semibold mb-3"
+          style="font-size: 0.7rem; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.35)"
+        >
           Contacto
         </h6>
         <ul class="list-unstyled d-flex flex-column gap-3">
           <li class="d-flex align-items-start gap-3">
-            <i class="bi bi-geo-alt-fill mt-1 flex-shrink-0" style="color:#185FA5;"></i>
-            <span style="font-size:.85rem; color:rgba(255,255,255,0.5);">
+            <i class="bi bi-geo-alt-fill mt-1 flex-shrink-0" style="color: #185fa5"></i>
+            <span style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.5)">
               Av. Universitaria s/n, Lima, Perú
             </span>
           </li>
           <li class="d-flex align-items-center gap-3">
-            <i class="bi bi-telephone-fill flex-shrink-0" style="color:#185FA5;"></i>
-            <span style="font-size:.85rem; color:rgba(255,255,255,0.5);">(01) 123-4567</span>
+            <i class="bi bi-telephone-fill flex-shrink-0" style="color: #185fa5"></i>
+            <span style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.5)">(01) 123-4567</span>
           </li>
           <li class="d-flex align-items-center gap-3">
-            <i class="bi bi-envelope-fill flex-shrink-0" style="color:#185FA5;"></i>
-            <span style="font-size:.85rem; color:rgba(255,255,255,0.5);">clinica&#64;upn.edu.pe</span>
+            <i class="bi bi-envelope-fill flex-shrink-0" style="color: #185fa5"></i>
+            <span style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.5)"
+              >clinica&#64;upn.edu.pe</span
+            >
           </li>
           <li class="d-flex align-items-center gap-3">
-            <i class="bi bi-clock-fill flex-shrink-0" style="color:#185FA5;"></i>
-            <span style="font-size:.85rem; color:rgba(255,255,255,0.5);">Lun - Vie: 8:00am – 6:00pm</span>
+            <i class="bi bi-clock-fill flex-shrink-0" style="color: #185fa5"></i>
+            <span style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.5)"
+              >Lun - Vie: 8:00am – 6:00pm</span
+            >
           </li>
         </ul>
       </div>
-
     </div>
 
     <!-- Barra inferior -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-4 gap-3">
-      <small style="color:rgba(255,255,255,0.3);">
-        © {{ currentYear }} Clínica UPN — Universidad Privada del Norte. Todos los derechos reservados.
+    <div
+      class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-4 gap-3"
+    >
+      <small style="color: rgba(255, 255, 255, 0.3)">
+        © {{ currentYear }} Clínica UPN — Universidad Privada del Norte. Todos los derechos
+        reservados.
       </small>
       <div class="d-flex gap-4">
-        <a href="#" style="font-size:.8rem; color:rgba(255,255,255,0.3); text-decoration:none;"
-           class="footer-link">Política de privacidad</a>
-        <a href="#" style="font-size:.8rem; color:rgba(255,255,255,0.3); text-decoration:none;"
-           class="footer-link">Términos de uso</a>
+        <a
+          href="#"
+          style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.3); text-decoration: none"
+          class="footer-link"
+          >Política de privacidad</a
+        >
+        <a
+          href="#"
+          style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.3); text-decoration: none"
+          class="footer-link"
+          >Términos de uso</a
+        >
       </div>
     </div>
-
   </div>
 </footer>

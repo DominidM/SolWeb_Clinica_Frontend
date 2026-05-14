@@ -1,5 +1,4 @@
 <div class="perfil-container">
-
   <div class="page-header">
     <div>
       <h2>Mi perfil</h2>
@@ -34,9 +33,7 @@
     <div class="perfil-card">
       <!-- Avatar -->
       <div class="perfil-avatar">
-        <div class="avatar-circle">
-          {{ p.nombre.charAt(0) }}{{ p.apellido.charAt(0) }}
-        </div>
+        <div class="avatar-circle">{{ p.nombre.charAt(0) }}{{ p.apellido.charAt(0) }}</div>
         <div>
           <h5 class="fw-bold mb-0">{{ p.nombre }} {{ p.apellido }}</h5>
           <span class="text-muted small">{{ p.email }}</span>
@@ -69,9 +66,9 @@
           <div class="form-field">
             <label class="form-label small fw-semibold">Género</label>
             <select class="form-select" [(ngModel)]="form.genero">
-              <option value="Masculino">Masculino</option>
-              <option value="Femenino">Femenino</option>
-              <option value="Otro">Otro</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+              <option value="OTRO">Otro</option>
             </select>
           </div>
           <div class="form-field">
@@ -82,10 +79,14 @@
             <label class="form-label small fw-semibold">Tipo de sangre</label>
             <select class="form-select" [(ngModel)]="form.tipoSangre">
               <option value="">No especificado</option>
-              <option>A+</option><option>A-</option>
-              <option>B+</option><option>B-</option>
-              <option>AB+</option><option>AB-</option>
-              <option>O+</option><option>O-</option>
+              <option>A+</option>
+              <option>A-</option>
+              <option>B+</option>
+              <option>B-</option>
+              <option>AB+</option>
+              <option>AB-</option>
+              <option>O+</option>
+              <option>O-</option>
             </select>
           </div>
           <div class="form-field full">
@@ -99,13 +100,16 @@
         }
 
         <div class="form-actions mt-3">
-          <button class="btn btn-outline-secondary btn-sm" (click)="cancelarEdicion()">Cancelar</button>
+          <button class="btn btn-outline-secondary btn-sm" (click)="cancelarEdicion()">
+            Cancelar
+          </button>
           <button class="btn btn-primary btn-sm" (click)="guardar()" [disabled]="guardando()">
-            @if (guardando()) { <span class="spinner-border spinner-border-sm me-1"></span> }
+            @if (guardando()) {
+              <span class="spinner-border spinner-border-sm me-1"></span>
+            }
             {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
           </button>
         </div>
-
       } @else {
         <!-- Vista datos -->
         <div class="info-grid">
@@ -115,7 +119,7 @@
           </div>
           <div class="info-item">
             <span class="info-label">Fecha de nacimiento</span>
-            <span class="info-value">{{ p.fechaNacimiento | date:'dd/MM/yyyy' }}</span>
+            <span class="info-value">{{ p.fechaNacimiento | date: 'dd/MM/yyyy' }}</span>
           </div>
           <div class="info-item">
             <span class="info-label">Género</span>

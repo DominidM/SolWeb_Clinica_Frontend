@@ -1,48 +1,90 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
 
-export interface PacienteSearchResult {
+// ============================================================
+//  cita-publica.ts
+//  src/app/public/services/cita-publica.ts
+// ============================================================
+
+export interface PacienteResponse {
   idPaciente: number;
   nombre: string;
   apellido: string;
   email: string;
-  telefono?: string;
+  telefono: string;
+  codigoEstudiante: string;
 }
 
-export interface CitaPublicaRequest {
-  idPaciente?: number;
+export interface DoctorDisponible {
+  idDoctor: number;
   nombre: string;
-  email: string;
-  telefono: string;
+  especialidad: string;
+}
+
+export interface AgendarRequest {
+  idPaciente?: number;
+  nombre?: string;
+  apellido?: string;
+  email?: string;
+  telefono?: string;
   especialidad: string;
   medico: string;
   fecha: string;
   hora: string;
+  motivo?: string;
+  tipo?: string;
+  fechaNacimiento?: string;
+  genero?: string;
 }
 
-export interface CitaPublicaResponse {
-  success: boolean;
+export interface CitaResponse {
+  idCita: number;
+  paciente: string;
+  doctor: string;
+  especialidad: string;
+  fecha: string;
+  hora: string;
+  estado: string;
+  tipo: string;
+}
+
+// Envuelve cualquier respuesta del backend: { message, data }
+interface ApiResponse<T> {
   message: string;
-  data?: any;
+  data: T;
 }
 
 @Injectable({ providedIn: 'root' })
 export class CitaPublicaService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/citas/publica';
-  private readonly API_PACIENTES = 'http://localhost:8080/api/pacientes';
 
-  buscarPaciente(email: string, codigo: string): Observable<PacienteSearchResult | null> {
+  private readonly base = 'http://localhost:8080/api/cita-publica';
+
+  // ── 1. Buscar paciente ──
+  buscarPaciente(email: string, codigo: string): Observable<PacienteResponse> {
     const params = new HttpParams()
       .set('email', email)
       .set('codigo', codigo);
-    return this.http.get<any>(`${this.API_PACIENTES}/buscar`, { params })
-      .pipe(map(res => res.data ?? null));
+
+    return this.http
+      .get<ApiResponse<PacienteResponse>>(`${this.base}/buscar-paciente`, { params })
+      .pipe(map(r => r.data));
   }
 
-  agendar(dto: CitaPublicaRequest): Observable<CitaPublicaResponse> {
-    return this.http.post<CitaPublicaResponse>(this.API, dto);
+  // ── 2. Listar doctores ──
+  listarDoctores(especialidad: string): Observable<DoctorDisponible[]> {
+    return this.http
+      .get<ApiResponse<DoctorDisponible[]>>(
+        `${this.base}/doctores/${encodeURIComponent(especialidad)}`
+      )
+      .pipe(map(r => r.data));
+  }
+
+  // ── 3. Agendar cita ──
+  agendar(req: AgendarRequest): Observable<CitaResponse> {
+    return this.http
+      .post<ApiResponse<CitaResponse>>(`${this.base}/agendar`, req)
+      .pipe(map(r => r.data));
   }
 }

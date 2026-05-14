@@ -5,12 +5,15 @@ import { map } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth';
 
 export interface DocumentoHCE {
-  id: number;
-  titulo: string;
-  tipo: string;
+  idPaciente: number;
+  nombrePaciente: string;
   fecha: string;
-  medico: string;
-  url: string;
+  diagnosticoCie10: string;
+  descripcionDiag: string;
+  tratamiento: string;
+  prescripcion: string;
+  nombreDoctor: string;
+  especialidad: string;
 }
 
 export interface ApiResponse<T> {
@@ -25,10 +28,9 @@ export class HceService {
   private readonly API = 'http://localhost:8080/api/hce';
 
   listarDocumentos(): Observable<DocumentoHCE[]> {
-    const email = this.auth.getUser()?.email;
-    const params = new HttpParams().set('email', email ?? '');
-    return this.http.get<ApiResponse<DocumentoHCE[]>>(`${this.API}/documentos`, { params })
-      .pipe(map(res => res.data));
+    return this.http
+      .get<ApiResponse<DocumentoHCE[]>>(`${this.API}/documentos`)
+      .pipe(map((res) => res.data));
   }
 
   descargar(id: number): void {

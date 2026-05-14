@@ -1,6 +1,14 @@
-import { Component, signal, computed, OnInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
+import {
+  Component,
+  signal,
+  computed,
+  OnInit,
+  OnDestroy,
+  CUSTOM_ELEMENTS_SCHEMA,
+  inject,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CitaPublicaService } from '../../services/cita-publica';
+import { CitaPublicaService, DoctorDisponible } from '../../services/cita-publica';
 
 @Component({
   selector: 'app-landing-page',
@@ -8,112 +16,150 @@ import { CitaPublicaService } from '../../services/cita-publica';
   imports: [FormsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './landing-page.html',
-  styleUrl: './landing-page.css'
+  styleUrl: './landing-page.css',
 })
 export class LandingPageComponent implements OnInit, OnDestroy {
   private citaService = inject(CitaPublicaService);
-readonly logoUpn = 'https://res.cloudinary.com/dxuk9bogw/image/upload/v1777099556/b6a20ee7-0a8d-4ba0-be44-ca617db1cb2e.png';
-servicios = [
-  {
-    icon: 'bi-heart-pulse-fill',
-    titulo: 'Medicina General',
-    desc: 'Atención integral y preventiva para toda la comunidad universitaria.',
-    imagen: 'https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    icon: 'bi-gender-female',
-    titulo: 'Obstetricia',
-    desc: 'Seguimiento y cuidado durante el embarazo, parto y postparto.',
-    imagen: 'https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    icon: 'bi-egg-fried',
-    titulo: 'Nutrición',
-    desc: 'Planes alimenticios personalizados adaptados al ritmo universitario.',
-    imagen: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    icon: 'bi-brain',
-    titulo: 'Psicología',
-    desc: 'Apoyo emocional y salud mental profesional para estudiantes y personal.',
-    imagen: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    icon: 'bi-activity',
-    titulo: 'Rehabilitación',
-    desc: 'Recuperación física con tecnología especializada de vanguardia.',
-    imagen: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    icon: 'bi-person-walking',
-    titulo: 'Fisioterapia',
-    desc: 'Tratamiento del dolor y mejora del movimiento con atención personalizada.',
-    imagen: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80'
-  },
-];
 
-// Carrusel servicios
-servicioIndex = signal(0);
-private servicioInterval: any;
+  readonly logoUpn =
+    'https://res.cloudinary.com/dxuk9bogw/image/upload/v1777099556/b6a20ee7-0a8d-4ba0-be44-ca617db1cb2e.png';
 
-get serviciosPrev() {
-  return (this.servicioIndex() - 1 + this.servicios.length) % this.servicios.length;
-}
-get serviciosNext() {
-  return (this.servicioIndex() + 1) % this.servicios.length;
-}
+  servicios = [
+    {
+      icon: 'bi-heart-pulse-fill',
+      titulo: 'Medicina General',
+      desc: 'Atención integral y preventiva para toda la comunidad universitaria.',
+      imagen:
+        'https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=600&auto=format&fit=crop&q=80',
+    },
+    {
+      icon: 'bi-gender-female',
+      titulo: 'Obstetricia',
+      desc: 'Seguimiento y cuidado durante el embarazo, parto y postparto.',
+      imagen:
+        'https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=600&auto=format&fit=crop&q=80',
+    },
+    {
+      icon: 'bi-egg-fried',
+      titulo: 'Nutrición',
+      desc: 'Planes alimenticios personalizados adaptados al ritmo universitario.',
+      imagen:
+        'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&auto=format&fit=crop&q=80',
+    },
+    {
+      icon: 'bi-brain',
+      titulo: 'Psicología',
+      desc: 'Apoyo emocional y salud mental profesional para estudiantes y personal.',
+      imagen:
+        'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=600&auto=format&fit=crop&q=80',
+    },
+    {
+      icon: 'bi-activity',
+      titulo: 'Rehabilitación',
+      desc: 'Recuperación física con tecnología especializada de vanguardia.',
+      imagen:
+        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&auto=format&fit=crop&q=80',
+    },
+    {
+      icon: 'bi-person-walking',
+      titulo: 'Fisioterapia',
+      desc: 'Tratamiento del dolor y mejora del movimiento con atención personalizada.',
+      imagen:
+        'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80',
+    },
+  ];
 
-servicioScrollPrev() {
-  clearInterval(this.servicioInterval);
-  this.servicioIndex.set((this.servicioIndex() - 1 + this.servicios.length) % this.servicios.length);
-  this.startServicioInterval();
-}
-servicioScrollNext() {
-  clearInterval(this.servicioInterval);
-  this.servicioIndex.set((this.servicioIndex() + 1) % this.servicios.length);
-  this.startServicioInterval();
-}
-servicioGoTo(i: number) {
-  clearInterval(this.servicioInterval);
-  this.servicioIndex.set(i);
-  this.startServicioInterval();
-}
-private startServicioInterval() {
-  this.servicioInterval = setInterval(() => this.servicioScrollNext(), 4000);
-}
-
-especialidades = [
-  {
-    nombre: 'Dra. María Torres',
-    cargo: 'Medicina General',
-    testimonio: 'Diagnóstico, prevención y tratamiento de enfermedades comunes. Atención para toda la comunidad universitaria con un enfoque integral y humano.',
-    foto: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&auto=format&fit=crop&q=80'
-  },
-  {
-    nombre: 'Dr. Carlos Mendoza',
-    cargo: 'Psicología Clínica',
-    testimonio: 'Apoyo psicológico especializado para estudiantes y personal. Manejo del estrés, ansiedad y bienestar emocional en el entorno universitario.',
-    foto: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&auto=format&fit=crop&q=80'
-  },
-  {
-    nombre: 'Dra. Ana Quispe',
-    cargo: 'Nutrición y Dietética',
-    testimonio: 'Planes nutricionales personalizados adaptados al ritmo universitario. Mejora tu rendimiento académico y bienestar desde una alimentación equilibrada.',
-    foto: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&auto=format&fit=crop&q=80'
-  },
-];
+  especialidades = [
+    {
+      nombre: 'Dra. María Torres',
+      cargo: 'Medicina General',
+      testimonio:
+        'Diagnóstico, prevención y tratamiento de enfermedades comunes. Atención para toda la comunidad universitaria con un enfoque integral y humano.',
+      foto: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&auto=format&fit=crop&q=80',
+    },
+    {
+      nombre: 'Dr. Carlos Mendoza',
+      cargo: 'Psicología Clínica',
+      testimonio:
+        'Apoyo psicológico especializado para estudiantes y personal. Manejo del estrés, ansiedad y bienestar emocional en el entorno universitario.',
+      foto: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&auto=format&fit=crop&q=80',
+    },
+    {
+      nombre: 'Dra. Ana Quispe',
+      cargo: 'Nutrición y Dietética',
+      testimonio:
+        'Planes nutricionales personalizados adaptados al ritmo universitario. Mejora tu rendimiento académico y bienestar desde una alimentación equilibrada.',
+      foto: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&auto=format&fit=crop&q=80',
+    },
+  ];
 
   features = [
-    { title: 'Historia clínica electrónica', desc: 'Acceso digital a tu historial médico completo',   bg: '#E6F1FB', icon: 'bi-file-earmark-text-fill', color: '#185FA5' },
-    { title: 'Gestión digital de citas',     desc: 'Agenda y administra tus citas en línea',          bg: '#EAF3DE', icon: 'bi-calendar2-check-fill',   color: '#3B6D11' },
-    { title: 'Teleconsulta disponible',      desc: 'Atención médica desde cualquier lugar',           bg: '#EEEDFE', icon: 'bi-camera-video-fill',       color: '#534AB7' },
-    { title: 'Seguimiento a practicantes',   desc: 'Supervisión y acompañamiento continuo',           bg: '#FAEEDA', icon: 'bi-people-fill',             color: '#854F0B' },
+    {
+      title: 'Historia clínica electrónica',
+      desc: 'Acceso digital a tu historial médico completo',
+      bg: '#E6F1FB',
+      icon: 'bi-file-earmark-text-fill',
+      color: '#185FA5',
+    },
+    {
+      title: 'Gestión digital de citas',
+      desc: 'Agenda y administra tus citas en línea',
+      bg: '#EAF3DE',
+      icon: 'bi-calendar2-check-fill',
+      color: '#3B6D11',
+    },
+    {
+      title: 'Teleconsulta disponible',
+      desc: 'Atención médica desde cualquier lugar',
+      bg: '#EEEDFE',
+      icon: 'bi-camera-video-fill',
+      color: '#534AB7',
+    },
+    {
+      title: 'Seguimiento a practicantes',
+      desc: 'Supervisión y acompañamiento continuo',
+      bg: '#FAEEDA',
+      icon: 'bi-people-fill',
+      color: '#854F0B',
+    },
   ];
 
   stats = [
-    { value: '+50',  label: 'Profesionales',       color: '#1da2ca' },
-    { value: '8',    label: 'Especialidades',      color: '#534AB7' },
+    { value: '+50', label: 'Profesionales', color: '#1da2ca' },
+    { value: '8', label: 'Especialidades', color: '#534AB7' },
   ];
+
+  // ── Carrusel servicios ──
+  servicioIndex = signal(0);
+  private servicioInterval: any;
+
+  get serviciosPrev() {
+    return (this.servicioIndex() - 1 + this.servicios.length) % this.servicios.length;
+  }
+  get serviciosNext() {
+    return (this.servicioIndex() + 1) % this.servicios.length;
+  }
+
+  servicioScrollPrev() {
+    clearInterval(this.servicioInterval);
+    this.servicioIndex.set(
+      (this.servicioIndex() - 1 + this.servicios.length) % this.servicios.length,
+    );
+    this.startServicioInterval();
+  }
+  servicioScrollNext() {
+    clearInterval(this.servicioInterval);
+    this.servicioIndex.set((this.servicioIndex() + 1) % this.servicios.length);
+    this.startServicioInterval();
+  }
+  servicioGoTo(i: number) {
+    clearInterval(this.servicioInterval);
+    this.servicioIndex.set(i);
+    this.startServicioInterval();
+  }
+  private startServicioInterval() {
+    this.servicioInterval = setInterval(() => this.servicioScrollNext(), 4000);
+  }
 
   // ── Formulario de cita ──
   paso = signal<'elegir' | 'existente' | 'nuevo' | 'cita' | 'exito'>('elegir');
@@ -128,49 +174,60 @@ especialidades = [
   formHora = signal('');
   formLoading = signal(false);
   formError = signal('');
+  formFechaNacimiento = signal('');
+  formGenero = signal('');
   pacienteId: number | null = null;
 
-  doctoresDisponibles = computed(() => {
-    const esp = this.formEspecialidad();
-    if (!esp) return [];
-    return this.medicosPorEspecialidad[esp] ?? [];
-  });
+  // ── Doctores dinámicos desde el backend ──
+  doctoresReales = signal<DoctorDisponible[]>([]);
+  cargandoDoctores = signal(false);
+
+  // doctoresDisponibles ahora usa los datos reales del backend
+  doctoresDisponibles = computed(() => this.doctoresReales());
 
   slotsDisponibles = [
-    '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
-    '11:00', '11:30', '12:00', '12:30',
-    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'
+    '08:00',
+    '08:30',
+    '09:00',
+    '09:30',
+    '10:00',
+    '10:30',
+    '11:00',
+    '11:30',
+    '12:00',
+    '12:30',
+    '14:00',
+    '14:30',
+    '15:00',
+    '15:30',
+    '16:00',
+    '16:30',
   ];
 
-  medicosPorEspecialidad: Record<string, { nombre: string; cargo: string }[]> = {
-    'Medicina General': [
-      { nombre: 'Dr. Ricardo Palma', cargo: 'Medicina General' },
-      { nombre: 'Dra. Carmen Lozano', cargo: 'Medicina General' },
-    ],
-    Obstetricia: [
-      { nombre: 'Dra. Andrea Montes', cargo: 'Obstetricia' },
-    ],
-    Nutrición: [
-      { nombre: 'Dra. Ana Quispe', cargo: 'Nutrición y Dietética' },
-      { nombre: 'Dr. Luis Vega', cargo: 'Nutrición' },
-    ],
-    Psicología: [
-      { nombre: 'Dr. Carlos Mendoza', cargo: 'Psicología Clínica' },
-      { nombre: 'Dra. Pamela Ríos', cargo: 'Psicología' },
-    ],
-    Rehabilitación: [
-      { nombre: 'Dr. Marco Silva', cargo: 'Rehabilitación' },
-    ],
-    Fisioterapia: [
-      { nombre: 'Lic. Pedro Castillo', cargo: 'Fisioterapia' },
-    ],
-  };
+  // ── Llamado al backend al cambiar especialidad ──
+  cargarDoctores(especialidad: string) {
+    this.formMedico.set('');
+    this.doctoresReales.set([]);
+    if (!especialidad) return;
+
+    this.cargandoDoctores.set(true);
+    this.citaService.listarDoctores(especialidad).subscribe({
+      next: (docs) => {
+        this.doctoresReales.set(docs);
+        this.cargandoDoctores.set(false);
+      },
+      error: () => {
+        this.doctoresReales.set([]);
+        this.cargandoDoctores.set(false);
+        this.formError.set('No se pudieron cargar los doctores. Intenta de nuevo.');
+      },
+    });
+  }
 
   elegirPacienteExistente() {
     this.paso.set('existente');
     this.formError.set('');
   }
-
   elegirPacienteNuevo() {
     this.paso.set('nuevo');
     this.formError.set('');
@@ -183,34 +240,43 @@ especialidades = [
     }
     this.formLoading.set(true);
     this.formError.set('');
+
     this.citaService.buscarPaciente(this.formEmail(), this.formCodigo()).subscribe({
       next: (paciente) => {
         this.formLoading.set(false);
-        if (paciente) {
-          this.pacienteId = paciente.idPaciente;
-          this.formNombre.set(paciente.nombre);
-          this.formApellido.set(paciente.apellido);
-          this.formEmail.set(paciente.email);
-          this.formTelefono.set(paciente.telefono ?? '');
-          this.paso.set('cita');
-        } else {
-          this.formError.set('No encontramos tus datos. Verifica el correo y código.');
-        }
+        this.pacienteId = paciente.idPaciente;
+        this.formNombre.set(paciente.nombre);
+        this.formApellido.set(paciente.apellido);
+        this.formEmail.set(paciente.email);
+        this.formTelefono.set(paciente.telefono ?? '');
+        this.paso.set('cita');
       },
-      error: () => {
+      error: (err) => {
+        console.log('>>> Error completo:', err);
+        console.log('>>> err.status:', err.status);
+        console.log('>>> err.error:', err.error);
         this.formLoading.set(false);
-        this.formError.set('Error al buscar. Intenta de nuevo.');
-      }
+        this.formError.set(
+          err.error?.message || 'No encontramos tus datos. Verifica el correo y código.',
+        );
+      },
     });
   }
 
   irACita() {
-    if (!this.formNombre() || !this.formApellido() || !this.formEmail() || !this.formTelefono()) {
+    if (
+      !this.formNombre() ||
+      !this.formApellido() ||
+      !this.formEmail() ||
+      !this.formTelefono() ||
+      !this.formFechaNacimiento() ||
+      !this.formGenero()
+    ) {
       this.formError.set('Completa todos los datos personales');
       return;
     }
-    this.paso.set('cita');
     this.formError.set('');
+    this.paso.set('cita');
   }
 
   agendarCita() {
@@ -221,25 +287,32 @@ especialidades = [
     this.formLoading.set(true);
     this.formError.set('');
 
-    this.citaService.agendar({
-      idPaciente: this.pacienteId ?? undefined,
-      nombre: `${this.formNombre()} ${this.formApellido()}`,
-      email: this.formEmail(),
-      telefono: this.formTelefono(),
-      especialidad: this.formEspecialidad(),
-      medico: this.formMedico(),
-      fecha: this.formFecha(),
-      hora: this.formHora(),
-    }).subscribe({
-      next: () => {
-        this.paso.set('exito');
-        this.formLoading.set(false);
-      },
-      error: (err) => {
-        this.formLoading.set(false);
-        this.formError.set(err.error?.message || 'Error al agendar la cita. Intenta de nuevo.');
-      }
-    });
+    this.citaService
+      .agendar({
+        idPaciente: this.pacienteId ?? undefined,
+        nombre: this.formNombre(),
+        apellido: this.formApellido(),
+        email: this.formEmail(),
+        telefono: this.formTelefono(),
+        fechaNacimiento: this.formFechaNacimiento(),
+        genero: this.formGenero(),
+        especialidad: this.formEspecialidad(),
+        medico: this.formMedico(),
+        fecha: this.formFecha(),
+        hora: this.formHora(),
+        motivo: 'Consulta general',
+        tipo: 'PRESENCIAL',
+      })
+      .subscribe({
+        next: () => {
+          this.paso.set('exito');
+          this.formLoading.set(false);
+        },
+        error: (err) => {
+          this.formLoading.set(false);
+          this.formError.set(err.error?.message || 'Error al agendar la cita. Intenta de nuevo.');
+        },
+      });
   }
 
   reiniciarFormulario() {
@@ -255,42 +328,52 @@ especialidades = [
     this.formFecha.set('');
     this.formHora.set('');
     this.formError.set('');
+    this.doctoresReales.set([]);
   }
 
+  // ── Carrusel de especialidades ──
   readonly currentYear = new Date().getFullYear();
+  readonly today = new Date().toISOString().split('T')[0]; // ← AGREGA ESTA
   activeIndex = signal(0);
-  animating   = signal(false);
+  animating = signal(false);
+
   private interval: any;
 
-  prevIndex = computed(() => (this.activeIndex() - 1 + this.especialidades.length) % this.especialidades.length);
+  prevIndex = computed(
+    () => (this.activeIndex() - 1 + this.especialidades.length) % this.especialidades.length,
+  );
   nextIndex = computed(() => (this.activeIndex() + 1) % this.especialidades.length);
 
   ngOnInit() {
-    // carga el web component de Spline en runtime
     import('@splinetool/viewer');
     this.interval = setInterval(() => this.goNext(), 5000);
+    this.startServicioInterval();
   }
 
-  ngOnDestroy() { clearInterval(this.interval); }
+  ngOnDestroy() {
+    clearInterval(this.interval);
+    clearInterval(this.servicioInterval);
+  }
 
   goNext() {
     clearInterval(this.interval);
     this.activeIndex.set((this.activeIndex() + 1) % this.especialidades.length);
     this.interval = setInterval(() => this.goNext(), 5000);
   }
-
   goPrev() {
     clearInterval(this.interval);
-    this.activeIndex.set((this.activeIndex() - 1 + this.especialidades.length) % this.especialidades.length);
+    this.activeIndex.set(
+      (this.activeIndex() - 1 + this.especialidades.length) % this.especialidades.length,
+    );
     this.interval = setInterval(() => this.goNext(), 5000);
   }
 
   getCardClass(i: number): string {
     const active = this.activeIndex();
-    const total  = this.especialidades.length;
-    if (i === active)                        return 'card-center';
-    if (i === (active - 1 + total) % total)  return 'card-left';
-    if (i === (active + 1) % total)          return 'card-right';
+    const total = this.especialidades.length;
+    if (i === active) return 'card-center';
+    if (i === (active - 1 + total) % total) return 'card-left';
+    if (i === (active + 1) % total) return 'card-right';
     return 'card-hidden';
   }
 }

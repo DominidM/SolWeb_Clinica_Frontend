@@ -85,37 +85,6 @@
       }
     </div>
 
-    <!-- Historial -->
-    <div>
-      <h5 class="section-title">
-        <i class="bi bi-clock-history me-2"></i>Historial
-      </h5>
-
-      @if (citasCompletadas().length === 0) {
-        <p class="text-muted small">No hay citas anteriores</p>
-      }
-
-      @for (cita of citasCompletadas(); track cita.idCita) {
-        <div class="cita-card cita-card--muted">
-          <div class="cita-left">
-            <div class="cita-date">
-              <span class="cita-day">{{ cita.fecha | date:'dd' }}</span>
-              <span class="cita-month">{{ cita.fecha | date:'MMM' }}</span>
-            </div>
-          </div>
-          <div class="cita-body">
-            <div class="cita-header-row">
-              <strong>{{ cita.especialidad }}</strong>
-              <span class="cita-estado {{ getEstadoClass(cita.estado) }}">{{ cita.estado }}</span>
-            </div>
-            <div class="cita-details">
-              <span><i class="bi bi-clock me-1"></i>{{ cita.hora }} hrs</span>
-              <span><i class="bi bi-person-badge me-1"></i>{{ cita.medico }}</span>
-            </div>
-          </div>
-        </div>
-      }
-    </div>
   }
 </div>
 

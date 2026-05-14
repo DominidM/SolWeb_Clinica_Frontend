@@ -1,5 +1,4 @@
 <div class="hce-container">
-
   <div class="page-header">
     <div>
       <h2>Historia Clínica</h2>
@@ -31,29 +30,34 @@
     }
 
     <div class="docs-list">
-      @for (doc of documentos(); track doc.id) {
+      @for (doc of documentos(); track doc.fecha) {
         <div class="doc-card">
-          <div class="doc-icon" [style.background]="getColor(doc.tipo) + '15'" [style.color]="getColor(doc.tipo)">
-            <i class="bi {{ getIcon(doc.tipo) }}"></i>
+          <div
+            class="doc-icon"
+            [style.background]="getColor(doc.especialidad) + '15'"
+            [style.color]="getColor(doc.especialidad)"
+          >
+            <i class="bi {{ getIcon(doc.especialidad) }}"></i>
           </div>
           <div class="doc-body">
-            <strong>{{ doc.titulo }}</strong>
+            <strong>{{ doc.descripcionDiag }}</strong>
             <div class="doc-meta">
-              <span class="doc-tipo" [style.background]="getColor(doc.tipo) + '20'" [style.color]="getColor(doc.tipo)">
-                {{ doc.tipo }}
+              <span
+                class="doc-tipo"
+                [style.background]="getColor(doc.especialidad) + '20'"
+                [style.color]="getColor(doc.especialidad)"
+              >
+                {{ doc.especialidad }}
               </span>
-              <span><i class="bi bi-calendar me-1"></i>{{ doc.fecha | date:'dd/MM/yyyy' }}</span>
-              <span><i class="bi bi-person-badge me-1"></i>{{ doc.medico }}</span>
+              <span><i class="bi bi-calendar me-1"></i>{{ doc.fecha | date: 'dd/MM/yyyy' }}</span>
+              <span><i class="bi bi-person-badge me-1"></i>{{ doc.nombreDoctor }}</span>
             </div>
-          </div>
-          <div class="doc-action">
-            <button class="btn btn-sm btn-outline-primary" (click)="descargar(doc)" [disabled]="descargando() === doc.id">
-              @if (descargando() === doc.id) {
-                <span class="spinner-border spinner-border-sm"></span>
-              } @else {
-                <i class="bi bi-download"></i>
+            <div class="doc-detalle mt-2 small text-muted">
+              <span><strong>CIE-10:</strong> {{ doc.diagnosticoCie10 }}</span>
+              @if (doc.prescripcion) {
+                <span class="ms-3"><strong>Prescripción:</strong> {{ doc.prescripcion }}</span>
               }
-            </button>
+            </div>
           </div>
         </div>
       }

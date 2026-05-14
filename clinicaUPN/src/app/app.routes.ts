@@ -1,5 +1,8 @@
 import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
+import { AuthService } from './core/services/auth';
 
 export const routes: Routes = [
   // login SIN layout
@@ -30,7 +33,27 @@ export const routes: Routes = [
     loadComponent: () => import('./shared/layouts/private-layout/private-layout')
       .then(m => m.PrivateLayoutComponent),
     children: [
-      { path: '', redirectTo: 'pacientes', pathMatch: 'full' },
+      {
+        path: '',
+        pathMatch: 'full',
+        canActivate: [() => {
+          const auth = inject(AuthService);
+          const router = inject(Router);
+          const rol = auth.getRol();
+          const rutas: Record<string, string> = {
+            ADMINISTRADOR:  'pacientes',
+            ADMINISTRATIVO: 'pacientes',
+            DOCTOR:         'citas',
+            MEDICO:         'citas',
+            PRACTICANTE:    'practicantes/agenda',
+            DIRECTOR:       'reportes',
+            PACIENTE:       'mis-citas',
+            PATIENT:        'mis-citas',
+          };
+          return router.parseUrl(rutas[rol ?? ''] || 'pacientes');
+        }],
+        children: []
+      },
       { path: 'pacientes',        loadChildren: () => import('./features/pacientes/pacientes.routes').then(m => m.PACIENTES_ROUTES) },
       { path: 'citas',            loadChildren: () => import('./features/citas/citas.routes').then(m => m.CITAS_ROUTES) },
       { path: 'historia-clinica', loadChildren: () => import('./features/historia-clinica/historia-clinica.routes').then(m => m.HCE_ROUTES) },

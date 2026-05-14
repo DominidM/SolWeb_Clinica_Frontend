@@ -1,14 +1,10 @@
 <div class="tc-container">
 
-  <div class="page-header">
-    <div>
-      <h2>Teleconsultas</h2>
-      <p class="text-muted mb-0">Atención médica desde donde estés</p>
-    </div>
+  <app-page-header title="Teleconsultas" subtitle="Atención médica desde donde estés">
     <button class="btn btn-primary btn-sm" (click)="abrirFormulario()">
       <i class="bi bi-plus-lg me-1"></i>Solicitar teleconsulta
     </button>
-  </div>
+  </app-page-header>
 
   @if (cargando()) {
     <div class="text-center py-5">

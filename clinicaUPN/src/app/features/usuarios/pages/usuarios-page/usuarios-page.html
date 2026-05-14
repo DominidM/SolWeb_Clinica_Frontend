@@ -1,0 +1,49 @@
+<div class="usuarios-container">
+
+  <app-page-header title="Usuarios" subtitle="Administración de usuarios y asignación de roles"></app-page-header>
+
+  <div *ngIf="loading" class="loading">Cargando usuarios...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div class="table-responsive" *ngIf="!loading && usuarios.length">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of usuarios">
+          <td>{{ usuario.nombre }}</td>
+          <td>{{ usuario.email }}</td>
+          <td>
+            <ng-container *ngIf="usuarioEditando?.id !== usuario.id; else editandoRol">
+              <span class="rol-badge" [class]="'rol-' + (usuario.rol | lowercase)">{{ usuario.rol }}</span>
+            </ng-container>
+            <ng-template #editandoRol>
+              <select [(ngModel)]="usuarioEditando!.rol" class="form-select">
+                <option *ngFor="let r of rolesDisponibles" [value]="r">{{ r }}</option>
+              </select>
+            </ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="usuarioEditando?.id !== usuario.id; else guardandoRol">
+              <button class="btn btn-sm btn-primary" (click)="editarRol(usuario)">Editar rol</button>
+            </ng-container>
+            <ng-template #guardandoRol>
+              <button class="btn btn-sm btn-success" (click)="guardarRol()">Guardar</button>
+              <button class="btn btn-sm btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && !usuarios.length && !error" class="empty">
+    No hay usuarios registrados.
+  </div>
+</div>

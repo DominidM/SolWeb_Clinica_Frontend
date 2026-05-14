@@ -1,12 +1,59 @@
-.clinica-topbar {
+:host {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
+}
+
+.clinica-topbar {
   height: 60px;
   background: #185FA5;
   box-shadow: 0 2px 16px rgba(24,95,165,0.25);
+}
+
+/* ── Language bar ── */
+.lang-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  height: 28px;
+  padding: 0 24px;
+  background: #0d4a7a;
+  font-size: 12px;
+  color: rgba(255,255,255,.7);
+}
+
+.lang-text {
+  margin-right: 2px;
+  font-size: 11px;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.6);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: color .15s, background .15s;
+}
+
+.lang-btn:hover {
+  color: #fff;
+}
+
+.lang-btn.active {
+  color: #fff;
+  background: rgba(255,255,255,.15);
+}
+
+.lang-sep {
+  color: rgba(255,255,255,.3);
+  font-size: 11px;
 }
 
 /* ── Logo ── */

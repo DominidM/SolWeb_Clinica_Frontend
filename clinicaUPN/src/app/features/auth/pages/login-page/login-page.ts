@@ -43,8 +43,8 @@ export class LoginPageComponent {
           const rutas: Record<string, string> = {
             ADMINISTRADOR: '/app/pacientes',
             ADMINISTRATIVO: '/app/pacientes',
-            DOCTOR: '/app/agenda',
-            MEDICO: '/app/agenda',
+            DOCTOR: '/app/citas',
+            MEDICO: '/app/citas',
             PRACTICANTE: '/app/practicantes/agenda',
             DIRECTOR: '/app/dashboard',
             PACIENTE: '/app/mis-citas',

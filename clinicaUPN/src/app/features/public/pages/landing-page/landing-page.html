@@ -12,28 +12,27 @@
           style="height: 48px; width: auto; object-fit: contain"
         />
         <div>
-          <p class="fw-bold mb-0" style="font-size: 1.1rem">Clínica UPN</p>
+          <p class="fw-bold mb-0" style="font-size: 1.1rem">{{ t('hero.clinica') }}</p>
           <p class="text-muted mb-0" style="font-size: 11px; letter-spacing: 2px">
-            SALUD UNIVERSITARIA
+            {{ t('hero.salud') }}
           </p>
         </div>
       </div>
 
       <!-- Título -->
       <h1 class="hero-title fw-bold">
-        Tu salud,<br />
-        <span class="text-primary">nuestra prioridad</span>
+        {{ t('hero.title1') }}<br />
+        <span class="text-primary">{{ t('hero.title2') }}</span>
       </h1>
 
       <div class="hero-line"></div>
 
       <p class="hero-subtitle">
-        Atención médica integral con tecnología de vanguardia para estudiantes y comunidad UPN.
-        Especialistas comprometidos con tu bienestar.
+        {{ t('hero.subtitle') }}
       </p>
 
       <a href="#agendar-cita" class="hero-cta">
-        Solicitar cita <i class="bi bi-arrow-right"></i>
+        {{ t('hero.cta') }} <i class="bi bi-arrow-right"></i>
       </a>
     </div>
 
@@ -41,21 +40,37 @@
     <div class="hero-footer d-flex flex-wrap gap-4">
       <div class="d-flex align-items-center gap-2 text-muted small">
         <i class="bi bi-globe text-primary"></i>
-        <span>clinica.upn.edu.pe</span>
+        <span>{{ t('hero.web') }}</span>
       </div>
       <div class="d-flex align-items-center gap-2 text-muted small">
         <i class="bi bi-telephone-fill text-primary"></i>
-        <span>(01) 123-4567</span>
+        <span>{{ t('hero.phone') }}</span>
       </div>
       <div class="d-flex align-items-center gap-2 text-muted small">
         <i class="bi bi-geo-alt-fill text-primary"></i>
-        <span>Av. Universitaria, Lima</span>
+        <span>{{ t('hero.address') }}</span>
       </div>
     </div>
   </div>
 
   <!-- DERECHA -->
-  <div class="hero-right"></div>
+  <div class="hero-right">
+    <video
+      #heroVideo
+      autoplay
+      muted
+      loop
+      playsinline
+      class="hero-video"
+      [muted]="videoMuted()"
+    >
+      <source src="https://res.cloudinary.com/dxuk9bogw/video/upload/v1778754307/videoplayback_1_jduoc9.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-overlay"></div>
+    <button class="hero-mute-btn" (click)="videoMuted.set(!videoMuted())" [attr.aria-label]="videoMuted() ? t('hero.muteOn') : t('hero.muteOff')">
+      <i class="bi" [class.bi-volume-up-fill]="!videoMuted()" [class.bi-volume-mute-fill]="videoMuted()"></i>
+    </button>
+  </div>
 </section>
 <!-- SERVICIOS -->
 <section id="servicios" class="py-5" style="background: #f8f9fa; overflow: hidden">
@@ -63,9 +78,9 @@
     <!-- Header -->
     <div class="d-flex align-items-end justify-content-between mb-5">
       <div>
-        <h2 class="fw-bold mb-2">Nuestros Servicios</h2>
+        <h2 class="fw-bold mb-2">{{ t('servicios.title') }}</h2>
         <p class="text-muted mb-0" style="max-width: 480px">
-          Especialidades disponibles para toda la comunidad universitaria UPN.
+          {{ t('servicios.subtitle') }}
         </p>
       </div>
       <!-- Flechas desktop -->
@@ -94,26 +109,26 @@
       class="servicios-track"
       [style.transform]="'translateX(calc(-' + servicioIndex() + ' * 340px))'"
     >
-      @for (s of servicios; track s.titulo; let i = $index) {
+      @for (s of servicios; track s.key; let i = $index) {
         <div class="servicio-card" [class.servicio-card--active]="i === servicioIndex()">
           <!-- Imagen con overlay -->
           <div class="servicio-img-wrap">
-            <img [src]="s.imagen" [alt]="s.titulo" class="servicio-img" />
+            <img [src]="s.imagen" [alt]="t(s.tituloKey)" class="servicio-img" />
             <div class="servicio-overlay"></div>
             <!-- Contenido sobre imagen -->
             <div class="servicio-content">
               <div class="servicio-icon-wrap mb-3">
                 <i class="bi {{ s.icon }}"></i>
               </div>
-              <h5 class="fw-bold text-white mb-2">{{ s.titulo }}</h5>
+              <h5 class="fw-bold text-white mb-2">{{ t(s.tituloKey) }}</h5>
               <p
                 class="text-white mb-3"
                 style="font-size: 0.85rem; opacity: 0.85; line-height: 1.6"
               >
-                {{ s.desc }}
+                {{ t(s.descKey) }}
               </p>
               <a href="#contacto" class="servicio-cta">
-                Más información <i class="bi bi-arrow-right ms-1"></i>
+                {{ t('servicios.more') }} <i class="bi bi-arrow-right ms-1"></i>
               </a>
             </div>
           </div>
@@ -125,12 +140,12 @@
   <!-- Dots -->
   <div class="container">
     <div class="d-flex justify-content-center gap-2 mt-4">
-      @for (s of servicios; track s.titulo; let i = $index) {
+      @for (s of servicios; track s.key; let i = $index) {
         <button
           class="servicio-dot"
           [class.servicio-dot--active]="i === servicioIndex()"
           (click)="servicioGoTo(i)"
-          [attr.aria-label]="'Ir a ' + s.titulo"
+          [attr.aria-label]="t(s.tituloKey)"
         ></button>
       }
     </div>
@@ -147,31 +162,30 @@
           class="badge text-uppercase mb-3"
           style="background: #e6f1fb; color: #0c447c; font-weight: 500; letter-spacing: 0.05em"
         >
-          Clínica UPN
+          {{ t('agenda.badge') }}
         </span>
-        <h2 class="fw-bold mb-3">Agenda tu cita médica</h2>
+        <h2 class="fw-bold mb-3">{{ t('agenda.title') }}</h2>
         <p class="text-muted mb-4">
-          Reserva una consulta con nuestros especialistas de forma rápida y sencilla. Solo completa
-          el formulario y te confirmaremos tu cita.
+          {{ t('agenda.subtitle') }}
         </p>
         <div class="d-flex flex-column gap-3">
           <div class="d-flex align-items-center gap-3">
             <div class="rounded-2 p-2 flex-shrink-0" style="background: #e6f1fb">
               <i class="bi bi-shield-check" style="color: #185fa5"></i>
             </div>
-            <small class="text-muted">Atención segura y confidencial</small>
+            <small class="text-muted">{{ t('agenda.feature1') }}</small>
           </div>
           <div class="d-flex align-items-center gap-3">
             <div class="rounded-2 p-2 flex-shrink-0" style="background: #eaf3de">
               <i class="bi bi-clock" style="color: #3b6d11"></i>
             </div>
-            <small class="text-muted">Confirmación en menos de 24 horas</small>
+            <small class="text-muted">{{ t('agenda.feature2') }}</small>
           </div>
           <div class="d-flex align-items-center gap-3">
             <div class="rounded-2 p-2 flex-shrink-0" style="background: #eeedfe">
               <i class="bi bi-people" style="color: #534ab7"></i>
             </div>
-            <small class="text-muted">+50 profesionales a tu servicio</small>
+            <small class="text-muted">{{ t('agenda.feature3') }}</small>
           </div>
         </div>
       </div>
@@ -183,21 +197,21 @@
             <div class="mb-3">
               <i class="bi bi-check-circle-fill" style="font-size: 4rem; color: #198754"></i>
             </div>
-            <h4 class="fw-bold mb-2">¡Cita registrada!</h4>
-            <p class="text-muted mb-4">Te enviaremos la confirmación a tu correo electrónico.</p>
+            <h4 class="fw-bold mb-2">{{ t('agenda.successTitle') }}</h4>
+            <p class="text-muted mb-4">{{ t('agenda.successMsg') }}</p>
             <button class="btn btn-outline-primary btn-sm" (click)="reiniciarFormulario()">
-              Agendar otra cita
+              {{ t('agenda.another') }}
             </button>
           </div>
         } @else if (paso() === 'elegir') {
           <div class="text-center py-4">
-            <h5 class="fw-bold mb-3">¿Ya eres paciente de Clínica UPN?</h5>
+            <h5 class="fw-bold mb-3">{{ t('agenda.askExisting') }}</h5>
             <div class="d-flex gap-3 justify-content-center">
               <button class="btn btn-outline-primary px-4 py-2" (click)="elegirPacienteExistente()">
-                <i class="bi bi-person-check me-2"></i>Sí, ya tengo cuenta
+                <i class="bi bi-person-check me-2"></i>{{ t('agenda.yesAccount') }}
               </button>
               <button class="btn btn-primary px-4 py-2" (click)="elegirPacienteNuevo()">
-                <i class="bi bi-person-plus me-2"></i>No, soy nuevo
+                <i class="bi bi-person-plus me-2"></i>{{ t('agenda.noNew') }}
               </button>
             </div>
           </div>
@@ -207,26 +221,26 @@
               class="btn btn-sm btn-link text-decoration-none p-0 mb-3"
               (click)="reiniciarFormulario()"
             >
-              <i class="bi bi-arrow-left me-1"></i>Volver
+              <i class="bi bi-arrow-left me-1"></i>{{ t('agenda.back') }}
             </button>
-            <h5 class="fw-bold mb-3">Buscar mis datos</h5>
+            <h5 class="fw-bold mb-3">{{ t('agenda.searchTitle') }}</h5>
             <div class="row g-3">
               <div class="col-sm-6">
-                <label class="form-label small fw-semibold">Correo electrónico</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.emailLabel') }}</label>
                 <input
                   type="email"
                   class="form-control"
-                  placeholder="correo@ejemplo.com"
+                  placeholder="{{ t('agenda.emailPlaceholder') }}"
                   [ngModel]="formEmail()"
                   (ngModelChange)="formEmail.set($event)"
                 />
               </div>
               <div class="col-sm-6">
-                <label class="form-label small fw-semibold">Código de estudiante</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.codeLabel') }}</label>
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="Ej: U12345678"
+                  placeholder="{{ t('agenda.codePlaceholder') }}"
                   [ngModel]="formCodigo()"
                   (ngModelChange)="formCodigo.set($event)"
                 />
@@ -245,7 +259,7 @@
                   @if (formLoading()) {
                     <span class="spinner-border spinner-border-sm me-2"></span>
                   }
-                  {{ formLoading() ? 'Buscando...' : 'Buscar mis datos' }}
+                  {{ formLoading() ? t('agenda.searching') : t('agenda.searchBtn') }}
                 </button>
               </div>
             </div>
@@ -256,53 +270,53 @@
               class="btn btn-sm btn-link text-decoration-none p-0 mb-3"
               (click)="reiniciarFormulario()"
             >
-              <i class="bi bi-arrow-left me-1"></i>Volver
+              <i class="bi bi-arrow-left me-1"></i>{{ t('agenda.back') }}
             </button>
-            <h5 class="fw-bold mb-3">Registrar mis datos</h5>
+            <h5 class="fw-bold mb-3">{{ t('agenda.registerTitle') }}</h5>
             <div class="row g-3">
               <div class="col-sm-6">
-                <label class="form-label small fw-semibold">Nombre</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.nameLabel') }}</label>
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="Tu nombre"
+                  placeholder="{{ t('agenda.namePlaceholder') }}"
                   [ngModel]="formNombre()"
                   (ngModelChange)="formNombre.set($event)"
                 />
               </div>
               <div class="col-sm-6">
-                <label class="form-label small fw-semibold">Apellido</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.lastnameLabel') }}</label>
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="Tu apellido"
+                  placeholder="{{ t('agenda.lastnamePlaceholder') }}"
                   [ngModel]="formApellido()"
                   (ngModelChange)="formApellido.set($event)"
                 />
               </div>
               <div class="col-sm-6">
-                <label class="form-label small fw-semibold">Correo electrónico</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.emailLabel') }}</label>
                 <input
                   type="email"
                   class="form-control"
-                  placeholder="correo@ejemplo.com"
+                  placeholder="{{ t('agenda.emailPlaceholder') }}"
                   [ngModel]="formEmail()"
                   (ngModelChange)="formEmail.set($event)"
                 />
               </div>
               <div class="col-sm-6">
-                <label class="form-label small fw-semibold">Teléfono</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.phoneLabel') }}</label>
                 <input
                   type="tel"
                   class="form-control"
-                  placeholder="999 999 999"
+                  placeholder="{{ t('agenda.phonePlaceholder') }}"
                   [ngModel]="formTelefono()"
                   (ngModelChange)="formTelefono.set($event)"
                 />
               </div>
               <!-- NUEVOS CAMPOS REQUERIDOS POR LA BD -->
               <div class="col-sm-6">
-                <label class="form-label small fw-semibold">Fecha de nacimiento</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.dobLabel') }}</label>
                 <input
                   type="date"
                   class="form-control"
@@ -312,16 +326,16 @@
                 />
               </div>
               <div class="col-sm-6">
-                <label class="form-label small fw-semibold">Género</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.genderLabel') }}</label>
                 <select
                   class="form-select"
                   [ngModel]="formGenero()"
                   (ngModelChange)="formGenero.set($event)"
                 >
-                  <option value="">Selecciona</option>
-                  <option value="M">Masculino</option>
-                  <option value="F">Femenino</option>
-                  <option value="OTRO">Prefiero no decir</option>
+                  <option value="">{{ t('agenda.genderSelect') }}</option>
+                  <option value="M">{{ t('agenda.genderM') }}</option>
+                  <option value="F">{{ t('agenda.genderF') }}</option>
+                  <option value="OTRO">{{ t('agenda.genderOther') }}</option>
                 </select>
               </div>
               @if (formError()) {
@@ -331,7 +345,7 @@
               }
               <div class="col-12">
                 <button class="btn btn-primary w-100 py-2" (click)="irACita()">
-                  Continuar <i class="bi bi-arrow-right ms-1"></i>
+                  {{ t('agenda.continue') }} <i class="bi bi-arrow-right ms-1"></i>
                 </button>
               </div>
             </div>
@@ -342,11 +356,11 @@
               class="btn btn-sm btn-link text-decoration-none p-0 mb-3"
               (click)="reiniciarFormulario()"
             >
-              <i class="bi bi-arrow-left me-1"></i>Volver
+              <i class="bi bi-arrow-left me-1"></i>{{ t('agenda.back') }}
             </button>
-            <h5 class="fw-bold mb-3">Selecciona tu cita</h5>
+            <h5 class="fw-bold mb-3">{{ t('agenda.selectAppt') }}</h5>
             <div class="bg-light rounded-3 p-3 mb-3">
-              <small class="text-muted d-block">Paciente:</small>
+              <small class="text-muted d-block">{{ t('agenda.patient') }}</small>
               <strong>{{ formNombre() }} {{ formApellido() }}</strong>
               <small class="text-muted d-block mt-1"
                 >{{ formEmail() }} | {{ formTelefono() }}</small
@@ -355,25 +369,25 @@
             <div class="row g-3">
               <!-- Especialidad -->
               <div class="col-sm-6">
-                <label class="form-label small fw-semibold">Especialidad</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.specialty') }}</label>
                 <select
                   class="form-select"
                   [ngModel]="formEspecialidad()"
                   (ngModelChange)="formEspecialidad.set($event); cargarDoctores($event)"
                 >
-                  <option value="">Selecciona una especialidad</option>
-                  @for (s of servicios; track s.titulo) {
-                    <option [value]="s.titulo">{{ s.titulo }}</option>
+                  <option value="">{{ t('agenda.specialtySelect') }}</option>
+                  @for (s of servicios; track s.key) {
+                    <option [value]="s.titulo">{{ t(s.tituloKey) }}</option>
                   }
                 </select>
               </div>
 
               <!-- Médico (dinámico desde el backend) -->
               <div class="col-sm-6">
-                <label class="form-label small fw-semibold">Médico</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.doctor') }}</label>
                 @if (cargandoDoctores()) {
                   <div class="form-control d-flex align-items-center gap-2 text-muted">
-                    <span class="spinner-border spinner-border-sm"></span> Cargando...
+                    <span class="spinner-border spinner-border-sm"></span> {{ t('agenda.loading') }}
                   </div>
                 } @else {
                   <select
@@ -384,7 +398,7 @@
                   >
                     <option value="">
                       {{
-                        formEspecialidad() ? 'Selecciona un médico' : 'Primero elige especialidad'
+                        formEspecialidad() ? t('agenda.doctorSelect') : t('agenda.doctorFirst')
                       }}
                     </option>
                     @for (d of doctoresDisponibles(); track d.idDoctor) {
@@ -394,16 +408,14 @@
                   @if (
                     formEspecialidad() && doctoresDisponibles().length === 0 && !cargandoDoctores()
                   ) {
-                    <small class="text-danger"
-                      >No hay doctores disponibles para esta especialidad.</small
-                    >
+                    <small class="text-danger">{{ t('agenda.noDoctors') }}</small>
                   }
                 }
               </div>
 
               <!-- Fecha -->
               <div class="col-sm-6">
-                <label class="form-label small fw-semibold">Fecha</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.date') }}</label>
                 <input
                   type="date"
                   class="form-control"
@@ -415,7 +427,7 @@
 
               <!-- Horario -->
               <div class="col-12">
-                <label class="form-label small fw-semibold">Horario disponible</label>
+                <label class="form-label small fw-semibold">{{ t('agenda.schedule') }}</label>
                 <div class="d-flex flex-wrap gap-2">
                   @for (slot of slotsDisponibles; track slot) {
                     <button
@@ -446,7 +458,7 @@
                   @if (formLoading()) {
                     <span class="spinner-border spinner-border-sm me-2"></span>
                   }
-                  {{ formLoading() ? 'Agendando...' : 'Confirmar y agendar cita' }}
+                  {{ formLoading() ? t('agenda.booking') : t('agenda.confirmBtn') }}
                 </button>
               </div>
             </div>
@@ -467,24 +479,22 @@
           class="badge text-uppercase mb-3"
           style="background: #e6f1fb; color: #0c447c; font-weight: 500; letter-spacing: 0.05em"
         >
-          Universidad Privada del Norte
+          {{ t('about.badge') }}
         </span>
-        <h2 class="fw-bold mb-3">¿Quiénes somos?</h2>
+        <h2 class="fw-bold mb-3">{{ t('about.title') }}</h2>
         <p class="text-muted">
-          La Clínica UPN es un centro de salud universitario comprometido con brindar atención
-          médica de calidad a toda la comunidad académica. Contamos con profesionales especializados
-          y tecnología moderna para garantizar tu bienestar.
+          {{ t('about.desc') }}
         </p>
 
         <ul class="list-unstyled mt-4 d-flex flex-column gap-3">
-          @for (f of features; track f.title) {
+          @for (f of features; track f.key) {
             <li class="d-flex align-items-center gap-3 bg-light rounded-3 p-3">
               <div class="rounded-2 p-2 flex-shrink-0" [style.background]="f.bg">
                 <i class="bi {{ f.icon }}" [style.color]="f.color" style="font-size: 1.1rem"></i>
               </div>
               <div>
-                <strong class="d-block" style="font-size: 0.9rem">{{ f.title }}</strong>
-                <span class="text-muted" style="font-size: 0.8rem">{{ f.desc }}</span>
+                <strong class="d-block" style="font-size: 0.9rem">{{ t(f.titleKey) }}</strong>
+                <span class="text-muted" style="font-size: 0.8rem">{{ t(f.descKey) }}</span>
               </div>
             </li>
           }
@@ -507,9 +517,9 @@
               />
             </div>
             <div>
-              <strong>Clínica UPN</strong>
+              <strong>{{ t('about.cardTitle') }}</strong>
               <p class="text-muted mb-0" style="font-size: 0.85rem">
-                Salud universitaria de calidad
+                {{ t('about.cardSubtitle') }}
               </p>
             </div>
           </div>
@@ -526,11 +536,11 @@
 
         <!-- Stats grid: 4 tarjetas en 2x2 -->
         <div class="row g-3">
-          @for (s of stats; track s.label) {
+          @for (s of stats; track s.key) {
             <div class="col-6">
               <div class="bg-light rounded-3 p-3 text-center">
                 <p class="mb-1 fw-bold fs-3" [style.color]="s.color">{{ s.value }}</p>
-                <small class="text-muted">{{ s.label }}</small>
+                <small class="text-muted">{{ t(s.labelKey) }}</small>
               </div>
             </div>
           }
@@ -544,8 +554,8 @@
 <!-- ESPECIALIDADES -->
 <section id="especialidades" class="py-5 esp-section">
   <div class="container">
-    <h2 class="text-center fw-bold mb-2">Atención especializada</h2>
-    <p class="text-center text-muted mb-5">Conoce a los profesionales de la Clínica UPN</p>
+    <h2 class="text-center fw-bold mb-2">{{ t('esp.title') }}</h2>
+    <p class="text-center text-muted mb-5">{{ t('esp.subtitle') }}</p>
 
     <div class="circular-wrapper">
       <!-- Imágenes -->
@@ -573,9 +583,9 @@
 
         <h3 class="fw-bold mb-1">{{ especialidades[activeIndex()].nombre }}</h3>
         <p class="fw-semibold mb-3" style="font-size: 14px; color: #185fa5">
-          {{ especialidades[activeIndex()].cargo }}
+          {{ t(especialidades[activeIndex()].cargoKey) }}
         </p>
-        <p class="circ-quote">{{ especialidades[activeIndex()].testimonio }}</p>
+        <p class="circ-quote">{{ t(especialidades[activeIndex()].testimonioKey) }}</p>
 
         <!-- Dots -->
         <div class="circ-dots mt-3">
@@ -602,8 +612,8 @@
 <!-- CONTACTO -->
 <section id="contacto" class="py-5 bg-light">
   <div class="container">
-    <h2 class="text-center fw-bold mb-2">Contáctanos</h2>
-    <p class="text-center text-muted mb-5">Estamos aquí para ayudarte</p>
+    <h2 class="text-center fw-bold mb-2">{{ t('contact.title') }}</h2>
+    <p class="text-center text-muted mb-5">{{ t('contact.subtitle') }}</p>
 
     <div class="contact-card position-relative">
       <!-- Esquinas + -->
@@ -616,49 +626,48 @@
         <!-- IZQUIERDA -->
         <div class="col-lg-8 p-4 p-md-5">
           <h3 class="fw-bold mb-3" style="font-size: clamp(1.5rem, 3vw, 2.5rem)">
-            Ponte en contacto
+            {{ t('contact.cardTitle') }}
           </h3>
           <p class="text-muted mb-4" style="max-width: 520px">
-            Si tienes preguntas sobre nuestros servicios o necesitas ayuda, completa el formulario.
-            Respondemos dentro de 1 día hábil.
+            {{ t('contact.cardDesc') }}
           </p>
 
           <div class="row g-3">
             <div class="col-sm-4">
-              <div class="contact-info-item">
-                <div class="contact-icon"><i class="bi bi-envelope-fill"></i></div>
-                <div>
-                  <p class="fw-semibold mb-0 small">Email</p>
-                  <p class="text-muted mb-0" style="font-size: 12px">clinica&#64;upn.edu.pe</p>
+                <div class="contact-info-item">
+                  <div class="contact-icon"><i class="bi bi-envelope-fill"></i></div>
+                  <div>
+                    <p class="fw-semibold mb-0 small">{{ t('contact.emailLabel') }}</p>
+                    <p class="text-muted mb-0" style="font-size: 12px">clinica&#64;upn.edu.pe</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="contact-info-item">
-                <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
-                <div>
-                  <p class="fw-semibold mb-0 small">Teléfono</p>
-                  <p class="text-muted mb-0" style="font-size: 12px">(01) 123-4567</p>
+              <div class="col-sm-4">
+                <div class="contact-info-item">
+                  <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
+                  <div>
+                    <p class="fw-semibold mb-0 small">{{ t('contact.phoneLabel') }}</p>
+                    <p class="text-muted mb-0" style="font-size: 12px">(01) 123-4567</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="contact-info-item">
-                <div class="contact-icon"><i class="bi bi-clock-fill"></i></div>
-                <div>
-                  <p class="fw-semibold mb-0 small">Horario</p>
-                  <p class="text-muted mb-0" style="font-size: 12px">Lun - Vie: 8am - 6pm</p>
+              <div class="col-sm-4">
+                <div class="contact-info-item">
+                  <div class="contact-icon"><i class="bi bi-clock-fill"></i></div>
+                  <div>
+                    <p class="fw-semibold mb-0 small">{{ t('contact.scheduleLabel') }}</p>
+                    <p class="text-muted mb-0" style="font-size: 12px">{{ t('contact.scheduleValue') }}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-12">
-              <div class="contact-info-item">
-                <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
-                <div>
-                  <p class="fw-semibold mb-0 small">Dirección</p>
-                  <p class="text-muted mb-0" style="font-size: 12px">
-                    Av. Universitaria s/n, Lima, Perú
-                  </p>
+              <div class="col-12">
+                <div class="contact-info-item">
+                  <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                  <div>
+                    <p class="fw-semibold mb-0 small">{{ t('contact.addressLabel') }}</p>
+                    <p class="text-muted mb-0" style="font-size: 12px">
+                      {{ t('contact.addressValue') }}
+                    </p>
                 </div>
               </div>
             </div>
@@ -668,34 +677,34 @@
         <!-- DERECHA formulario -->
         <div class="col-lg-4 contact-form-side p-4 p-md-5">
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Nombre</label>
+            <label class="form-label small fw-semibold">{{ t('contact.formName') }}</label>
             <input
               type="text"
               class="form-control form-control-sm"
-              placeholder="Tu nombre completo"
+              placeholder="{{ t('contact.formNamePlace') }}"
             />
           </div>
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Email</label>
+            <label class="form-label small fw-semibold">{{ t('contact.formEmail') }}</label>
             <input
               type="email"
               class="form-control form-control-sm"
-              placeholder="correo@ejemplo.com"
+              placeholder="{{ t('contact.formEmailPlace') }}"
             />
           </div>
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Teléfono</label>
-            <input type="tel" class="form-control form-control-sm" placeholder="(01) 000-0000" />
+            <label class="form-label small fw-semibold">{{ t('contact.formPhone') }}</label>
+            <input type="tel" class="form-control form-control-sm" placeholder="{{ t('contact.formPhonePlace') }}" />
           </div>
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Mensaje</label>
+            <label class="form-label small fw-semibold">{{ t('contact.formMessage') }}</label>
             <textarea
               class="form-control form-control-sm"
               rows="3"
-              placeholder="¿En qué podemos ayudarte?"
+              placeholder="{{ t('contact.formMessagePlace') }}"
             ></textarea>
           </div>
-          <button class="btn btn-primary w-100 btn-sm">Enviar mensaje</button>
+          <button class="btn btn-primary w-100 btn-sm">{{ t('contact.sendBtn') }}</button>
         </div>
       </div>
     </div>
@@ -721,12 +730,12 @@
             />
           </div>
           <div>
-            <p class="fw-bold mb-0 text-white" style="font-size: 1rem">Clínica UPN</p>
+            <p class="fw-bold mb-0 text-white" style="font-size: 1rem">{{ t('hero.clinica') }}</p>
             <p
               class="mb-0"
               style="font-size: 10px; letter-spacing: 2px; color: rgba(255, 255, 255, 0.4)"
             >
-              SALUD UNIVERSITARIA
+              {{ t('footer.salud') }}
             </p>
           </div>
         </div>
@@ -738,8 +747,7 @@
             max-width: 280px;
           "
         >
-          Centro de salud universitario comprometido con brindar atención médica de calidad a toda
-          la comunidad UPN.
+          {{ t('footer.desc') }}
         </p>
         <!-- Redes -->
         <div class="d-flex gap-3 mt-3">
@@ -764,17 +772,17 @@
           class="text-uppercase fw-semibold mb-3"
           style="font-size: 0.7rem; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.35)"
         >
-          Servicios
+          {{ t('footer.servicios') }}
         </h6>
         <ul class="list-unstyled d-flex flex-column gap-2">
-          @for (s of servicios; track s.titulo) {
+          @for (s of servicios; track s.key) {
             <li>
               <a
                 href="#servicios"
                 style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); text-decoration: none"
                 class="footer-link"
               >
-                {{ s.titulo }}
+                {{ t(s.tituloKey) }}
               </a>
             </li>
           }
@@ -787,14 +795,14 @@
           class="text-uppercase fw-semibold mb-3"
           style="font-size: 0.7rem; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.35)"
         >
-          Navegación
+          {{ t('footer.navegacion') }}
         </h6>
         <ul class="list-unstyled d-flex flex-column gap-2">
-          <li><a href="#inicio" class="footer-link">Inicio</a></li>
-          <li><a href="#servicios" class="footer-link">Servicios</a></li>
-          <li><a href="#nosotros" class="footer-link">Nosotros</a></li>
-          <li><a href="#especialidades" class="footer-link">Especialidades</a></li>
-          <li><a href="#contacto" class="footer-link">Contacto</a></li>
+          <li><a href="#inicio" class="footer-link">{{ t('footer.inicio') }}</a></li>
+          <li><a href="#servicios" class="footer-link">{{ t('footer.serviciosLink') }}</a></li>
+          <li><a href="#nosotros" class="footer-link">{{ t('footer.nosotros') }}</a></li>
+          <li><a href="#especialidades" class="footer-link">{{ t('footer.especialidades') }}</a></li>
+          <li><a href="#contacto" class="footer-link">{{ t('footer.contacto') }}</a></li>
         </ul>
       </div>
 
@@ -804,7 +812,7 @@
           class="text-uppercase fw-semibold mb-3"
           style="font-size: 0.7rem; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.35)"
         >
-          Contacto
+          {{ t('footer.contactoTitle') }}
         </h6>
         <ul class="list-unstyled d-flex flex-column gap-3">
           <li class="d-flex align-items-start gap-3">
@@ -826,7 +834,7 @@
           <li class="d-flex align-items-center gap-3">
             <i class="bi bi-clock-fill flex-shrink-0" style="color: #185fa5"></i>
             <span style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.5)"
-              >Lun - Vie: 8:00am – 6:00pm</span
+              >{{ t('footer.schedule') }}</span
             >
           </li>
         </ul>
@@ -838,21 +846,20 @@
       class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-4 gap-3"
     >
       <small style="color: rgba(255, 255, 255, 0.3)">
-        © {{ currentYear }} Clínica UPN — Universidad Privada del Norte. Todos los derechos
-        reservados.
+        {{ t('footer.copyright').replace('{{year}}', currentYear.toString()) }}
       </small>
       <div class="d-flex gap-4">
         <a
           href="#"
           style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.3); text-decoration: none"
           class="footer-link"
-          >Política de privacidad</a
+          >{{ t('footer.privacy') }}</a
         >
         <a
           href="#"
           style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.3); text-decoration: none"
           class="footer-link"
-          >Términos de uso</a
+          >{{ t('footer.terms') }}</a
         >
       </div>
     </div>

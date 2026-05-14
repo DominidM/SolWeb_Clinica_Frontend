@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
 import { PracticanteService, ConsultaDTO } from '../../services/practicante';
 
 @Component({
   selector: 'app-registrar-consulta-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageHeaderComponent],
   templateUrl: './registrar-consulta-page.html',
   styleUrl: './registrar-consulta-page.css',
 })

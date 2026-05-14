@@ -1,13 +1,14 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
 import { CitaService, CitaDTO } from '../../services/cita';
 import * as citasState from '../../signals/citas.state';
 
 @Component({
   selector: 'app-mis-citas-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageHeaderComponent],
   templateUrl: './mis-citas-page.html',
   styleUrl: './mis-citas-page.css',
 })

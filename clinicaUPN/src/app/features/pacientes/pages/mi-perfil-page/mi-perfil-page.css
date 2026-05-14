@@ -1,5 +1,4 @@
 .perfil-container { max-width: 640px; margin: 0 auto; }
-.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
 
 .perfil-card {
   background: #fff; border: 1px solid #e9ecef; border-radius: 16px; padding: 1.5rem;

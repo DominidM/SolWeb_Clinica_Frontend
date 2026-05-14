@@ -1,13 +1,14 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
 import { AuthService } from '../../../../core/services/auth';
 import { PacienteService, PacienteDTO } from '../../services/paciente';
 
 @Component({
   selector: 'app-mi-perfil-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageHeaderComponent],
   templateUrl: './mi-perfil-page.html',
   styleUrl: './mi-perfil-page.css',
 })

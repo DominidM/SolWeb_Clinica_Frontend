@@ -1,1 +1,54 @@
-<p>sala works!</p>
+<div class="sala-container">
+
+  @if (cargando()) {
+    <div class="text-center py-5"><div class="spinner-border text-primary"></div><p class="text-muted mt-2">Conectando...</p></div>
+  }
+
+  @if (error()) {
+    <div class="text-center py-5">
+      <i class="bi bi-exclamation-triangle-fill fs-1 text-danger"></i>
+      <p class="mt-2">{{ error() }}</p>
+      <button class="btn btn-outline-primary btn-sm" (click)="salir()">Volver</button>
+    </div>
+  }
+
+  @if (!cargando() && !error() && consulta(); as c) {
+    <div class="sala-header">
+      <div>
+        <strong>{{ c.especialidad }}</strong>
+        <span class="text-muted ms-2 small">{{ c.medico }}</span>
+      </div>
+      <button class="btn btn-outline-danger btn-sm" (click)="salir()">
+        <i class="bi bi-box-arrow-right me-1"></i>Salir
+      </button>
+    </div>
+
+    <div class="sala-main">
+      <!-- Video -->
+      <div class="sala-video">
+        <div class="video-placeholder">
+          <i class="bi bi-camera-video-fill"></i>
+          <p class="mt-2 mb-0 small text-muted">Video en vivo</p>
+          <p class="small text-muted mb-0">{{ c.medico }} | {{ c.fecha | date:'dd/MM/yyyy' }} {{ c.hora }} hrs</p>
+        </div>
+
+        <div class="sala-controls">
+          <button class="control-btn" [class.active]="micActivo()" (click)="toggleMic()" title="Micrófono">
+            <i class="bi" [class.bi-mic-fill]="micActivo()" [class.bi-mic-mute-fill]="!micActivo()"></i>
+          </button>
+          <button class="control-btn" [class.active]="camActivo()" (click)="toggleCam()" title="Cámara">
+            <i class="bi" [class.bi-camera-video-fill]="camActivo()" [class.bi-camera-video-off-fill]="!camActivo()"></i>
+          </button>
+          <button class="control-btn control-btn--danger" (click)="salir()" title="Colgar">
+            <i class="bi bi-telephone-x-fill"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat -->
+      <div class="sala-chat">
+        <app-chat [consultaId]="c.idTeleconsulta ?? 0" />
+      </div>
+    </div>
+  }
+</div>

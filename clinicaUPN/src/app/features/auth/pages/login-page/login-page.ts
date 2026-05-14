@@ -39,26 +39,18 @@ export class LoginPageComponent {
       })
       .subscribe({
         next: (res) => {
-          // Redirigir según rol
-          const rol = res.data.rol;
-          switch (rol) {
-            case 'ADMINISTRADOR':
-            case 'ADMINISTRATIVO':
-              this.router.navigate(['/app/pacientes']);
-              break;
-            case 'DOCTOR':
-            case 'PRACTICANTE':
-              this.router.navigate(['/app/agenda']);
-              break;
-            case 'DIRECTOR':
-              this.router.navigate(['/app/dashboard']);
-              break;
-            case 'PACIENTE':
-              this.router.navigate(['/app/mis-citas']);
-              break;
-            default:
-              this.router.navigate(['/app']);
-          }
+          const rol = (res.data.rol ?? '').toUpperCase();
+          const rutas: Record<string, string> = {
+            ADMINISTRADOR: '/app/pacientes',
+            ADMINISTRATIVO: '/app/pacientes',
+            DOCTOR: '/app/agenda',
+            MEDICO: '/app/agenda',
+            PRACTICANTE: '/app/practicantes/agenda',
+            DIRECTOR: '/app/dashboard',
+            PACIENTE: '/app/mis-citas',
+            PATIENT: '/app/mis-citas',
+          };
+          this.router.navigate([rutas[rol] || '/app']);
         },
         error: (err) => {
           this.error.set(

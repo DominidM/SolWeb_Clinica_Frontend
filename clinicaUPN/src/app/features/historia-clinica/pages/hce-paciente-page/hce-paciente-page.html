@@ -1,0 +1,66 @@
+<div class="hce-container">
+  <div class="page-header">
+    <div>
+      <h2>Historia Clínica</h2>
+      <p class="text-muted mb-0">Documentos y reportes de tu historial médico</p>
+    </div>
+    <button class="btn btn-outline-primary btn-sm" (click)="cargar()">
+      <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+    </button>
+  </div>
+
+  @if (cargando()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary"></div>
+      <p class="text-muted mt-2">Cargando documentos...</p>
+    </div>
+  }
+
+  @if (error() && !cargando()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+  }
+
+  @if (!cargando() && !error()) {
+    @if (documentos().length === 0) {
+      <div class="empty-state">
+        <i class="bi bi-folder2-open fs-1 text-muted"></i>
+        <p class="text-muted mb-0">No tienes documentos disponibles</p>
+        <small class="text-muted">Los documentos de tus consultas aparecerán aquí</small>
+      </div>
+    }
+
+    <div class="docs-list">
+      @for (doc of documentos(); track doc.fecha) {
+        <div class="doc-card">
+          <div
+            class="doc-icon"
+            [style.background]="getColor(doc.especialidad) + '15'"
+            [style.color]="getColor(doc.especialidad)"
+          >
+            <i class="bi {{ getIcon(doc.especialidad) }}"></i>
+          </div>
+          <div class="doc-body">
+            <strong>{{ doc.descripcionDiag }}</strong>
+            <div class="doc-meta">
+              <span
+                class="doc-tipo"
+                [style.background]="getColor(doc.especialidad) + '20'"
+                [style.color]="getColor(doc.especialidad)"
+              >
+                {{ doc.especialidad }}
+              </span>
+              <span><i class="bi bi-calendar me-1"></i>{{ doc.fecha | date: 'dd/MM/yyyy' }}</span>
+              <span><i class="bi bi-person-badge me-1"></i>{{ doc.nombreDoctor }}</span>
+            </div>
+            <div class="doc-detalle mt-2 small text-muted">
+              <span><strong>CIE-10:</strong> {{ doc.diagnosticoCie10 }}</span>
+              @if (doc.prescripcion) {
+                <span class="ms-3"><strong>Prescripción:</strong> {{ doc.prescripcion }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

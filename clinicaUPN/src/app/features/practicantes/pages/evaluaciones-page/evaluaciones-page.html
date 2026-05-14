@@ -1,0 +1,25 @@
+<div class="evaluaciones-container">
+  <header class="page-header">
+    <h1>Mis Evaluaciones</h1>
+    <button class="btn-refresh" (click)="cargarEvaluaciones()">Actualizar</button>
+  </header>
+
+  <div class="loading" *ngIf="loading()">Cargando evaluaciones...</div>
+
+  <div class="empty" *ngIf="!loading() && evaluaciones().length === 0">
+    No tienes evaluaciones registradas.
+  </div>
+
+  <div class="eval-list" *ngIf="!loading() && evaluaciones().length > 0">
+    <div class="eval-card" *ngFor="let e of evaluaciones()">
+      <div class="eval-header">
+        <span class="eval-date">{{ e.fecha }}</span>
+        <span class="eval-score">{{ e.puntuacion }}/10</span>
+      </div>
+      <div class="eval-supervisor">
+        Supervisor: <strong>{{ e.supervisor }}</strong>
+      </div>
+      <p class="eval-comment">{{ e.comentario }}</p>
+    </div>
+  </div>
+</div>

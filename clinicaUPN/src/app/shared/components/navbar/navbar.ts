@@ -24,20 +24,17 @@ export class NavbarComponent {
 
   irAlSistema(): void {
     const rol = this.authService.getRol();
-
-    switch (rol) {
-      case 'ADMINISTRADOR':
-        this.router.navigate(['/app/pacientes']);
-        break;
-      case 'MEDICO':
-        this.router.navigate(['/app/citas']);
-        break;
-      case 'PRACTICANTE':
-        this.router.navigate(['/app/practicantes']);
-        break;
-      default:
-        this.router.navigate(['/app']);
-    }
+    const rutas: Record<string, string> = {
+      ADMINISTRADOR:  '/app/pacientes',
+      ADMINISTRATIVO: '/app/pacientes',
+      DOCTOR:         '/app/citas',
+      MEDICO:         '/app/citas',
+      PRACTICANTE:    '/app/practicantes/agenda',
+      DIRECTOR:       '/app/reportes',
+      PACIENTE:       '/app/mis-citas',
+      PATIENT:        '/app/mis-citas',
+    };
+    this.router.navigate([rutas[rol ?? ''] || '/app']);
   }
 
   @HostListener('window:scroll')

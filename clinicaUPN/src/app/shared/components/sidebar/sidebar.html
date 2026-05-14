@@ -10,11 +10,35 @@
     <span class="brand-name">Clínica UPN</span>
   </div>
 
+  <!-- Perfil del usuario -->
+  <div class="sidebar-user" *ngIf="usuarioCargado">
+    <div class="user-avatar">{{ iniciales }}</div>
+    <div class="user-info">
+      <span class="user-name">{{ nombreUsuario }}</span>
+      <span class="user-role">{{ rolUsuarioLabel }}</span>
+    </div>
+  </div>
+
   <!-- Sección navegación principal -->
   <nav class="sidebar-nav">
     <p class="nav-label">Menú</p>
     <ul>
-      <li>
+
+      <!-- Dashboard — admin y director -->
+      <li *ngIf="verDashboard">
+        <a class="nav-link" routerLink="/app/dashboard" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- Pacientes — admin, doctor, administrativo, director -->
+      <li *ngIf="verPacientes">
         <a class="nav-link" routerLink="/app/pacientes" routerLinkActive="active">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
@@ -23,7 +47,79 @@
           <span>Pacientes</span>
         </a>
       </li>
-      <li>
+
+      <!-- Mis Citas — solo paciente -->
+      <li *ngIf="verMisCitas">
+        <a class="nav-link" routerLink="/app/mis-citas" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>Mis citas</span>
+        </a>
+      </li>
+
+      <!-- Mi Perfil — solo paciente -->
+      <li *ngIf="verMiPerfil">
+        <a class="nav-link" routerLink="/app/mi-perfil" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Mi perfil</span>
+        </a>
+      </li>
+
+      <!-- Mi Historia Clínica — solo paciente -->
+      <li *ngIf="verMiHistoria">
+        <a class="nav-link" routerLink="/app/mi-historia" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="2" width="16" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Mi historial</span>
+        </a>
+      </li>
+
+      <!-- Mi Agenda — solo practicante -->
+      <li *ngIf="verMiAgenda">
+        <a class="nav-link" routerLink="/app/practicantes/agenda" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>Mi agenda</span>
+        </a>
+      </li>
+
+      <!-- Registrar Consulta — solo practicante -->
+      <li *ngIf="verRegistrarConsulta">
+        <a class="nav-link" routerLink="/app/practicantes/registrar-consulta" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Registrar consulta</span>
+        </a>
+      </li>
+
+      <!-- Mis Evaluaciones — solo practicante -->
+      <li *ngIf="verMisEvaluaciones">
+        <a class="nav-link" routerLink="/app/practicantes/evaluaciones" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="2" width="16" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M9 7h6M9 11h6M9 15h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="17" cy="17" r="4" fill="white" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M15.5 17l1 1 2-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Evaluaciones</span>
+        </a>
+      </li>
+
+      <!-- Citas — todos excepto director y paciente -->
+      <li *ngIf="verCitas">
         <a class="nav-link" routerLink="/app/citas" routerLinkActive="active">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
             <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
@@ -33,7 +129,9 @@
           <span>Citas</span>
         </a>
       </li>
-      <li>
+
+      <!-- Historia Clínica — admin, doctor, practicante -->
+      <li *ngIf="verHistoriaClinica">
         <a class="nav-link" routerLink="/app/historia-clinica" routerLinkActive="active">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
             <rect x="4" y="2" width="16" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/>
@@ -42,7 +140,9 @@
           <span>Historia Clínica</span>
         </a>
       </li>
-      <li>
+
+      <!-- Teleconsulta — admin, doctor, paciente, practicante -->
+      <li *ngIf="verTeleconsulta">
         <a class="nav-link" routerLink="/app/teleconsulta" routerLinkActive="active">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
             <rect x="2" y="4" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
@@ -53,15 +153,33 @@
           <span>Teleconsulta</span>
         </a>
       </li>
-      <li>
-        <a class="nav-link" routerLink="/app/reportes" routerLinkActive="active">
+
+      <!-- Consultorios — admin, administrativo -->
+      <li *ngIf="verConsultorios">
+        <a class="nav-link" routerLink="/app/consultorios" routerLinkActive="active">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
-            <path d="M4 20V14M8 20V10M12 20V6M16 20V12M20 20V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M3 21h18M5 21V7l7-4 7 4v14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="9" y="13" width="6" height="8" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M9 10h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-          <span>Reportes</span>
+          <span>Consultorios</span>
         </a>
       </li>
-      <li>
+
+      <!-- Doctores — admin, director -->
+      <li *ngIf="verDoctores">
+        <a class="nav-link" routerLink="/app/doctores" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M5.5 21c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M15 11h4M17 9v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Doctores</span>
+        </a>
+      </li>
+
+      <!-- Practicantes — admin, doctor, director -->
+      <li *ngIf="verPracticantes">
         <a class="nav-link" routerLink="/app/practicantes" routerLinkActive="active">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
             <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
@@ -70,6 +188,43 @@
           <span>Practicantes</span>
         </a>
       </li>
+
+      <!-- Evaluaciones Practicantes — admin, doctor, director -->
+      <li *ngIf="verEvaluaciones">
+        <a class="nav-link" routerLink="/app/evaluaciones-practicantes" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="2" width="16" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M9 7h6M9 11h6M9 15h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="17" cy="17" r="4" fill="white" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M15.5 17l1 1 2-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Evaluaciones</span>
+        </a>
+      </li>
+
+      <!-- Reportes — admin, director, administrativo -->
+      <li *ngIf="verReportes">
+        <a class="nav-link" routerLink="/app/reportes" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M4 20V14M8 20V10M12 20V6M16 20V12M20 20V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Reportes</span>
+        </a>
+      </li>
+
+      <!-- Usuarios — solo admin -->
+      <li *ngIf="verUsuarios">
+        <a class="nav-link" routerLink="/app/usuarios" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 21c0-4 3.1-7 7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="18" cy="17" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M18 15v2l1 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Usuarios</span>
+        </a>
+      </li>
+
     </ul>
   </nav>
 
@@ -78,7 +233,7 @@
 
   <!-- Botones inferiores -->
   <div class="sidebar-footer">
-    <a class="footer-btn btn-home" routerLink="/inicio">
+    <a class="footer-btn btn-home" [routerLink]="rutaInicio">
       <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
         <path d="M3 12L12 3l9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M9 21V12h6v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

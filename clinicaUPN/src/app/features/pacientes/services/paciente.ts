@@ -61,6 +61,12 @@ export class PacienteService {
   actualizar(id: number, dto: PacienteDTO): Observable<PacienteDTO> {
     return this.http.put<ApiResponse<PacienteDTO>>(`${this.BASE_URL}/${id}`, dto)
       .pipe(map(res => res.data));
+      
+  }
+
+  buscarPorEmail(email: string): Observable<PacienteDTO> {
+    return this.http.get<ApiResponse<PacienteDTO>>(`${this.BASE_URL}/email/${encodeURIComponent(email)}`)
+      .pipe(map(res => res.data));
   }
 
   desactivar(id: number): Observable<void> {

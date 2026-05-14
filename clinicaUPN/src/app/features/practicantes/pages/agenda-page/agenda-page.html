@@ -1,0 +1,63 @@
+<div class="agenda-container">
+  <header class="page-header">
+    <h1>Mi Agenda de Actividades</h1>
+    <button class="btn-refresh" (click)="cargarActividades()">Actualizar</button>
+  </header>
+
+  <div class="loading" *ngIf="loading()">Cargando actividades...</div>
+
+  <div class="agenda-grid" *ngIf="!loading()">
+    <div class="agenda-card" *ngFor="let act of actividades()" (click)="verDetalle(act)">
+      <div class="card-badge" [class.programada]="act.estado === 'PROGRAMADA'" [class.completada]="act.estado === 'COMPLETADA'">
+        {{ act.estado }}
+      </div>
+      <h3>{{ act.titulo }}</h3>
+      <p class="card-tipo">{{ act.tipo }}</p>
+      <div class="card-meta">
+        <span>{{ act.fecha }}</span>
+        <span>{{ act.hora }}</span>
+      </div>
+      <p class="card-paciente" *ngIf="act.paciente">Paciente: {{ act.paciente }}</p>
+    </div>
+  </div>
+
+  <div class="empty" *ngIf="!loading() && actividades().length === 0">
+    No tienes actividades programadas.
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="actividadSeleccionada()" (click)="cerrarDetalle()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="cerrarDetalle()">&times;</button>
+    <h2>{{ actividadSeleccionada()?.titulo }}</h2>
+    <div class="detalle-grid">
+      <div class="detalle-item">
+        <label>Tipo</label>
+        <span>{{ actividadSeleccionada()?.tipo }}</span>
+      </div>
+      <div class="detalle-item">
+        <label>Fecha</label>
+        <span>{{ actividadSeleccionada()?.fecha }}</span>
+      </div>
+      <div class="detalle-item">
+        <label>Hora</label>
+        <span>{{ actividadSeleccionada()?.hora }}</span>
+      </div>
+      <div class="detalle-item">
+        <label>Estado</label>
+        <span>{{ actividadSeleccionada()?.estado }}</span>
+      </div>
+      <div class="detalle-item" *ngIf="actividadSeleccionada()?.paciente">
+        <label>Paciente</label>
+        <span>{{ actividadSeleccionada()?.paciente }}</span>
+      </div>
+      <div class="detalle-item" *ngIf="actividadSeleccionada()?.supervisor">
+        <label>Supervisor</label>
+        <span>{{ actividadSeleccionada()?.supervisor }}</span>
+      </div>
+    </div>
+    <p class="detalle-desc" *ngIf="actividadSeleccionada()?.descripcion">
+      {{ actividadSeleccionada()?.descripcion }}
+    </p>
+  </div>
+</div>

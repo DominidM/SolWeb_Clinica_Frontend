@@ -1,11 +1,12 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
 import { HceService, DocumentoHCE } from '../../services/hce';
 
 @Component({
   selector: 'app-hce-paciente-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PageHeaderComponent],
   templateUrl: './hce-paciente-page.html',
   styleUrl: './hce-paciente-page.css',
 })

@@ -1,8 +1,9 @@
 <div class="agenda-container">
-  <header class="page-header">
-    <h1>Mi Agenda de Actividades</h1>
-    <button class="btn-refresh" (click)="cargarActividades()">Actualizar</button>
-  </header>
+  <app-page-header title="Mi Agenda de Actividades">
+    <button class="btn btn-outline-primary btn-sm" (click)="cargarActividades()">
+      <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+    </button>
+  </app-page-header>
 
   <div class="loading" *ngIf="loading()">Cargando actividades...</div>
 

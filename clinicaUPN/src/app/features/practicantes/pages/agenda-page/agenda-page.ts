@@ -1,11 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
 import { PracticanteService, ActividadDTO } from '../../services/practicante';
 
 @Component({
   selector: 'app-agenda-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PageHeaderComponent],
   templateUrl: './agenda-page.html',
   styleUrl: './agenda-page.css',
 })

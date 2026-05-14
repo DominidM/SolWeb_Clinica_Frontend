@@ -1,11 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
 import { PracticanteService, EvaluacionDTO } from '../../services/practicante';
 
 @Component({
   selector: 'app-evaluaciones-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PageHeaderComponent],
   templateUrl: './evaluaciones-page.html',
   styleUrl: './evaluaciones-page.css',
 })

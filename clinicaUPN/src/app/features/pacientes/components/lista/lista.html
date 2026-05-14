@@ -1,33 +1,26 @@
 <div class="lista-container">
 
-  <!-- Header -->
-  <div class="lista-header">
-    <div class="header-left">
-      <h2>Pacientes</h2>
-      <span class="total-badge">{{ totalTexto() }}</span>
+  <app-page-header title="Pacientes">
+    <div class="search-wrapper">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+        <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M15 15l-3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar paciente..."
+        [value]="searchTerm()"
+        (input)="onSearchInput($event)"
+      />
     </div>
-    <div class="header-actions">
-      <div class="search-wrapper">
-        <svg class="search-icon" viewBox="0 0 20 20" fill="none">
-          <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M15 15l-3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        <input
-          type="text"
-          class="search-input"
-          placeholder="Buscar paciente..."
-          [value]="searchTerm()"
-          (input)="onSearchInput($event)"
-        />
-      </div>
-      <button class="btn-primary" (click)="onNuevoPaciente()">
-        <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-          <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        Nuevo paciente
-      </button>
-    </div>
-  </div>
+    <button class="btn-primary" (click)="onNuevoPaciente()">
+      <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+        <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      Nuevo paciente
+    </button>
+  </app-page-header>
 
   <!-- Cargando -->
   @if (cargando()) {

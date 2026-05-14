@@ -1,8 +1,9 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
 import {
-  pacientes, cargando, errorMsg, totalTexto,
+  pacientes, cargando, errorMsg,
   paginaActual, totalPaginas, totalElementos,
   abrirPanelNuevo, abrirPanelVer, abrirPanelEditar
 } from '../../signals/pacientes.signals';
@@ -11,7 +12,7 @@ import { PacienteDTO, PacienteService } from '../../services/paciente';
 @Component({
   selector: 'app-lista',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageHeaderComponent],
   templateUrl: './lista.html',
   styleUrl: './lista.css'
 })
@@ -21,7 +22,6 @@ export class ListaComponent implements OnInit {
   readonly pacientes = pacientes;
   readonly cargando = cargando;
   readonly errorMsg = errorMsg;
-  readonly totalTexto = totalTexto;
   readonly paginaActual = paginaActual;
   readonly totalPaginas = totalPaginas;
 

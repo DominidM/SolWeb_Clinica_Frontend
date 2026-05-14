@@ -1,7 +1,5 @@
 <div class="registrar-container">
-  <header class="page-header">
-    <h1>Registrar Consulta</h1>
-  </header>
+  <app-page-header title="Registrar Consulta"></app-page-header>
 
   <div class="msg" *ngIf="mensaje()" [class.success]="consultaRegistrada() && mensaje() !== 'Error al registrar la consulta.' && mensaje() !== 'Error al enviar a revisión.'">
     {{ mensaje() }}

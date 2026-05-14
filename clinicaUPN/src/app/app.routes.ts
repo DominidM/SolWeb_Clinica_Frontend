@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
+import { roleGuard } from './core/guards/role-guard';
 import { AuthService } from './core/services/auth';
 
 export const routes: Routes = [
@@ -46,7 +47,7 @@ export const routes: Routes = [
             DOCTOR:         'citas',
             MEDICO:         'citas',
             PRACTICANTE:    'practicantes/agenda',
-            DIRECTOR:       'reportes',
+            DIRECTOR:       'dashboard',
             PACIENTE:       'mis-citas',
             PATIENT:        'mis-citas',
           };
@@ -63,6 +64,11 @@ export const routes: Routes = [
       { path: 'mis-citas',        loadComponent: () => import('./features/citas/pages/mis-citas-page/mis-citas-page').then(m => m.MisCitasPageComponent) },
       { path: 'mi-perfil',        loadComponent: () => import('./features/pacientes/pages/mi-perfil-page/mi-perfil-page').then(m => m.MiPerfilPageComponent) },
       { path: 'mi-historia',      loadComponent: () => import('./features/historia-clinica/pages/hce-paciente-page/hce-paciente-page').then(m => m.HcePacientePageComponent) },
+      { path: 'dashboard',        canActivate: [roleGuard(['ADMINISTRADOR', 'DIRECTOR'])], loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES) },
+      { path: 'consultorios',     canActivate: [roleGuard(['ADMINISTRADOR', 'ADMINISTRATIVO'])], loadChildren: () => import('./features/consultorios/consultorios.routes').then(m => m.CONSULTORIOS_ROUTES) },
+      { path: 'doctores',         canActivate: [roleGuard(['ADMINISTRADOR', 'DIRECTOR'])], loadChildren: () => import('./features/doctores/doctores.routes').then(m => m.DOCTORES_ROUTES) },
+      { path: 'evaluaciones-practicantes', canActivate: [roleGuard(['ADMINISTRADOR', 'DOCTOR', 'DIRECTOR'])], loadChildren: () => import('./features/evaluaciones-practicantes/evaluaciones-practicantes.routes').then(m => m.EVALUACIONES_PRACTICANTES_ROUTES) },
+      { path: 'usuarios',         canActivate: [roleGuard(['ADMINISTRADOR'])], loadChildren: () => import('./features/usuarios/usuarios.routes').then(m => m.USUARIOS_ROUTES) },
     ]
   },
 

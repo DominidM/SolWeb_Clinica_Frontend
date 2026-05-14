@@ -2,13 +2,14 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
 import { TeleconsultaService, TeleconsultaDTO } from '../../services/consulta';
 import * as state from '../../signals/teleconsulta.state';
 
 @Component({
   selector: 'app-consulta-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageHeaderComponent],
   templateUrl: './consulta-page.html',
   styleUrl: './consulta-page.css',
 })

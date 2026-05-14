@@ -1,5 +1,4 @@
 .tc-container { max-width: 700px; margin: 0 auto; }
-.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
 .empty-state { text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 12px; }
 
 .tc-card {

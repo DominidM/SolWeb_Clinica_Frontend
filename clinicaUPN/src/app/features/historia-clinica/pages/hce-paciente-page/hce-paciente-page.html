@@ -1,13 +1,9 @@
 <div class="hce-container">
-  <div class="page-header">
-    <div>
-      <h2>Historia Clínica</h2>
-      <p class="text-muted mb-0">Documentos y reportes de tu historial médico</p>
-    </div>
+  <app-page-header title="Historia Clínica" subtitle="Documentos y reportes de tu historial médico">
     <button class="btn btn-outline-primary btn-sm" (click)="cargar()">
       <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
     </button>
-  </div>
+  </app-page-header>
 
   @if (cargando()) {
     <div class="text-center py-5">

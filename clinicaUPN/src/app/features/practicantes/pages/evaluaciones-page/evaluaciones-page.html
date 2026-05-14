@@ -1,8 +1,9 @@
 <div class="evaluaciones-container">
-  <header class="page-header">
-    <h1>Mis Evaluaciones</h1>
-    <button class="btn-refresh" (click)="cargarEvaluaciones()">Actualizar</button>
-  </header>
+  <app-page-header title="Mis Evaluaciones">
+    <button class="btn btn-outline-primary btn-sm" (click)="cargarEvaluaciones()">
+      <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+    </button>
+  </app-page-header>
 
   <div class="loading" *ngIf="loading()">Cargando evaluaciones...</div>
 

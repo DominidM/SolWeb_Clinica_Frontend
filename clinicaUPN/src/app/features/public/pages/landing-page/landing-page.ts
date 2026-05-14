@@ -9,6 +9,8 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CitaPublicaService, DoctorDisponible } from '../../services/cita-publica';
+import { LanguageService, Lang } from '../../../../core/services/language.service';
+import { PUBLIC_TRANSLATIONS } from '../../../../shared/utils/public-translations';
 
 @Component({
   selector: 'app-landing-page',
@@ -20,113 +22,61 @@ import { CitaPublicaService, DoctorDisponible } from '../../services/cita-public
 })
 export class LandingPageComponent implements OnInit, OnDestroy {
   private citaService = inject(CitaPublicaService);
+  private languageService = inject(LanguageService);
+
+  videoMuted = signal(true);
+
+  get currentLang(): Lang {
+    return this.languageService.currentLang;
+  }
+
+  t(key: string): string {
+    return PUBLIC_TRANSLATIONS[key]?.[this.currentLang] ?? key;
+  }
 
   readonly logoUpn =
     'https://res.cloudinary.com/dxuk9bogw/image/upload/v1777099556/b6a20ee7-0a8d-4ba0-be44-ca617db1cb2e.png';
 
   servicios = [
-    {
-      icon: 'bi-heart-pulse-fill',
-      titulo: 'Medicina General',
-      desc: 'Atención integral y preventiva para toda la comunidad universitaria.',
-      imagen:
-        'https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=600&auto=format&fit=crop&q=80',
-    },
-    {
-      icon: 'bi-gender-female',
-      titulo: 'Obstetricia',
-      desc: 'Seguimiento y cuidado durante el embarazo, parto y postparto.',
-      imagen:
-        'https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=600&auto=format&fit=crop&q=80',
-    },
-    {
-      icon: 'bi-egg-fried',
-      titulo: 'Nutrición',
-      desc: 'Planes alimenticios personalizados adaptados al ritmo universitario.',
-      imagen:
-        'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&auto=format&fit=crop&q=80',
-    },
-    {
-      icon: 'bi-brain',
-      titulo: 'Psicología',
-      desc: 'Apoyo emocional y salud mental profesional para estudiantes y personal.',
-      imagen:
-        'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=600&auto=format&fit=crop&q=80',
-    },
-    {
-      icon: 'bi-activity',
-      titulo: 'Rehabilitación',
-      desc: 'Recuperación física con tecnología especializada de vanguardia.',
-      imagen:
-        'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&auto=format&fit=crop&q=80',
-    },
-    {
-      icon: 'bi-person-walking',
-      titulo: 'Fisioterapia',
-      desc: 'Tratamiento del dolor y mejora del movimiento con atención personalizada.',
-      imagen:
-        'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80',
-    },
+    { key: 'med',  titulo: 'Medicina General',  icon: 'bi-heart-pulse-fill',  tituloKey: 'srv.medicina',        descKey: 'srv.medicinaDesc',        imagen: 'https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=600&auto=format&fit=crop&q=80' },
+    { key: 'obs',  titulo: 'Obstetricia',       icon: 'bi-gender-female',     tituloKey: 'srv.obstetricia',     descKey: 'srv.obstetriciaDesc',     imagen: 'https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=600&auto=format&fit=crop&q=80' },
+    { key: 'nut',  titulo: 'Nutrición',         icon: 'bi-egg-fried',          tituloKey: 'srv.nutricion',       descKey: 'srv.nutricionDesc',       imagen: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&auto=format&fit=crop&q=80' },
+    { key: 'psi',  titulo: 'Psicología',        icon: 'bi-brain',              tituloKey: 'srv.psicologia',      descKey: 'srv.psicologiaDesc',      imagen: 'https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=600&auto=format&fit=crop&q=80' },
+    { key: 'reh',  titulo: 'Rehabilitación',    icon: 'bi-activity',           tituloKey: 'srv.rehabilitacion',  descKey: 'srv.rehabilitacionDesc',  imagen: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&auto=format&fit=crop&q=80' },
+    { key: 'fis',  titulo: 'Fisioterapia',      icon: 'bi-person-walking',    tituloKey: 'srv.fisioterapia',    descKey: 'srv.fisioterapiaDesc',    imagen: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80' },
   ];
 
   especialidades = [
     {
       nombre: 'Dra. María Torres',
-      cargo: 'Medicina General',
-      testimonio:
-        'Diagnóstico, prevención y tratamiento de enfermedades comunes. Atención para toda la comunidad universitaria con un enfoque integral y humano.',
+      cargoKey: 'doc.medicina',
+      testimonioKey: 'doc.torresTestimonio',
       foto: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&auto=format&fit=crop&q=80',
     },
     {
       nombre: 'Dr. Carlos Mendoza',
-      cargo: 'Psicología Clínica',
-      testimonio:
-        'Apoyo psicológico especializado para estudiantes y personal. Manejo del estrés, ansiedad y bienestar emocional en el entorno universitario.',
+      cargoKey: 'doc.psicologia',
+      testimonioKey: 'doc.mendozaTestimonio',
       foto: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&auto=format&fit=crop&q=80',
     },
     {
       nombre: 'Dra. Ana Quispe',
-      cargo: 'Nutrición y Dietética',
-      testimonio:
-        'Planes nutricionales personalizados adaptados al ritmo universitario. Mejora tu rendimiento académico y bienestar desde una alimentación equilibrada.',
+      cargoKey: 'doc.nutricion',
+      testimonioKey: 'doc.quispeTestimonio',
       foto: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&auto=format&fit=crop&q=80',
     },
   ];
 
   features = [
-    {
-      title: 'Historia clínica electrónica',
-      desc: 'Acceso digital a tu historial médico completo',
-      bg: '#E6F1FB',
-      icon: 'bi-file-earmark-text-fill',
-      color: '#185FA5',
-    },
-    {
-      title: 'Gestión digital de citas',
-      desc: 'Agenda y administra tus citas en línea',
-      bg: '#EAF3DE',
-      icon: 'bi-calendar2-check-fill',
-      color: '#3B6D11',
-    },
-    {
-      title: 'Teleconsulta disponible',
-      desc: 'Atención médica desde cualquier lugar',
-      bg: '#EEEDFE',
-      icon: 'bi-camera-video-fill',
-      color: '#534AB7',
-    },
-    {
-      title: 'Seguimiento a practicantes',
-      desc: 'Supervisión y acompañamiento continuo',
-      bg: '#FAEEDA',
-      icon: 'bi-people-fill',
-      color: '#854F0B',
-    },
+    { key: 'hce',    titleKey: 'feat.hce',             descKey: 'feat.hceDesc',       bg: '#E6F1FB', icon: 'bi-file-earmark-text-fill', color: '#185FA5' },
+    { key: 'citas',  titleKey: 'feat.citas',           descKey: 'feat.citasDesc',     bg: '#EAF3DE', icon: 'bi-calendar2-check-fill', color: '#3B6D11' },
+    { key: 'tele',   titleKey: 'feat.teleconsulta',    descKey: 'feat.teleconsultaDesc', bg: '#EEEDFE', icon: 'bi-camera-video-fill', color: '#534AB7' },
+    { key: 'prac',   titleKey: 'feat.practicantes',    descKey: 'feat.practicantesDesc', bg: '#FAEEDA', icon: 'bi-people-fill', color: '#854F0B' },
   ];
 
   stats = [
-    { value: '+50', label: 'Profesionales', color: '#1da2ca' },
-    { value: '8', label: 'Especialidades', color: '#534AB7' },
+    { key: 'profs', value: '+50', labelKey: 'stats.professionals', color: '#1da2ca' },
+    { key: 'specs', value: '8', labelKey: 'stats.specialties', color: '#534AB7' },
   ];
 
   // ── Carrusel servicios ──
@@ -219,7 +169,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
       error: () => {
         this.doctoresReales.set([]);
         this.cargandoDoctores.set(false);
-        this.formError.set('No se pudieron cargar los doctores. Intenta de nuevo.');
+        this.formError.set(this.t('err.doctorsLoad'));
       },
     });
   }
@@ -235,7 +185,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   buscarPaciente() {
     if (!this.formEmail() || !this.formCodigo()) {
-      this.formError.set('Ingresa tu correo y código de estudiante');
+      this.formError.set(this.t('agenda.searchError'));
       return;
     }
     this.formLoading.set(true);
@@ -257,7 +207,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
         console.log('>>> err.error:', err.error);
         this.formLoading.set(false);
         this.formError.set(
-          err.error?.message || 'No encontramos tus datos. Verifica el correo y código.',
+          err.error?.message || this.t('err.notFound'),
         );
       },
     });
@@ -272,7 +222,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
       !this.formFechaNacimiento() ||
       !this.formGenero()
     ) {
-      this.formError.set('Completa todos los datos personales');
+      this.formError.set(this.t('agenda.completeAll'));
       return;
     }
     this.formError.set('');
@@ -281,7 +231,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
 
   agendarCita() {
     if (!this.formEspecialidad() || !this.formMedico() || !this.formFecha() || !this.formHora()) {
-      this.formError.set('Completa todos los campos de la cita');
+      this.formError.set(this.t('agenda.completeAppt'));
       return;
     }
     this.formLoading.set(true);
@@ -310,7 +260,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.formLoading.set(false);
-          this.formError.set(err.error?.message || 'Error al agendar la cita. Intenta de nuevo.');
+          this.formError.set(err.error?.message || this.t('err.booking'));
         },
       });
   }

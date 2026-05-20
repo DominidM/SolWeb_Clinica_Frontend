@@ -2,48 +2,62 @@
 
   <app-page-header title="Usuarios" subtitle="Administración de usuarios y asignación de roles"></app-page-header>
 
-  <div *ngIf="loading" class="loading">Cargando usuarios...</div>
-  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="loading()" class="loading">Cargando usuarios...</div>
+  @if (error(); as errMsg) {
+    <div class="error">{{ errMsg }}</div>
+  }
 
-  <div class="table-responsive" *ngIf="!loading && usuarios.length">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Email</th>
-          <th>Rol</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let usuario of usuarios">
-          <td>{{ usuario.nombre }}</td>
-          <td>{{ usuario.email }}</td>
-          <td>
-            <ng-container *ngIf="usuarioEditando?.id !== usuario.id; else editandoRol">
-              <span class="rol-badge" [class]="'rol-' + (usuario.rol | lowercase)">{{ usuario.rol }}</span>
-            </ng-container>
-            <ng-template #editandoRol>
-              <select [(ngModel)]="usuarioEditando!.rol" class="form-select">
-                <option *ngFor="let r of rolesDisponibles" [value]="r">{{ r }}</option>
-              </select>
-            </ng-template>
-          </td>
-          <td>
-            <ng-container *ngIf="usuarioEditando?.id !== usuario.id; else guardandoRol">
-              <button class="btn btn-sm btn-primary" (click)="editarRol(usuario)">Editar rol</button>
-            </ng-container>
-            <ng-template #guardandoRol>
-              <button class="btn btn-sm btn-success" (click)="guardarRol()">Guardar</button>
-              <button class="btn btn-sm btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
-            </ng-template>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  @if (!loading() && usuarios().length) {
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (usuario of usuarios(); track usuario.id) {
+            <tr>
+              <td>{{ usuario.nombre }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>
+                @if (usuarioEditando()?.id !== usuario.id) {
+                  <span class="rol-badge" [class]="'rol-' + (usuario.rol | lowercase)">{{ usuario.rol }}</span>
+                } @else {
+                  <select [(ngModel)]="usuarioEditando()!.rol" class="form-select">
+                    @for (r of rolesDisponibles; track r) {
+                      <option [value]="r">{{ r }}</option>
+                    }
+                  </select>
+                }
+              </td>
+              <td>
+                @if (usuarioEditando()?.id !== usuario.id) {
+                  <button class="btn btn-sm btn-primary" (click)="editarRol(usuario)">Editar rol</button>
+                } @else {
+                  <button class="btn btn-sm btn-success" (click)="guardarRol()">Guardar</button>
+                  <button class="btn btn-sm btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
-  <div *ngIf="!loading && !usuarios.length && !error" class="empty">
-    No hay usuarios registrados.
-  </div>
+  @if (!loading() && !usuarios().length && !error()) {
+    <div class="empty">No hay usuarios registrados.</div>
+  }
+
+  @if (!loading() && totalPages() > 1) {
+    <div class="pagination-bar">
+      <button [disabled]="page() === 0" (click)="irPagina(page() - 1)">Anterior</button>
+      <span>Página {{ page() + 1 }} de {{ totalPages() }} ({{ totalElements() }} usuarios)</span>
+      <button [disabled]="page() >= totalPages() - 1" (click)="irPagina(page() + 1)">Siguiente</button>
+    </div>
+  }
 </div>

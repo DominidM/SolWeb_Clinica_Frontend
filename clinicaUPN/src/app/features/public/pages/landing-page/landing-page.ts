@@ -13,7 +13,7 @@ import { LanguageService, Lang } from '../../../../core/services/language.servic
 import { PUBLIC_TRANSLATIONS } from '../../../../shared/utils/public-translations';
 
 @Component({
-  selector: 'app-landing-page',
+  selector: 'app-landing-page', 
   standalone: true,
   imports: [FormsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

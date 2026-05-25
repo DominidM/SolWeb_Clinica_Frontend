@@ -17,6 +17,24 @@ export interface CitaDTO {
   createdAt?: string;
 }
 
+export interface AgendaItem {
+  idCita: number;
+  hora: string;
+  paciente: string;
+  tipo: string;
+  estado: string;
+  motivo: string;
+  idPaciente: number;
+  doctor: string;
+  idDoctor: number;
+}
+
+export interface DoctorListDTO {
+  idDoctor: number;
+  nombre: string;
+  especialidad: string;
+}
+
 export interface ApiResponse<T> {
   message: string;
   data: T;
@@ -32,6 +50,20 @@ export class CitaService {
     const email = this.auth.getUser()?.email;
     const params = new HttpParams().set('email', email ?? '');
     return this.http.get<ApiResponse<CitaDTO[]>>(`${this.API}/mis-citas`, { params })
+      .pipe(map(res => res.data));
+  }
+
+  verAgenda(fecha?: string, idDoctor?: number | string): Observable<AgendaItem[]> {
+    let params = new HttpParams().set('fecha', fecha ?? new Date().toISOString().split('T')[0]);
+    if (idDoctor) {
+      params = params.set('idDoctor', idDoctor.toString());
+    }
+    return this.http.get<ApiResponse<AgendaItem[]>>('http://localhost:8080/api/consultas/agenda', { params })
+      .pipe(map(res => res.data));
+  }
+
+  listarDoctores(): Observable<DoctorListDTO[]> {
+    return this.http.get<ApiResponse<DoctorListDTO[]>>('http://localhost:8080/api/consultas/doctores')
       .pipe(map(res => res.data));
   }
 

@@ -1,2 +1,92 @@
-<app-page-header title="Citas" subtitle="Gestión de citas médicas"></app-page-header>
+<div class="agenda-container">
+  <app-page-header title="Agenda de Consultas" subtitle="Gestión de citas del día"></app-page-header>
 
+  <!-- Filtros -->
+  <div class="filtros-bar">
+    <div class="filtro-group">
+      <label>Fecha:</label>
+      <input type="date" [value]="fecha()" (change)="cambiarFecha($any($event.target).value)" class="form-input">
+    </div>
+    @if (esAdmin) {
+      <div class="filtro-group">
+        <label>Doctor:</label>
+        <select [(ngModel)]="doctorSeleccionado" (change)="cambiarDoctor()" class="form-select">
+          <option value="">Todos los doctores</option>
+          @for (doc of doctores(); track doc.idDoctor) {
+            <option [value]="doc.idDoctor">{{ doc.nombre }} - {{ doc.especialidad }}</option>
+          }
+        </select>
+      </div>
+    }
+    <div class="filtro-group">
+      <label>Estado:</label>
+      <select [(ngModel)]="filtroEstado" class="form-select">
+        <option value="">Todos</option>
+        <option value="CONFIRMADA">Pendientes</option>
+        <option value="EN_ATENCION">En atención</option>
+        <option value="ATENDIDA">Atendidas</option>
+        <option value="CANCELADA">Canceladas</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Resumen -->
+  @if (!loading()) {
+    <div class="resumen-bar">
+      <span class="resumen-item">Total: <strong>{{ citas().length }}</strong></span>
+      <span class="resumen-item pendientes">Pendientes: <strong>{{ totalPendientes }}</strong></span>
+      <span class="resumen-item atendidas">Atendidas: <strong>{{ totalAtendidas }}</strong></span>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="loading">Cargando agenda...</div>
+  }
+
+  @if (error()) {
+    <div class="error">{{ error() }}</div>
+  }
+
+  @if (!loading() && !error() && !citasFiltradas.length) {
+    <div class="empty">No hay consultas programadas para esta fecha.</div>
+  }
+
+  @if (!loading() && citasFiltradas.length) {
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            @if (esAdmin) { <th>Doctor</th> }
+            <th>Hora</th>
+            <th>Paciente</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Motivo</th>
+            @if (!esAdmin) { <th>Acción</th> }
+          </tr>
+        </thead>
+        <tbody>
+          @for (cita of citasFiltradas; track cita.idCita) {
+            <tr [class]="'row-' + (cita.estado | lowercase)">
+              @if (esAdmin) { <td>{{ cita.doctor }}</td> }
+              <td class="hora-cell">{{ cita.hora }}</td>
+              <td>{{ cita.paciente }}</td>
+              <td>{{ cita.tipo }}</td>
+              <td>
+                <span class="badge" [class]="getEstadoClass(cita.estado)">{{ cita.estado }}</span>
+              </td>
+              <td>{{ cita.motivo }}</td>
+              @if (!esAdmin) {
+                <td>
+                  @if (cita.estado === 'CONFIRMADA') {
+                    <a [routerLink]="['/app/citas/atencion', cita.idCita]" class="btn-atender">Atender</a>
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

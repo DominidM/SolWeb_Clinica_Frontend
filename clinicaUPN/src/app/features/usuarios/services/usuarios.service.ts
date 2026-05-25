@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface Usuario {
   id: number;
@@ -9,13 +10,28 @@ export interface Usuario {
   rol: string;
 }
 
+export interface PageResult<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
 @Injectable({ providedIn: 'root' })
 export class UsuariosService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/usuarios';
+  private readonly API = 'http://localhost:8080/api/admin/usuarios';
 
-  listar(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(this.API);
+  listar(page: number = 0, size: number = 10): Observable<PageResult<Usuario>> {
+    return this.http.get<ApiResponse<PageResult<Usuario>>>(`${this.API}?page=${page}&size=${size}`)
+      .pipe(map(res => res.data));
   }
 
   asignarRol(id: number, rol: string): Observable<void> {

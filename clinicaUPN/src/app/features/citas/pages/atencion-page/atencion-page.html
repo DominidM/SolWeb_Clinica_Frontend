@@ -1,0 +1,108 @@
+<div class="atencion-container">
+  @if (cita(); as c) {
+    <app-page-header [title]="'Atención - ' + c.paciente" subtitle="Cita: {{ c.hora }} - {{ c.tipo }}"></app-page-header>
+  }
+
+  @if (loading()) {
+    <div class="loading">Iniciando consulta...</div>
+  }
+
+  @if (error()) {
+    <div class="error">{{ error() }}</div>
+  }
+
+  @if (consulta(); as cx) {
+    <!-- Paso: Diagnóstico -->
+    @if (paso() === 'diagnostico') {
+      <section class="form-section">
+        <h2>Registrar Diagnóstico</h2>
+        <div class="form-group">
+          <label>Código CIE-10</label>
+          <input type="text" [(ngModel)]="diagnosticoCie10" placeholder="Ej: J45.0" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Descripción del Diagnóstico</label>
+          <textarea [(ngModel)]="descripcionDiagnostico" rows="4" placeholder="Describa el diagnóstico..." class="form-textarea"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" (click)="guardarDiagnostico()" [disabled]="guardando()">
+            {{ guardando() ? 'Guardando...' : 'Guardar Diagnóstico' }}
+          </button>
+          <button class="btn-link" (click)="saltarPaso()">Saltar este paso</button>
+        </div>
+      </section>
+    }
+
+    <!-- Paso: Tratamiento -->
+    @if (paso() === 'tratamiento') {
+      <section class="form-section">
+        <h2>Registrar Tratamiento</h2>
+        <div class="form-group">
+          <label>Indicaciones del Tratamiento</label>
+          <textarea [(ngModel)]="tratamiento" rows="4" placeholder="Describa el tratamiento indicado..." class="form-textarea"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" (click)="guardarTratamiento()" [disabled]="guardando()">
+            {{ guardando() ? 'Guardando...' : 'Guardar Tratamiento' }}
+          </button>
+          <button class="btn-link" (click)="saltarPaso()">Saltar este paso</button>
+        </div>
+      </section>
+    }
+
+    <!-- Paso: Prescripción -->
+    @if (paso() === 'prescripcion') {
+      <section class="form-section">
+        <h2>Prescribir Medicamentos</h2>
+        <div class="form-group">
+          <label>Receta Médica</label>
+          <textarea [(ngModel)]="prescripcion" rows="4" placeholder="Medicamentos, dosis, frecuencia y duración..." class="form-textarea"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" (click)="guardarPrescripcion()" [disabled]="guardando()">
+            {{ guardando() ? 'Guardando...' : 'Emitir Receta' }}
+          </button>
+          <button class="btn-link" (click)="saltarPaso()">Saltar este paso</button>
+        </div>
+      </section>
+    }
+
+    <!-- Paso: Completo -->
+    @if (paso() === 'completo') {
+      <section class="form-section success">
+        <div class="completo-icon">✓</div>
+        <h2>Atención Completada</h2>
+        <p>La consulta ha sido registrada exitosamente.</p>
+        <div class="resumen">
+          @if (cx.diagnosticoCie10 || cx.descripcionDiagnostico) {
+            <div class="resumen-item">
+              <strong>Diagnóstico:</strong>
+              <span>{{ cx.diagnosticoCie10 }} {{ cx.descripcionDiagnostico }}</span>
+            </div>
+          }
+          @if (cx.tratamiento) {
+            <div class="resumen-item">
+              <strong>Tratamiento:</strong>
+              <span>{{ cx.tratamiento }}</span>
+            </div>
+          }
+          @if (cx.prescripcion) {
+            <div class="resumen-item">
+              <strong>Prescripción:</strong>
+              <span>{{ cx.prescripcion }}</span>
+            </div>
+          }
+        </div>
+        <button class="btn-primary" (click)="volverAgenda()">Volver a la Agenda</button>
+      </section>
+    }
+
+    <!-- Indicador de progreso -->
+    <div class="progress-bar">
+      <span [class.active]="paso() === 'diagnostico' || paso() === 'tratamiento' || paso() === 'prescripcion' || paso() === 'completo'">Diagnóstico</span>
+      <span [class.active]="paso() === 'tratamiento' || paso() === 'prescripcion' || paso() === 'completo'">Tratamiento</span>
+      <span [class.active]="paso() === 'prescripcion' || paso() === 'completo'">Prescripción</span>
+      <span [class.active]="paso() === 'completo'">Completado</span>
+    </div>
+  }
+</div>

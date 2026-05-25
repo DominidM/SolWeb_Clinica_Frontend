@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
@@ -14,11 +14,16 @@ import { UsuariosService, Usuario } from '../../services/usuarios.service';
 export class UsuariosPageComponent implements OnInit {
   private usuariosService = inject(UsuariosService);
 
-  usuarios: Usuario[] = [];
-  loading = true;
-  error = '';
+  usuarios = signal<Usuario[]>([]);
+  loading = signal(true);
+  error = signal('');
 
-  usuarioEditando: Usuario | null = null;
+  page = signal(0);
+  size = 10;
+  totalElements = signal(0);
+  totalPages = signal(0);
+
+  usuarioEditando = signal<Usuario | null>(null);
   rolesDisponibles = [
     'ADMINISTRADOR',
     'ADMINISTRATIVO',
@@ -33,36 +38,49 @@ export class UsuariosPageComponent implements OnInit {
   }
 
   cargarUsuarios(): void {
-    this.loading = true;
-    this.usuariosService.listar().subscribe({
+    this.loading.set(true);
+    this.usuariosService.listar(this.page(), this.size).subscribe({
       next: (res) => {
-        this.usuarios = res;
-        this.loading = false;
+        this.usuarios.set(res.content);
+        this.page.set(res.page);
+        this.size = res.size;
+        this.totalElements.set(res.totalElements);
+        this.totalPages.set(res.totalPages);
+        this.loading.set(false);
       },
       error: (err) => {
-        this.error = 'Error al cargar usuarios';
-        this.loading = false;
+        console.error('Error cargando usuarios:', err);
+        this.error.set('Error al cargar usuarios');
+        this.loading.set(false);
       },
     });
   }
 
+  irPagina(p: number): void {
+    if (p < 0 || p >= this.totalPages()) return;
+    this.page.set(p);
+    this.cargarUsuarios();
+  }
+
   editarRol(usuario: Usuario): void {
-    this.usuarioEditando = { ...usuario };
+    this.usuarioEditando.set({ ...usuario });
   }
 
   cancelarEdicion(): void {
-    this.usuarioEditando = null;
+    this.usuarioEditando.set(null);
   }
 
   guardarRol(): void {
-    if (!this.usuarioEditando) return;
-    this.usuariosService.asignarRol(this.usuarioEditando.id, this.usuarioEditando.rol).subscribe({
+    const editando = this.usuarioEditando();
+    if (!editando) return;
+    this.usuariosService.asignarRol(editando.id, editando.rol).subscribe({
       next: () => {
         this.cargarUsuarios();
-        this.usuarioEditando = null;
+        this.usuarioEditando.set(null);
       },
-      error: () => {
-        this.error = 'Error al asignar rol';
+      error: (err) => {
+        console.error('Error asignando rol:', err);
+        this.error.set('Error al asignar rol');
       },
     });
   }

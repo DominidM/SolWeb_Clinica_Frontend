@@ -1,2 +1,126 @@
-<app-page-header title="Dashboard" subtitle="Panel de control general"></app-page-header>
+<div class="dashboard-container">
+  <app-page-header title="Dashboard" subtitle="Panel de control general"></app-page-header>
 
+  @if (loading()) {
+    <div class="loading">Cargando dashboard...</div>
+  }
+
+  @if (error()) {
+    <div class="error">{{ error() }}</div>
+  }
+
+  @if (reporte(); as r) {
+    <div class="fecha-info">Reporte del: <strong>{{ r.fecha }}</strong></div>
+
+    <!-- Tarjetas de resumen -->
+    <div class="cards-grid">
+      <div class="stat-card card-total">
+        <div class="stat-icon">📋</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ r.resumen.totalCitas }}</span>
+          <span class="stat-label">Total Citas</span>
+        </div>
+      </div>
+      <div class="stat-card card-confirmadas">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ r.resumen.confirmadas }}</span>
+          <span class="stat-label">Confirmadas</span>
+        </div>
+      </div>
+      <div class="stat-card card-atendidas">
+        <div class="stat-icon">🩺</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ r.resumen.atendidas }}</span>
+          <span class="stat-label">Atendidas</span>
+        </div>
+      </div>
+      <div class="stat-card card-canceladas">
+        <div class="stat-icon">❌</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ r.resumen.canceladas }}</span>
+          <span class="stat-label">Canceladas</span>
+        </div>
+      </div>
+      <div class="stat-card card-no-asistieron">
+        <div class="stat-icon">🚫</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ r.resumen.noAsistieron }}</span>
+          <span class="stat-label">No Asistieron</span>
+        </div>
+      </div>
+      <div class="stat-card card-pacientes">
+        <div class="stat-icon">👤</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ r.resumen.pacientesAtendidos }}</span>
+          <span class="stat-label">Pacientes Atendidos</span>
+        </div>
+      </div>
+      <div class="stat-card card-doctores">
+        <div class="stat-icon">👨‍⚕️</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ r.resumen.doctoresActivos }}</span>
+          <span class="stat-label">Doctores Activos</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Tabla por especialidad -->
+      <div class="dashboard-section">
+        <h3 class="section-title">Citas por Especialidad</h3>
+        @if (r.porEspecialidad.length > 0) {
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Especialidad</th>
+                  <th class="text-right">Cantidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of r.porEspecialidad; track $index) {
+                  <tr>
+                    <td>{{ item.especialidad }}</td>
+                    <td class="text-right"><span class="badge badge-primary">{{ item.cantidad }}</span></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="empty-section">Sin datos</div>
+        }
+      </div>
+
+      <!-- Tabla por doctor -->
+      <div class="dashboard-section">
+        <h3 class="section-title">Citas por Doctor</h3>
+        @if (r.porDoctor.length > 0) {
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Doctor</th>
+                  <th>Especialidad</th>
+                  <th class="text-right">Cantidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of r.porDoctor; track $index) {
+                  <tr>
+                    <td>{{ item.nombreDoctor }}</td>
+                    <td>{{ item.especialidad }}</td>
+                    <td class="text-right"><span class="badge badge-primary">{{ item.cantidad }}</span></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="empty-section">Sin datos</div>
+        }
+      </div>
+    </div>
+  }
+</div>

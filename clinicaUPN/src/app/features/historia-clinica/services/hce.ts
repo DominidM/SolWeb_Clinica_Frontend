@@ -1,12 +1,14 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth';
 
 export interface DocumentoHCE {
+  idConsulta: number | null;
   idPaciente: number;
   nombrePaciente: string;
+  codigoEstudiante: string;
   fecha: string;
   diagnosticoCie10: string;
   descripcionDiag: string;
@@ -26,16 +28,35 @@ export class HceService {
   private http = inject(HttpClient);
   private auth = inject(AuthService);
   private readonly API = 'http://localhost:8080/api/hce';
+  private readonly ADMIN_API = 'http://localhost:8080/api/admin/hce';
 
   listarDocumentos(): Observable<DocumentoHCE[]> {
     return this.http
-      .get<ApiResponse<DocumentoHCE[]>>(`${this.API}/documentos`)
-      .pipe(map((res) => res.data));
+      .get<ApiResponse<any[]>>(`${this.API}/documentos`)
+      .pipe(map((res) => res.data.map(item => ({
+        ...item,
+        idConsulta: item.idConsulta ?? item.id_consulta ?? null
+      }))));
   }
 
-  descargar(id: number): void {
-    const email = this.auth.getUser()?.email;
-    const url = `${this.API}/documentos/${id}/descargar?email=${email}`;
-    window.open(url, '_blank');
+  listarTodas(): Observable<DocumentoHCE[]> {
+    return this.http
+      .get<ApiResponse<any[]>>(`${this.ADMIN_API}/documentos`)
+      .pipe(map((res) => res.data.map(item => ({
+        ...item,
+        idConsulta: item.idConsulta ?? item.id_consulta ?? null
+      }))));
+  }
+
+  descargar(id: number): Observable<Blob> {
+    return this.http.get(`${this.API}/documentos/${id}/descargar`, {
+      responseType: 'blob'
+    });
+  }
+
+  descargarPdfAdmin(id: number): Observable<Blob> {
+    return this.http.get(`${this.ADMIN_API}/documentos/${id}/descargar-pdf`, {
+      responseType: 'blob'
+    });
   }
 }

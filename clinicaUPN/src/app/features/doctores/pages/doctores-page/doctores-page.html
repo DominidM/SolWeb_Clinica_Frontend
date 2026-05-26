@@ -1,2 +1,57 @@
-<app-page-header title="Doctores" subtitle="Gestión de doctores"></app-page-header>
+<app-page-header title="Doctores" subtitle="Gestión de doctores y configuración de especialidades"></app-page-header>
+
+<div *ngIf="loading()" class="loading">Cargando doctores...</div>
+@if (error(); as errMsg) {
+  <div class="error">{{ errMsg }}</div>
+}
+
+@if (!loading() && doctores().length) {
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Especialidad</th>
+          <th>Teléfono</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (doctor of doctores(); track doctor.idDoctor) {
+          <tr>
+            <td>{{ doctor.nombre }} {{ doctor.apellido }}</td>
+            <td>{{ doctor.email }}</td>
+            <td>
+              @if (doctorEditando()?.idDoctor !== doctor.idDoctor) {
+                <span class="esp-badge">{{ doctor.especialidad }}</span>
+              } @else {
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="especialidadEditando" placeholder="Nueva especialidad" />
+              }
+            </td>
+            <td>{{ doctor.telefono }}</td>
+            <td>
+              <span class="estado-badge" [class.activo]="doctor.estado === 'ACTIVO'" [class.inactivo]="doctor.estado === 'INACTIVO'">
+                {{ doctor.estado }}
+              </span>
+            </td>
+            <td>
+              @if (doctorEditando()?.idDoctor !== doctor.idDoctor) {
+                <button class="btn btn-sm btn-outline-primary" (click)="editarEspecialidad(doctor)">Cambiar especialidad</button>
+              } @else {
+                <button class="btn btn-sm btn-success" (click)="guardarEspecialidad()">Guardar</button>
+                <button class="btn btn-sm btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (!loading() && !doctores().length && !error()) {
+  <div class="empty">No hay doctores registrados.</div>
+}
 

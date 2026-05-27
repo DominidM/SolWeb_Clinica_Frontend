@@ -1,7 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
 import { PracticanteService, ActividadDTO } from '../../services/practicante';
+import { createIcons, RefreshCw, X, Calendar, Clock, User, ClipboardList, BadgeCheck, ChevronRight } from 'lucide';
 
 @Component({
   selector: 'app-agenda-page',
@@ -10,7 +11,7 @@ import { PracticanteService, ActividadDTO } from '../../services/practicante';
   templateUrl: './agenda-page.html',
   styleUrl: './agenda-page.css',
 })
-export class AgendaPageComponent {
+export class AgendaPageComponent implements AfterViewInit {
   private svc = inject(PracticanteService);
 
   actividades = signal<ActividadDTO[]>([]);
@@ -21,12 +22,29 @@ export class AgendaPageComponent {
     this.cargarActividades();
   }
 
+  ngAfterViewInit() {
+    createIcons({
+      icons: {
+        'refresh-cw': RefreshCw,
+        'x': X,
+        'calendar': Calendar,
+        'clock': Clock,
+        'user': User,
+        'clipboard-list': ClipboardList,
+        'badge-check': BadgeCheck,
+        'chevron-right': ChevronRight,
+      },
+    });
+  }
+
   cargarActividades() {
     this.loading.set(true);
     this.svc.listarActividades().subscribe({
-      next: (res) => this.actividades.set(res),
+      next: (res) => {
+        this.actividades.set(res);
+        this.loading.set(false);
+      },
       error: () => this.loading.set(false),
-      complete: () => this.loading.set(false),
     });
   }
 

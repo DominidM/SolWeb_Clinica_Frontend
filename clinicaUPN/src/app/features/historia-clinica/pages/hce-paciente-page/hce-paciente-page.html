@@ -26,7 +26,7 @@
     }
 
     <div class="docs-list">
-      @for (doc of documentos(); track doc.fecha) {
+      @for (doc of documentos(); track $index) {
         <div class="doc-card">
           <div
             class="doc-icon"

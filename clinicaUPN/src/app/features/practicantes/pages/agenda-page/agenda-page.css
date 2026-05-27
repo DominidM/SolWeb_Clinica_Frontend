@@ -10,85 +10,111 @@ page-header h1 {
   color: #1e293b;
   margin: 0;
 }
-btn-refresh {
+.btn-outline-primary {
+  display: inline-flex;
+  align-items: center;
   padding: 0.5rem 1rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #3b82f6;
   border-radius: 6px;
   background: #fff;
-  color: #475569;
+  color: #3b82f6;
   cursor: pointer;
   font-size: 0.875rem;
+  transition: all 0.2s;
 }
-btn-refresh:hover {
-  background: #f1f5f9;
+.btn-outline-primary:hover {
+  background: #eff6ff;
 }
-loading {
+.loading {
   text-align: center;
   color: #64748b;
   padding: 2rem;
 }
-empty {
+.empty {
   text-align: center;
   color: #94a3b8;
   padding: 3rem;
   font-size: 1.1rem;
 }
-agenda-grid {
+.agenda-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1rem;
 }
-agenda-card {
+.agenda-card {
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 1.25rem;
   cursor: pointer;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, transform 0.15s;
 }
-agenda-card:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+.agenda-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
 }
-card-badge {
-  display: inline-block;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.card-arrow {
+  color: #94a3b8;
+  transition: transform 0.2s;
+}
+.agenda-card:hover .card-arrow {
+  transform: translateX(3px);
+  color: #3b82f6;
+}
+.card-badge {
+  display: inline-flex;
+  align-items: center;
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
   background: #f1f5f9;
   color: #475569;
 }
-card-badge.programada {
+.card-badge.programada {
   background: #dbeafe;
   color: #1d4ed8;
 }
-card-badge.completada {
+.card-badge.completada {
   background: #dcfce7;
   color: #16a34a;
 }
-agenda-card h3 {
+.agenda-card h3 {
   margin: 0 0 0.25rem;
   font-size: 1rem;
   color: #1e293b;
 }
-card-tipo {
+.card-tipo {
+  display: flex;
+  align-items: center;
   font-size: 0.8rem;
   color: #64748b;
   margin-bottom: 0.5rem;
 }
-card-meta {
+.card-meta {
   display: flex;
   gap: 1rem;
   font-size: 0.85rem;
   color: #64748b;
 }
-card-paciente {
+.card-meta span {
+  display: flex;
+  align-items: center;
+}
+.card-paciente {
+  display: flex;
+  align-items: center;
   margin-top: 0.5rem;
   font-size: 0.85rem;
   color: #334155;
 }
-modal-overlay {
+.modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.4);
@@ -96,56 +122,77 @@ modal-overlay {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: fadeIn 0.15s ease;
 }
-modal-content {
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.modal-content {
   background: #fff;
   border-radius: 12px;
   padding: 2rem;
   width: 90%;
   max-width: 500px;
   position: relative;
+  animation: slideUp 0.2s ease;
 }
-modal-close {
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.modal-close {
   position: absolute;
   top: 0.75rem;
   right: 1rem;
   background: none;
   border: none;
-  font-size: 1.5rem;
   cursor: pointer;
   color: #94a3b8;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-modal-close:hover {
+.modal-close:hover {
+  background: #f1f5f9;
   color: #475569;
 }
-modal-content h2 {
+.modal-content h2 {
   margin: 0 0 1.5rem;
   font-size: 1.25rem;
   color: #1e293b;
 }
-detalle-grid {
+.detalle-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
-detalle-item {
+.detalle-item {
   display: flex;
   flex-direction: column;
 }
-detalle-item label {
+.detalle-item label {
+  display: flex;
+  align-items: center;
   font-size: 0.75rem;
   color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   margin-bottom: 0.25rem;
 }
-detalle-item span {
+.detalle-item span {
   font-size: 0.9rem;
   color: #1e293b;
   font-weight: 500;
 }
-detalle-desc {
+.detalle-desc {
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid #e2e8f0;
   color: #334155;
   font-size: 0.9rem;
+  line-height: 1.5;
 }

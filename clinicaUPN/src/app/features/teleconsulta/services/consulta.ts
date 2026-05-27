@@ -16,6 +16,17 @@ export interface TeleconsultaDTO {
   motivo?: string;
 }
 
+export interface DoctorDisponibleDTO {
+  idDoctor: number;
+  nombre: string;
+  especialidad: string;
+}
+
+export interface EspecialidadDTO {
+  idEspecialidad: number;
+  nombre: string;
+}
+
 export interface ApiResponse<T> {
   message: string;
   data: T;
@@ -42,6 +53,26 @@ export class TeleconsultaService {
 
   obtenerSala(id: number): Observable<TeleconsultaDTO> {
     return this.http.get<ApiResponse<TeleconsultaDTO>>(`${this.API}/${id}`)
+      .pipe(map(res => res.data));
+  }
+
+  listarEspecialidades(): Observable<EspecialidadDTO[]> {
+    return this.http.get<ApiResponse<EspecialidadDTO[]>>(`http://localhost:8080/api/cita-publica/especialidades`)
+      .pipe(map(res => res.data));
+  }
+
+  listarDoctores(especialidad: string): Observable<DoctorDisponibleDTO[]> {
+    return this.http.get<ApiResponse<DoctorDisponibleDTO[]>>(`http://localhost:8080/api/cita-publica/doctores/${encodeURIComponent(especialidad)}`)
+      .pipe(map(res => res.data));
+  }
+
+  aceptar(id: number): Observable<TeleconsultaDTO> {
+    return this.http.put<ApiResponse<TeleconsultaDTO>>(`${this.API}/${id}/aceptar`, {})
+      .pipe(map(res => res.data));
+  }
+
+  completar(id: number): Observable<TeleconsultaDTO> {
+    return this.http.put<ApiResponse<TeleconsultaDTO>>(`${this.API}/${id}/completar`, {})
       .pipe(map(res => res.data));
   }
 }

@@ -560,51 +560,48 @@
     <div class="circular-wrapper">
       <!-- Imágenes -->
       <div class="circular-images">
-        @for (e of especialidades; track e.nombre; let i = $index) {
+        @for (e of especialidades(); track e.nombre; let i = $index) {
           <div class="circ-img-wrap" [class]="getCardClass(i)" (click)="servicioGoTo(i)">
             <img [src]="e.foto" [alt]="e.nombre" class="circ-img" />
-            <!-- Badge nombre sobre imagen en mobile -->
             <div class="circ-img-badge">{{ e.nombre }}</div>
           </div>
         }
       </div>
 
       <!-- Contenido activo -->
-      <div class="circular-content">
-        <!-- Avatar grande -->
-        <div class="circ-avatar-wrap mb-3">
-          <img
-            [src]="especialidades[activeIndex()].foto"
-            [alt]="especialidades[activeIndex()].nombre"
-            class="circ-avatar"
-          />
-          <div class="circ-avatar-ring"></div>
-        </div>
+      @if (especialidades().length > 0) {
+        <div class="circular-content">
+          <div class="circ-avatar-wrap mb-3">
+            <img
+              [src]="especialidades()[activeIndex()].foto"
+              [alt]="especialidades()[activeIndex()].nombre"
+              class="circ-avatar"
+            />
+            <div class="circ-avatar-ring"></div>
+          </div>
 
-        <h3 class="fw-bold mb-1">{{ especialidades[activeIndex()].nombre }}</h3>
-        <p class="fw-semibold mb-3" style="font-size: 14px; color: #185fa5">
-          {{ t(especialidades[activeIndex()].cargoKey) }}
-        </p>
-        <p class="circ-quote">{{ t(especialidades[activeIndex()].testimonioKey) }}</p>
+          <h3 class="fw-bold mb-1">{{ especialidades()[activeIndex()].nombre }}</h3>
+          <p class="fw-semibold mb-3" style="font-size: 14px; color: #185fa5">
+            {{ especialidades()[activeIndex()].especialidad }}
+          </p>
 
-        <!-- Dots -->
-        <div class="circ-dots mt-3">
-          @for (e of especialidades; track e.nombre; let i = $index) {
-            <span class="circ-dot" [class.active]="i === activeIndex()" (click)="servicioGoTo(i)">
-            </span>
-          }
-        </div>
+          <div class="circ-dots mt-3">
+            @for (e of especialidades(); track e.nombre; let i = $index) {
+              <span class="circ-dot" [class.active]="i === activeIndex()" (click)="servicioGoTo(i)">
+              </span>
+            }
+          </div>
 
-        <!-- Flechas -->
-        <div class="circ-arrows mt-3">
-          <button class="circ-btn" (click)="goPrev()">
-            <i class="bi bi-arrow-left"></i>
-          </button>
-          <button class="circ-btn" (click)="goNext()">
-            <i class="bi bi-arrow-right"></i>
-          </button>
+          <div class="circ-arrows mt-3">
+            <button class="circ-btn" (click)="goPrev()">
+              <i class="bi bi-arrow-left"></i>
+            </button>
+            <button class="circ-btn" (click)="goNext()">
+              <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
         </div>
-      </div>
+      }
     </div>
   </div>
 </section>

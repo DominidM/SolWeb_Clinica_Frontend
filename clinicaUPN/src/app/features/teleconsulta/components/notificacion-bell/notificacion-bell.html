@@ -1,0 +1,50 @@
+<div class="noti-wrapper" (click)="toggle()" (keydown.escape)="cerrar()">
+  <button class="noti-bell" [class.noti-bell--active]="abierto">
+    <i class="bi bi-bell-fill"></i>
+    @if (notiSvc.noLeidas() > 0) {
+      <span class="noti-badge">{{ notiSvc.noLeidas() }}</span>
+    }
+  </button>
+
+  @if (abierto) {
+    <div class="noti-dropdown" (click)="$event.stopPropagation()">
+      <div class="noti-header">
+        <strong>Notificaciones</strong>
+        <span class="text-muted small">({{ notiSvc.notificaciones().length }})</span>
+      </div>
+      <div class="noti-lista">
+        @if (notiSvc.notificaciones().length === 0) {
+          <div class="noti-empty">
+            <i class="bi bi-bell-slash fs-4"></i>
+            <p class="small text-muted mb-0">Sin notificaciones</p>
+          </div>
+        }
+        @for (n of notiSvc.notificaciones(); track n.timestamp + n.teleconsultaId) {
+          <div class="noti-item" [class.noti-item--nueva]="!n.leida" (click)="ir(n.teleconsultaId)">
+            <div class="noti-icon">
+              @switch (n.tipo) {
+                @case ('NUEVA_CONSULTA') { <i class="bi bi-plus-circle-fill text-warning"></i> }
+                @case ('NUEVA_CITA') { <i class="bi bi-calendar-plus-fill text-info"></i> }
+                @case ('CONSULTA_ACEPTADA') { <i class="bi bi-check-circle-fill text-success"></i> }
+                @case ('CONSULTA_COMPLETADA') { <i class="bi bi-clock-fill text-secondary"></i> }
+                @case ('CITA_ATENDIDA') { <i class="bi bi-check2-square text-primary"></i> }
+                @default { <i class="bi bi-bell-fill text-primary"></i> }
+              }
+            </div>
+            <div class="noti-body">
+              <p class="noti-msg">{{ n.mensaje }}</p>
+              <span class="noti-time">{{ n.timestamp | date:'HH:mm' }}</span>
+            </div>
+            @if (!n.leida) {
+              <span class="noti-dot"></span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+@if (abierto) {
+  <div class="noti-backdrop" (click)="cerrar()"></div>
+}

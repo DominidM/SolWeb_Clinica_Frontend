@@ -1,7 +1,7 @@
 <div class="agenda-container">
   <app-page-header title="Mi Agenda de Actividades">
     <button class="btn btn-outline-primary btn-sm" (click)="cargarActividades()">
-      <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+      <i data-lucide="refresh-cw" style="width:16px;height:16px;margin-right:4px"></i>Actualizar
     </button>
   </app-page-header>
 
@@ -9,16 +9,26 @@
 
   <div class="agenda-grid" *ngIf="!loading()">
     <div class="agenda-card" *ngFor="let act of actividades()" (click)="verDetalle(act)">
-      <div class="card-badge" [class.programada]="act.estado === 'PROGRAMADA'" [class.completada]="act.estado === 'COMPLETADA'">
-        {{ act.estado }}
+      <div class="card-header">
+        <div class="card-badge" [class.programada]="act.estado === 'PROGRAMADA'" [class.completada]="act.estado === 'COMPLETADA'">
+          <i data-lucide="badge-check" style="width:12px;height:12px;margin-right:3px"></i>
+          {{ act.estado }}
+        </div>
+        <i data-lucide="chevron-right" class="card-arrow" style="width:16px;height:16px"></i>
       </div>
       <h3>{{ act.titulo }}</h3>
-      <p class="card-tipo">{{ act.tipo }}</p>
+      <p class="card-tipo">
+        <i data-lucide="clipboard-list" style="width:14px;height:14px;margin-right:4px;vertical-align:middle"></i>
+        {{ act.tipo }}
+      </p>
       <div class="card-meta">
-        <span>{{ act.fecha }}</span>
-        <span>{{ act.hora }}</span>
+        <span><i data-lucide="calendar" style="width:14px;height:14px;margin-right:4px;vertical-align:middle"></i>{{ act.fecha }}</span>
+        <span><i data-lucide="clock" style="width:14px;height:14px;margin-right:4px;vertical-align:middle"></i>{{ act.hora }}</span>
       </div>
-      <p class="card-paciente" *ngIf="act.paciente">Paciente: {{ act.paciente }}</p>
+      <p class="card-paciente" *ngIf="act.paciente">
+        <i data-lucide="user" style="width:14px;height:14px;margin-right:4px;vertical-align:middle"></i>
+        {{ act.paciente }}
+      </p>
     </div>
   </div>
 
@@ -29,27 +39,29 @@
 
 <div class="modal-overlay" *ngIf="actividadSeleccionada()" (click)="cerrarDetalle()">
   <div class="modal-content" (click)="$event.stopPropagation()">
-    <button class="modal-close" (click)="cerrarDetalle()">&times;</button>
+    <button class="modal-close" (click)="cerrarDetalle()">
+      <i data-lucide="x" style="width:20px;height:20px"></i>
+    </button>
     <h2>{{ actividadSeleccionada()?.titulo }}</h2>
     <div class="detalle-grid">
       <div class="detalle-item">
-        <label>Tipo</label>
+        <label><i data-lucide="clipboard-list" style="width:14px;height:14px;margin-right:4px;vertical-align:middle"></i>Tipo</label>
         <span>{{ actividadSeleccionada()?.tipo }}</span>
       </div>
       <div class="detalle-item">
-        <label>Fecha</label>
+        <label><i data-lucide="calendar" style="width:14px;height:14px;margin-right:4px;vertical-align:middle"></i>Fecha</label>
         <span>{{ actividadSeleccionada()?.fecha }}</span>
       </div>
       <div class="detalle-item">
-        <label>Hora</label>
+        <label><i data-lucide="clock" style="width:14px;height:14px;margin-right:4px;vertical-align:middle"></i>Hora</label>
         <span>{{ actividadSeleccionada()?.hora }}</span>
       </div>
       <div class="detalle-item">
-        <label>Estado</label>
+        <label><i data-lucide="badge-check" style="width:14px;height:14px;margin-right:4px;vertical-align:middle"></i>Estado</label>
         <span>{{ actividadSeleccionada()?.estado }}</span>
       </div>
       <div class="detalle-item" *ngIf="actividadSeleccionada()?.paciente">
-        <label>Paciente</label>
+        <label><i data-lucide="user" style="width:14px;height:14px;margin-right:4px;vertical-align:middle"></i>Paciente</label>
         <span>{{ actividadSeleccionada()?.paciente }}</span>
       </div>
       <div class="detalle-item" *ngIf="actividadSeleccionada()?.supervisor">

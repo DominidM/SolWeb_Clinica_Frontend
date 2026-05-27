@@ -1,9 +1,11 @@
 <div class="tc-container">
 
   <app-page-header title="Teleconsultas" subtitle="Atención médica desde donde estés">
-    <button class="btn btn-primary btn-sm" (click)="abrirFormulario()">
-      <i class="bi bi-plus-lg me-1"></i>Solicitar teleconsulta
-    </button>
+    @if (!esDoctor()) {
+      <button class="btn btn-primary btn-sm" (click)="abrirFormulario()">
+        <i class="bi bi-plus-lg me-1"></i>Solicitar teleconsulta
+      </button>
+    }
   </app-page-header>
 
   @if (cargando()) {
@@ -35,18 +37,34 @@
               <span class="tc-estado {{ getEstadoClass(t.estado) }}">{{ t.estado }}</span>
             </div>
             <div class="tc-details">
+            @if (esDoctor()) {
+              <span><i class="bi bi-person me-1"></i>{{ t.paciente }}</span>
+            } @else {
               <span><i class="bi bi-person-badge me-1"></i>{{ t.medico }}</span>
+            }
               <span><i class="bi bi-calendar me-1"></i>{{ t.fecha | date:'dd/MM/yyyy' }}</span>
               <span><i class="bi bi-clock me-1"></i>{{ t.hora }} hrs</span>
             </div>
           </div>
-          @if (t.estado === 'CONFIRMADA') {
-            <div class="tc-action">
+          <div class="tc-action d-flex gap-1">
+            @if (esDoctor() && t.estado === 'PENDIENTE') {
+              <button class="btn btn-primary btn-sm" (click)="aceptar(t)" [disabled]="aceptando() === t.idTeleconsulta">
+                @if (aceptando() === t.idTeleconsulta) { <span class="spinner-border spinner-border-sm me-1"></span> }
+                <i class="bi bi-check-lg me-1"></i>Aceptar
+              </button>
+            }
+            @if (t.estado === 'CONFIRMADA') {
               <button class="btn btn-success btn-sm" (click)="unirse(t)">
                 <i class="bi bi-camera-video-fill me-1"></i>Unirse
               </button>
-            </div>
-          }
+            }
+            @if (esDoctor() && t.estado === 'CONFIRMADA') {
+              <button class="btn btn-outline-secondary btn-sm" (click)="completar(t)" [disabled]="aceptando() === t.idTeleconsulta">
+                @if (aceptando() === t.idTeleconsulta) { <span class="spinner-border spinner-border-sm me-1"></span> }
+                <i class="bi bi-check-circle me-1"></i>Finalizar
+              </button>
+            }
+          </div>
         </div>
       }
     </div>
@@ -87,16 +105,16 @@
       <div class="modal-body">
         <div class="mb-3">
           <label class="form-label small fw-semibold">Especialidad</label>
-          <select class="form-select" [ngModel]="formEspecialidad()" (ngModelChange)="formEspecialidad.set($event); formMedico.set('')">
+          <select class="form-select" [ngModel]="formEspecialidad()" (ngModelChange)="formEspecialidad.set($event); onEspecialidadChange()">
             <option value="">Seleccionar</option>
-            @for (s of servicios; track s) { <option [value]="s">{{ s }}</option> }
+            @for (e of especialidades(); track e.idEspecialidad) { <option [value]="e.nombre">{{ e.nombre }}</option> }
           </select>
         </div>
         <div class="mb-3">
           <label class="form-label small fw-semibold">Médico</label>
           <select class="form-select" [ngModel]="formMedico()" (ngModelChange)="formMedico.set($event)">
             <option value="">Seleccionar</option>
-            @for (m of medicos[formEspecialidad()] || []; track m) { <option [value]="m">{{ m }}</option> }
+            @for (d of doctores(); track d.idDoctor) { <option [value]="d.nombre">{{ d.nombre }}</option> }
           </select>
         </div>
         <div class="row g-2 mb-3">

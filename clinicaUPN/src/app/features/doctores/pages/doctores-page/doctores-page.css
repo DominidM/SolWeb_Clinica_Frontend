@@ -2,12 +2,12 @@
 .empty {
   text-align: center;
   padding: 48px;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .error {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: var(--bg-danger);
+  color: var(--text-danger);
   padding: 12px 16px;
   border-radius: 8px;
   margin-bottom: 16px;
@@ -32,19 +32,19 @@
 .table td {
   padding: 12px 16px;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-table);
 }
 
 .table th {
   font-weight: 600;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .table tbody tr:hover {
-  background: #f9fafb;
+  background: var(--bg-table-hover);
 }
 
 .esp-badge {
@@ -53,8 +53,8 @@
   border-radius: 999px;
   font-size: 12px;
   font-weight: 500;
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--bg-info);
+  color: var(--accent);
 }
 
 .estado-badge {
@@ -66,18 +66,18 @@
 }
 
 .estado-badge.activo {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--bg-success);
+  color: var(--text-success);
 }
 
 .estado-badge.inactivo {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--bg-danger);
+  color: var(--text-danger);
 }
 
 .form-control-sm {
   padding: 4px 8px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-input);
   border-radius: 6px;
   font-size: 13px;
   width: 180px;
@@ -98,37 +98,37 @@
 }
 
 .btn-primary {
-  background: #2563eb;
-  color: #fff;
+  background: var(--accent);
+  color: var(--text-inverse);
   padding: 8px 18px;
   font-size: 14px;
   font-weight: 600;
 }
 
 .btn-primary:hover {
-  background: #1d4ed8;
+  background: var(--accent-hover);
 }
 
 .btn-success {
   background: #16a34a;
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .btn-secondary {
   background: #6b7280;
-  color: #fff;
+  color: var(--text-inverse);
   margin-left: 6px;
 }
 
 .btn-outline-primary {
   background: transparent;
-  border: 1px solid #2563eb;
-  color: #2563eb;
+  border: 1px solid var(--accent);
+  color: var(--accent);
 }
 
 .btn-outline-primary:hover {
-  background: #2563eb;
-  color: #fff;
+  background: var(--accent);
+  color: var(--text-inverse);
 }
 
 .btn-outline-secondary {
@@ -139,25 +139,25 @@
 
 .btn-outline-secondary:hover {
   background: #6b7280;
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .btn-outline-danger {
   background: transparent;
-  border: 1px solid #dc2626;
-  color: #dc2626;
+  border: 1px solid var(--text-danger);
+  color: var(--text-danger);
 }
 
 .btn-outline-danger:hover {
-  background: #dc2626;
-  color: #fff;
+  background: var(--text-danger);
+  color: var(--text-inverse);
 }
 
 /* Modal */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--bg-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -165,12 +165,12 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--bg-card);
   border-radius: 14px;
   padding: 28px;
   width: 480px;
   max-width: 90vw;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .modal-header {
@@ -180,7 +180,7 @@
 .modal-header h2 {
   margin: 0;
   font-size: 1.2rem;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .form-group {
@@ -191,14 +191,14 @@
   display: block;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--text-secondary);
   margin-bottom: 4px;
 }
 
 .form-input {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-table);
   border-radius: 8px;
   font-size: 0.9rem;
   box-sizing: border-box;
@@ -211,13 +211,13 @@
 }
 
 .alert-error {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--bg-danger);
+  color: var(--text-danger);
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 0.85rem;
   margin-bottom: 14px;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--border-color);
 }
 
 .modal-actions {
@@ -229,22 +229,22 @@
 
 .btn-cancel {
   padding: 9px 18px;
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-table);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.85rem;
 }
 
 .btn-cancel:hover {
-  background: #e2e8f0;
+  background: var(--border-table);
 }
 
 .btn-save {
   padding: 9px 18px;
   background: #6366f1;
-  color: white;
+  color: var(--text-inverse);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -270,5 +270,5 @@
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border-table);
 }

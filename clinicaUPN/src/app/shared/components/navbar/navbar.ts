@@ -3,6 +3,7 @@ import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth';
 import { LanguageService } from '../../../core/services/language.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 type Lang = 'es' | 'en';
 
@@ -31,6 +32,7 @@ export class NavbarComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
   private languageService = inject(LanguageService);
+  protected themeService = inject(ThemeService);
 
   activeSection = 'inicio';
 
@@ -48,6 +50,10 @@ export class NavbarComponent {
 
   get tieneToken(): boolean {
     return this.authService.isAuthenticated(); // usa la clave correcta 'clinica_token'
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggle();
   }
 
   irAlSistema(): void {

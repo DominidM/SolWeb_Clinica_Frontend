@@ -3,6 +3,11 @@
   <button class="lang-btn" [class.active]="currentLang === 'es'" (click)="switchLang('es')">ES</button>
   <span class="lang-sep">|</span>
   <button class="lang-btn" [class.active]="currentLang === 'en'" (click)="switchLang('en')">EN</button>
+
+  <div class="theme-toggle-nav" [class.dark]="themeService.currentTheme === 'dark'" (click)="toggleTheme()">
+    <span class="toggle-icon">{{ themeService.currentTheme === 'dark' ? '🌙' : '☀️' }}</span>
+    <span class="toggle-track"></span>
+  </div>
 </div>
 
 <nav class="clinica-topbar px-4 d-flex align-items-center justify-content-between">

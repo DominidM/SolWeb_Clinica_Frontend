@@ -58,7 +58,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&auto=format&fit=crop&q=80',
   ];
 
-  especialidades = signal<{ nombre: string; especialidad: string; foto: string }[]>([]);
+  especialidades = signal<{ nombre: string; especialidad: string; foto: string; descripcion: string; bibliografia: string }[]>([]);
 
   features = [
     { key: 'hce',    titleKey: 'feat.hce',             descKey: 'feat.hceDesc',       bg: '#E6F1FB', icon: 'bi-file-earmark-text-fill', color: '#185FA5' },
@@ -301,6 +301,8 @@ export class LandingPageComponent implements OnInit, OnDestroy {
           nombre: d.nombre,
           especialidad: d.especialidad,
           foto: d.fotoUrl || 'https://via.placeholder.com/400x400?text=Sin+foto',
+          descripcion: d.descripcion || '',
+          bibliografia: d.bibliografia || '',
         }));
         this.especialidades.set(items);
       },

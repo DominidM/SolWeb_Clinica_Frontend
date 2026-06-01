@@ -7,25 +7,25 @@
   position: relative;
   background: none;
   border: none;
-  color: #475569;
+  color: var(--text-secondary);
   font-size: 1.25rem;
   padding: 0.4rem 0.5rem;
-  border-radius: 8px;
+  border-radius: var(--radius);
   cursor: pointer;
   transition: background 0.15s;
 }
 .noti-bell:hover,
 .noti-bell--active {
-  background: #e2e8f0;
-  color: #1e293b;
+  background: var(--bg-hover);
+  color: var(--text-primary);
 }
 
 .noti-badge {
   position: absolute;
   top: 2px;
   right: 2px;
-  background: #ef4444;
-  color: #fff;
+  background: var(--bg-danger);
+  color: var(--text-inverse);
   font-size: 0.6rem;
   font-weight: 700;
   min-width: 16px;
@@ -44,9 +44,9 @@
   right: 0;
   width: 320px;
   max-height: 400px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,.15);
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
   z-index: 1060;
   display: flex;
   flex-direction: column;
@@ -58,7 +58,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .noti-lista {
@@ -72,7 +72,7 @@
   align-items: center;
   gap: 0.25rem;
   padding: 1.5rem 1rem;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .noti-item {
@@ -85,13 +85,13 @@
   position: relative;
 }
 .noti-item:hover {
-  background: #f1f5f9;
+  background: var(--bg-hover);
 }
 .noti-item--nueva {
-  background: #fefce8;
+  background: var(--bg-warning);
 }
 .noti-item--nueva:hover {
-  background: #fef9c3;
+  background: var(--bg-warning);
 }
 
 .noti-icon {
@@ -112,19 +112,19 @@
   margin: 0;
   font-size: 0.825rem;
   line-height: 1.35;
-  color: #334155;
+  color: var(--text-primary);
   word-break: break-word;
 }
 .noti-time {
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .noti-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--accent);
   flex-shrink: 0;
   margin-top: 10px;
 }

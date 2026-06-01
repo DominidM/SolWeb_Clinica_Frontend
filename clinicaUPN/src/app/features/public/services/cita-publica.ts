@@ -21,6 +21,8 @@ export interface DoctorDisponible {
   nombre: string;
   especialidad: string;
   fotoUrl?: string;
+  descripcion?: string;
+  bibliografia?: string;
 }
 
 export interface AgendarRequest {

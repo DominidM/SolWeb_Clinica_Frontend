@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,7 +13,10 @@ import { AuthService } from '../../../core/services/auth';
 })
 export class SidebarComponent {
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    protected themeService: ThemeService,
+  ) {}
 
   // ──────────────────────────────────────────
   // Datos del usuario
@@ -170,6 +174,10 @@ export class SidebarComponent {
   // ──────────────────────────────────────────
   // Acciones
   // ──────────────────────────────────────────
+
+  toggleTheme(): void {
+    this.themeService.toggle();
+  }
 
   cerrarSesion(): void {
     try {

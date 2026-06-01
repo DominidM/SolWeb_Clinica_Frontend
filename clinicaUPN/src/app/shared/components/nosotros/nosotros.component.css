@@ -9,13 +9,13 @@
 }
 
 #nosotros ul li:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 #nosotros .card {
-  border-radius: 12px !important;
+  border-radius: var(--radius-lg) !important;
 }
 
 #nosotros .rounded-3 {
-  border-radius: 12px !important;
+  border-radius: var(--radius-lg) !important;
 }

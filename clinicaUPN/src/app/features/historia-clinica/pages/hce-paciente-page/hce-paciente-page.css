@@ -1,14 +1,14 @@
 .hce-container { max-width: 700px; margin: 0 auto; }
-.empty-state { text-align: center; padding: 2.5rem; background: #f8f9fa; border-radius: 12px; }
+.empty-state { text-align: center; padding: 2.5rem; background: var(--bg-muted); border-radius: 12px; }
 
 .docs-list { display: flex; flex-direction: column; gap: .75rem; }
 
 .doc-card {
-  display: flex; gap: 1rem; align-items: center; background: #fff;
-  border: 1px solid #e9ecef; border-radius: 12px; padding: 1rem;
+  display: flex; gap: 1rem; align-items: center; background: var(--bg-card);
+  border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem;
   transition: box-shadow .2s;
 }
-.doc-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.doc-card:hover { box-shadow: var(--shadow-sm); }
 
 .doc-icon {
   width: 44px; height: 44px; border-radius: 10px;
@@ -16,6 +16,6 @@
   font-size: 1.2rem; flex-shrink: 0;
 }
 .doc-body { flex: 1; min-width: 0; }
-.doc-meta { display: flex; flex-wrap: wrap; gap: .75rem; font-size: .78rem; color: #6c757d; margin-top: 4px; align-items: center; }
+.doc-meta { display: flex; flex-wrap: wrap; gap: .75rem; font-size: .78rem; color: var(--text-muted); margin-top: 4px; align-items: center; }
 .doc-tipo { font-size: .65rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: .03em; }
 .doc-action { flex-shrink: 0; }

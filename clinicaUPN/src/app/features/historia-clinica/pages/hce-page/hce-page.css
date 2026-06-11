@@ -1,6 +1,8 @@
 .hce-container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 24px;
+  min-height: 100%;
 }
 
 .empty-state {

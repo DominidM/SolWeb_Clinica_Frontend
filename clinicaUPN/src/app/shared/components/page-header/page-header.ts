@@ -33,6 +33,11 @@ import { Component, Input } from '@angular/core';
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
     }
 
     .page-header-text {
@@ -45,13 +50,13 @@ import { Component, Input } from '@angular/core';
       font-size: 22px;
       font-weight: 600;
       line-height: 1.3;
-      color: #111827;
+      color: var(--text-primary);
     }
 
     .page-header-subtitle {
       margin: 4px 0 0;
       font-size: 14px;
-      color: #6b7280;
+      color: var(--text-secondary);
       line-height: 1.4;
     }
 

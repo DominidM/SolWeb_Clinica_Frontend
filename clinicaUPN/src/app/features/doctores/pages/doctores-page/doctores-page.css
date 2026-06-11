@@ -1,3 +1,8 @@
+.doctores-container {
+  padding: 24px;
+  min-height: 100%;
+}
+
 .loading,
 .empty {
   text-align: center;

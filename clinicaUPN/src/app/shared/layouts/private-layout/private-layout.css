@@ -1,3 +1,11 @@
+.main-content {
+  flex-grow: 1;
+  background: var(--bg-body);
+  position: relative;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
 .noti-top-bar {
   position: fixed;
   top: 12px;

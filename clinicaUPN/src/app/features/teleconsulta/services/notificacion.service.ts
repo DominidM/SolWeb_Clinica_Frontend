@@ -32,39 +32,30 @@ export class NotificacionService implements OnDestroy {
 
   conectar() {
     const user = this.auth.getUser();
-    if (!user) { console.warn('[NotificacionService] sin usuario'); return; }
-    if (this.stompClient?.active) { console.log('[NotificacionService] ya conectado'); return; }
-
-    console.log('[NotificacionService] conectando STOMP a ws://localhost:8080/ws, rol:', user.rol);
+    if (!user) { return; }
+    if (this.stompClient?.active) { return; }
 
     this.stompClient = new Client({
       brokerURL: 'ws://localhost:8080/ws',
-      debug: (msg: string) => console.log('[STOMP]', msg),
+      reconnectDelay: 0,
+      connectionTimeout: 0,
+      debug: () => {},
       onConnect: () => {
-        console.log('[NotificacionService] STOMP conectado');
         const rol = user.rol;
         if (rol === 'DOCTOR' || rol === 'MEDICO') {
-          console.log('[NotificacionService] suscribiendo a /topic/notificaciones/doctor');
           this.stompClient!.subscribe('/topic/notificaciones/doctor', (msg: IMessage) => {
-            console.log('[NotificacionService] NOTIFICACION RECIBIDA:', msg.body);
             this.agregar(JSON.parse(msg.body));
           });
         }
         if (rol === 'PACIENTE') {
           const topic = `/topic/notificaciones/paciente/${user.email}`;
-          console.log('[NotificacionService] suscribiendo a', topic);
           this.stompClient!.subscribe(topic, (msg: IMessage) => {
-            console.log('[NotificacionService] NOTIFICACION RECIBIDA:', msg.body);
             this.agregar(JSON.parse(msg.body));
           });
         }
       },
-      onStompError: (frame: IFrame) => {
-        console.error('[NotificacionService] STOMP error:', frame.headers['message']);
-      },
-      onWebSocketClose: (evt: CloseEvent) => {
-        console.warn('[NotificacionService] WS cerrado:', evt.code, evt.reason);
-      },
+      onStompError: () => {},
+      onWebSocketClose: () => {},
     });
     this.stompClient.activate();
   }

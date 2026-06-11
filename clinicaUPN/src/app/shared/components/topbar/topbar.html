@@ -1,0 +1,26 @@
+<header class="topbar">
+  <div class="topbar-left">
+    <nav class="breadcrumb">
+      <a class="crumb-link" routerLink="/app">Inicio</a>
+      @for (crumb of breadcrumbs(); track crumb.path) {
+        <span class="crumb-sep">/</span>
+        @if ($last) {
+          <span class="crumb-current">{{ crumb.label }}</span>
+        } @else {
+          <a class="crumb-link" [routerLink]="crumb.path">{{ crumb.label }}</a>
+        }
+      }
+    </nav>
+  </div>
+
+  <div class="topbar-right">
+    <div class="user-badge">
+      <div class="user-badge-avatar">{{ (user?.nombre?.[0] ?? 'U') | uppercase }}</div>
+      <div class="user-badge-info">
+        <span class="user-badge-name">{{ user?.nombre ?? 'Usuario' }}</span>
+        <span class="user-badge-rol">{{ rolLabel }}</span>
+      </div>
+    </div>
+    <app-notificacion-bell />
+  </div>
+</header>

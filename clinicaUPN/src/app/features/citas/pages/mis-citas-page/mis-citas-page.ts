@@ -28,6 +28,9 @@ export class MisCitasPageComponent implements OnInit {
   readonly reprogError = signal('');
   readonly cancelandoId = signal<number | null>(null);
 
+  readonly mostrarModalCancelar = signal(false);
+  readonly citaACancelar = signal<CitaDTO | null>(null);
+
   slotsDisponibles = [
     '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
     '11:00', '11:30', '12:00', '12:30',
@@ -51,6 +54,14 @@ export class MisCitasPageComponent implements OnInit {
         citasState.cargando.set(false);
       }
     });
+  }
+
+  esPasada(cita: CitaDTO): boolean {
+    const ahora = new Date();
+    const [y, m, d] = cita.fecha.split('-').map(Number);
+    const [hh, mm] = cita.hora.split(':').map(Number);
+    const citaDate = new Date(y, m - 1, d, hh, mm);
+    return citaDate < ahora;
   }
 
   abrirReprogramar(cita: CitaDTO) {
@@ -87,16 +98,29 @@ export class MisCitasPageComponent implements OnInit {
     });
   }
 
-  cancelarCita(id: number) {
-    if (!confirm('¿Estás seguro de cancelar esta cita?')) return;
-    this.cancelandoId.set(id);
-    this.citaService.cancelar(id).subscribe({
+  abrirModalCancelar(cita: CitaDTO) {
+    this.citaACancelar.set(cita);
+    this.mostrarModalCancelar.set(true);
+  }
+
+  cerrarModalCancelar() {
+    this.mostrarModalCancelar.set(false);
+    this.citaACancelar.set(null);
+  }
+
+  confirmarCancelacion() {
+    const cita = this.citaACancelar();
+    if (!cita?.idCita) return;
+    this.cancelandoId.set(cita.idCita);
+    this.citaService.cancelar(cita.idCita).subscribe({
       next: () => {
-        citasState.eliminarCita(id);
+        citasState.eliminarCita(cita.idCita!);
+        this.cerrarModalCancelar();
         this.cancelandoId.set(null);
       },
       error: () => {
-        alert('Error al cancelar la cita.');
+        this.errorMsg.set('Error al cancelar la cita.');
+        this.cerrarModalCancelar();
         this.cancelandoId.set(null);
       }
     });

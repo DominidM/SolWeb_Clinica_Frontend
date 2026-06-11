@@ -67,8 +67,8 @@
                     [disabled]="cancelandoId() === cita.idCita">
               <i class="bi bi-arrow-clockwise"></i>
             </button>
-            <button class="btn btn-sm btn-outline-danger" (click)="cancelarCita(cita.idCita!)"
-                    [disabled]="cancelandoId() === cita.idCita">
+            <button class="btn btn-sm btn-outline-danger" (click)="abrirModalCancelar(cita)"
+                    [disabled]="cancelandoId() === cita.idCita || esPasada(cita)">
               @if (cancelandoId() === cita.idCita) {
                 <span class="spinner-border spinner-border-sm"></span>
               } @else {
@@ -121,6 +121,36 @@
             <span class="spinner-border spinner-border-sm me-1"></span>
           }
           {{ reprogLoading() ? 'Guardando...' : 'Confirmar reprogramación' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal cancelar -->
+@if (mostrarModalCancelar()) {
+  <div class="modal-overlay" (click)="cerrarModalCancelar()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h6 class="fw-bold mb-0">Cancelar cita</h6>
+        <button class="btn-close" (click)="cerrarModalCancelar()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center py-2">
+          <i class="bi bi-exclamation-triangle fs-1 text-danger mb-3 d-block"></i>
+          <p class="mb-1 fw-semibold">¿Estás seguro de cancelar esta cita?</p>
+          <p class="text-muted small mb-0">
+            {{ citaACancelar()?.especialidad }} &middot; {{ citaACancelar()?.fecha | date:'dd/MM/yyyy' }} &middot; {{ citaACancelar()?.hora }} hrs
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-outline-secondary" (click)="cerrarModalCancelar()">Volver</button>
+        <button class="btn btn-sm btn-danger" (click)="confirmarCancelacion()" [disabled]="cancelandoId() !== null">
+          @if (cancelandoId() !== null) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+          }
+          {{ cancelandoId() !== null ? 'Cancelando...' : 'Sí, cancelar cita' }}
         </button>
       </div>
     </div>

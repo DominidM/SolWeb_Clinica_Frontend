@@ -2,6 +2,7 @@
 <app-page-header title="Doctores" subtitle="Gestión de doctores y configuración de especialidades"></app-page-header>
 
 <div class="toolbar">
+  <span class="toolbar-count" *ngIf="!loading() && doctores().length">{{ doctores().length }} doctores</span>
   <button class="btn btn-primary" (click)="abrirCrear()">+ Crear Doctor</button>
 </div>
 

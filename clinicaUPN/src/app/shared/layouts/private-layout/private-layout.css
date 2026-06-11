@@ -1,14 +1,21 @@
-.main-content {
-  flex-grow: 1;
-  background: var(--bg-body);
-  position: relative;
-  overflow-y: auto;
+.layout-root {
+  display: flex;
   min-height: 100vh;
 }
 
-.noti-top-bar {
-  position: fixed;
-  top: 12px;
-  right: 20px;
-  z-index: 1040;
+.layout-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-body);
+}
+
+.layout-content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
 }

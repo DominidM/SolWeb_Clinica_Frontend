@@ -19,11 +19,11 @@ import { Component, Input } from '@angular/core';
   styles: [`
     :host {
       display: block;
-      animation: fadeSlideIn 0.25s ease-out;
+      animation: fadeSlideIn 0.2s ease-out;
     }
 
     @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(-8px); }
+      from { opacity: 0; transform: translateY(-6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
@@ -33,11 +33,6 @@ import { Component, Input } from '@angular/core';
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 24px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 20px 24px;
-      box-shadow: var(--shadow-sm);
     }
 
     .page-header-text {
@@ -47,15 +42,15 @@ import { Component, Input } from '@angular/core';
 
     .page-header-title {
       margin: 0;
-      font-size: 22px;
-      font-weight: 600;
+      font-size: 20px;
+      font-weight: 700;
       line-height: 1.3;
       color: var(--text-primary);
     }
 
     .page-header-subtitle {
       margin: 4px 0 0;
-      font-size: 14px;
+      font-size: 13.5px;
       color: var(--text-secondary);
       line-height: 1.4;
     }

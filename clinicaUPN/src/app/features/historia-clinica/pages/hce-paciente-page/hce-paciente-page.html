@@ -1,4 +1,5 @@
 <div class="hce-container">
+
   <app-page-header title="Historia Clínica" subtitle="Documentos y reportes de tu historial médico">
     <button class="btn btn-outline-primary btn-sm" (click)="cargar()">
       <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
@@ -13,7 +14,11 @@
   }
 
   @if (error() && !cargando()) {
-    <div class="alert alert-danger">{{ error() }}</div>
+    <div class="alert alert-danger d-flex align-items-center gap-2">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>{{ error() }}</span>
+      <button class="btn btn-outline-danger btn-sm ms-auto" (click)="cargar()">Reintentar</button>
+    </div>
   }
 
   @if (!cargando() && !error()) {
@@ -23,40 +28,50 @@
         <p class="text-muted mb-0">No tienes documentos disponibles</p>
         <small class="text-muted">Los documentos de tus consultas aparecerán aquí</small>
       </div>
-    }
+    } @else {
+      <div class="doc-list">
+        @for (doc of documentos(); track $index) {
+          <div class="doc-card">
+            <div
+              class="doc-icon"
+              [style.background]="getColor(doc.especialidad) + '15'"
+              [style.color]="getColor(doc.especialidad)"
+            >
+              <i class="bi {{ getIcon(doc.especialidad) }}"></i>
+            </div>
 
-    <div class="docs-list">
-      @for (doc of documentos(); track $index) {
-        <div class="doc-card">
-          <div
-            class="doc-icon"
-            [style.background]="getColor(doc.especialidad) + '15'"
-            [style.color]="getColor(doc.especialidad)"
-          >
-            <i class="bi {{ getIcon(doc.especialidad) }}"></i>
-          </div>
-          <div class="doc-body">
-            <strong>{{ doc.descripcionDiag }}</strong>
-            <div class="doc-meta">
-              <span
-                class="doc-tipo"
-                [style.background]="getColor(doc.especialidad) + '20'"
-                [style.color]="getColor(doc.especialidad)"
-              >
-                {{ doc.especialidad }}
-              </span>
-              <span><i class="bi bi-calendar me-1"></i>{{ doc.fecha | date: 'dd/MM/yyyy' }}</span>
-              <span><i class="bi bi-person-badge me-1"></i>{{ doc.nombreDoctor }}</span>
+            <div class="doc-body">
+              <span class="doc-title">{{ doc.descripcionDiag }}</span>
+
+              <div class="doc-meta">
+                <span class="doc-badge">{{ doc.especialidad }}</span>
+                <span class="doc-cie10">{{ doc.diagnosticoCie10 }}</span>
+                <span class="doc-info-item">
+                  <i class="bi bi-calendar"></i>
+                  {{ doc.fecha | date: 'dd/MM/yyyy HH:mm' }}
+                </span>
+                <span class="doc-info-item">
+                  <i class="bi bi-person-badge"></i>
+                  {{ doc.nombreDoctor }}
+                </span>
+              </div>
             </div>
-            <div class="doc-detalle mt-2 small text-muted">
-              <span><strong>CIE-10:</strong> {{ doc.diagnosticoCie10 }}</span>
-              @if (doc.prescripcion) {
-                <span class="ms-3"><strong>Prescripción:</strong> {{ doc.prescripcion }}</span>
-              }
+
+            <div class="doc-actions">
+              <button class="pdf-btn" (click)="descargarPDF(doc)" title="Descargar PDF">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                PDF
+              </button>
             </div>
           </div>
-        </div>
-      }
-    </div>
+        }
+      </div>
+    }
   }
 </div>

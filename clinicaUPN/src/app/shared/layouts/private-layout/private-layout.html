@@ -1,9 +1,9 @@
-<div class="d-flex" style="min-height: 100vh">
+<div class="layout-root">
   <app-sidebar />
-  <main class="main-content">
-    <div class="noti-top-bar">
-      <app-notificacion-bell />
-    </div>
-    <router-outlet />
-  </main>
+  <div class="layout-main">
+    <app-topbar />
+    <main class="layout-content">
+      <router-outlet />
+    </main>
+  </div>
 </div>

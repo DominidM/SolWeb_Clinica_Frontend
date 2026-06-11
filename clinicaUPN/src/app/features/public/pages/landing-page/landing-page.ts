@@ -46,26 +46,19 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     { key: 'fis',  titulo: 'Fisioterapia',      icon: 'bi-person-walking',    tituloKey: 'srv.fisioterapia',    descKey: 'srv.fisioterapiaDesc',    imagen: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80' },
   ];
 
-  especialidades = [
-    {
-      nombre: 'Dra. María Torres',
-      cargoKey: 'doc.medicina',
-      testimonioKey: 'doc.torresTestimonio',
-      foto: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      nombre: 'Dr. Carlos Mendoza',
-      cargoKey: 'doc.psicologia',
-      testimonioKey: 'doc.mendozaTestimonio',
-      foto: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&auto=format&fit=crop&q=80',
-    },
-    {
-      nombre: 'Dra. Ana Quispe',
-      cargoKey: 'doc.nutricion',
-      testimonioKey: 'doc.quispeTestimonio',
-      foto: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&auto=format&fit=crop&q=80',
-    },
+  stockFotos = [
+    'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1612531386530-97286d97c2b2?w=400&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&auto=format&fit=crop&q=80',
   ];
+
+  especialidades = signal<{ nombre: string; especialidad: string; foto: string; descripcion: string; bibliografia: string }[]>([]);
 
   features = [
     { key: 'hce',    titleKey: 'feat.hce',             descKey: 'feat.hceDesc',       bg: '#E6F1FB', icon: 'bi-file-earmark-text-fill', color: '#185FA5' },
@@ -290,14 +283,33 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   private interval: any;
 
   prevIndex = computed(
-    () => (this.activeIndex() - 1 + this.especialidades.length) % this.especialidades.length,
+    () => (this.activeIndex() - 1 + this.especialidades().length) % this.especialidades().length,
   );
-  nextIndex = computed(() => (this.activeIndex() + 1) % this.especialidades.length);
+  nextIndex = computed(() => (this.activeIndex() + 1) % this.especialidades().length);
 
   ngOnInit() {
     import('@splinetool/viewer');
+    this.cargarEspecialidades();
     this.interval = setInterval(() => this.goNext(), 5000);
     this.startServicioInterval();
+  }
+
+  cargarEspecialidades(): void {
+    this.citaService.listarTodosDoctores().subscribe({
+      next: (docs) => {
+        const items = docs.map((d) => ({
+          nombre: d.nombre,
+          especialidad: d.especialidad,
+          foto: d.fotoUrl || 'https://via.placeholder.com/400x400?text=Sin+foto',
+          descripcion: d.descripcion || '',
+          bibliografia: d.bibliografia || '',
+        }));
+        this.especialidades.set(items);
+      },
+      error: () => {
+        this.especialidades.set([]);
+      },
+    });
   }
 
   ngOnDestroy() {
@@ -306,21 +318,24 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   }
 
   goNext() {
+    const len = this.especialidades().length;
+    if (len === 0) return;
     clearInterval(this.interval);
-    this.activeIndex.set((this.activeIndex() + 1) % this.especialidades.length);
+    this.activeIndex.set((this.activeIndex() + 1) % len);
     this.interval = setInterval(() => this.goNext(), 5000);
   }
   goPrev() {
+    const len = this.especialidades().length;
+    if (len === 0) return;
     clearInterval(this.interval);
-    this.activeIndex.set(
-      (this.activeIndex() - 1 + this.especialidades.length) % this.especialidades.length,
-    );
+    this.activeIndex.set((this.activeIndex() - 1 + len) % len);
     this.interval = setInterval(() => this.goNext(), 5000);
   }
 
   getCardClass(i: number): string {
     const active = this.activeIndex();
-    const total = this.especialidades.length;
+    const total = this.especialidades().length;
+    if (total === 0) return 'card-hidden';
     if (i === active) return 'card-center';
     if (i === (active - 1 + total) % total) return 'card-left';
     if (i === (active + 1) % total) return 'card-right';

@@ -20,6 +20,9 @@ export interface DoctorDisponible {
   idDoctor: number;
   nombre: string;
   especialidad: string;
+  fotoUrl?: string;
+  descripcion?: string;
+  bibliografia?: string;
 }
 
 export interface AgendarRequest {
@@ -72,7 +75,14 @@ export class CitaPublicaService {
       .pipe(map(r => r.data));
   }
 
-  // ── 2. Listar doctores ──
+  // ── 2. Listar todos los doctores (landing page) ──
+  listarTodosDoctores(): Observable<DoctorDisponible[]> {
+    return this.http
+      .get<ApiResponse<DoctorDisponible[]>>(`${this.base}/doctores`)
+      .pipe(map(r => r.data));
+  }
+
+  // ── 3. Listar doctores por especialidad ──
   listarDoctores(especialidad: string): Observable<DoctorDisponible[]> {
     return this.http
       .get<ApiResponse<DoctorDisponible[]>>(

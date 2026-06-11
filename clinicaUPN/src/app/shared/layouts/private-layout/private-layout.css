@@ -1,0 +1,6 @@
+.noti-top-bar {
+  position: fixed;
+  top: 12px;
+  right: 20px;
+  z-index: 1040;
+}

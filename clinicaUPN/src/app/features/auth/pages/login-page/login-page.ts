@@ -2,15 +2,12 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth';
+import { ChangePasswordModalComponent } from '../../../../shared/components/change-password-modal/change-password-modal';
 
-// ============================================================
-//  login-page.component.ts
-//  Cambio clave: username → email (alineado con el backend)
-// ============================================================
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, ChangePasswordModalComponent],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
 })
@@ -22,6 +19,8 @@ export class LoginPageComponent {
   password = signal('');
   error = signal('');
   loading = signal(false);
+  showPasswordModal = signal(false);
+  redirectRol = signal('');
 
   onLogin() {
     if (!this.email() || !this.password()) {
@@ -39,18 +38,13 @@ export class LoginPageComponent {
       })
       .subscribe({
         next: (res) => {
-          const rol = (res.data.rol ?? '').toUpperCase();
-          const rutas: Record<string, string> = {
-            ADMINISTRADOR: '/app/pacientes',
-            ADMINISTRATIVO: '/app/pacientes',
-            DOCTOR: '/app/citas',
-            MEDICO: '/app/citas',
-            PRACTICANTE: '/app/practicantes/agenda',
-            DIRECTOR: '/app/dashboard',
-            PACIENTE: '/app/mis-citas',
-            PATIENT: '/app/mis-citas',
-          };
-          this.router.navigate([rutas[rol] || '/app']);
+          this.loading.set(false);
+          if (res.data.passwordDefault) {
+            this.redirectRol.set((res.data.rol ?? '').toUpperCase());
+            this.showPasswordModal.set(true);
+          } else {
+            this.navegar(res.data.rol);
+          }
         },
         error: (err) => {
           this.error.set(
@@ -61,5 +55,25 @@ export class LoginPageComponent {
           this.loading.set(false);
         },
       });
+  }
+
+  navegar(rol: string): void {
+    const r = (rol ?? '').toUpperCase();
+    const rutas: Record<string, string> = {
+      ADMINISTRADOR: '/app/pacientes',
+      ADMINISTRATIVO: '/app/pacientes',
+      DOCTOR: '/app/citas',
+      MEDICO: '/app/citas',
+      PRACTICANTE: '/app/practicantes/agenda',
+      DIRECTOR: '/app/dashboard',
+      PACIENTE: '/app/mis-citas',
+      PATIENT: '/app/mis-citas',
+    };
+    this.router.navigate([rutas[r] || '/app']);
+  }
+
+  onModalClose(): void {
+    this.showPasswordModal.set(false);
+    this.navegar(this.redirectRol());
   }
 }

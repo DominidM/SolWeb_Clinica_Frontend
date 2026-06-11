@@ -1,15 +1,15 @@
 .perfil-container { max-width: 640px; margin: 0 auto; }
 
 .perfil-card {
-  background: #fff; border: 1px solid #e9ecef; border-radius: 16px; padding: 1.5rem;
+  background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem;
 }
 
 .perfil-avatar {
   display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--border-color);
 }
 .avatar-circle {
-  width: 56px; height: 56px; border-radius: 50%; background: #185FA5; color: #fff;
+  width: 56px; height: 56px; border-radius: 50%; background: var(--accent); color: var(--text-inverse);
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 1.1rem; flex-shrink: 0;
 }
@@ -20,5 +20,5 @@
 
 .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 .info-item.full { grid-column: 1 / -1; }
-.info-label { display: block; font-size: .75rem; font-weight: 600; color: #6c757d; margin-bottom: 2px; }
-.info-value { font-size: .9rem; color: #212529; }
+.info-label { display: block; font-size: .75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; }
+.info-value { font-size: .9rem; color: var(--text-primary); }

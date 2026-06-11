@@ -1,6 +1,8 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../../core/services/auth';
+import { Client } from '@stomp/stompjs';
 
 export interface Mensaje {
   id: number;
@@ -17,26 +19,63 @@ export interface Mensaje {
   templateUrl: './chat.html',
   styleUrl: './chat.css',
 })
-export class ChatComponent {
+export class ChatComponent implements OnInit, OnDestroy {
   consultaId = input.required<number>();
+  private auth = inject(AuthService);
 
-  mensajes = signal<Mensaje[]>([
-    { id: 1, usuario: 'Dr. Ricardo Palma', texto: 'Hola, ¿cómo te sientes hoy?', hora: '10:00', propio: false },
-    { id: 2, usuario: 'Tú', texto: 'Buenos días doctor, mejorando gracias.', hora: '10:01', propio: true },
-  ]);
-
+  mensajes = signal<Mensaje[]>([]);
   nuevoTexto = signal('');
+  private stompClient: Client | null = null;
+
+  ngOnInit() {
+    this.conectarWebSocket();
+  }
+
+  ngOnDestroy() {
+    if (this.stompClient) {
+      this.stompClient.deactivate();
+    }
+  }
+
+  private conectarWebSocket() {
+    this.stompClient = new Client({
+      brokerURL: 'ws://localhost:8080/ws',
+      debug: () => {},
+      onConnect: () => {
+        const destino = `/topic/chat/${this.consultaId()}`;
+        this.stompClient!.subscribe(destino, (msg) => {
+          const body = JSON.parse(msg.body);
+          this.mensajes.update(msjs => [...msjs, {
+            id: body.id,
+            usuario: body.usuario,
+            texto: body.texto,
+            hora: body.hora,
+            propio: body.email === this.auth.getUser()?.email,
+          }]);
+        });
+      },
+    });
+    this.stompClient.activate();
+  }
 
   enviar() {
     const texto = this.nuevoTexto().trim();
     if (!texto) return;
-    this.mensajes.update(msjs => [...msjs, {
-      id: Date.now(),
-      usuario: 'Tú',
+    if (!this.stompClient?.connected) return;
+
+    const user = this.auth.getUser();
+    const mensaje = {
+      consultaId: this.consultaId(),
+      usuario: user?.nombre || 'Usuario',
+      email: user?.email || '',
       texto,
-      hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      propio: true,
-    }]);
+      rol: user?.rol || '',
+    };
+
+    this.stompClient.publish({
+      destination: `/app/chat/${this.consultaId()}`,
+      body: JSON.stringify(mensaje),
+    });
     this.nuevoTexto.set('');
   }
 }

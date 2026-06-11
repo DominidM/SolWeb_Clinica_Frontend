@@ -2,7 +2,7 @@ import { Component, input, signal, inject, OnInit, OnDestroy } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth';
-import { Client } from '@stomp/stompjs';
+import { Client, IMessage } from '@stomp/stompjs';
 
 export interface Mensaje {
   id: number;
@@ -43,7 +43,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       debug: () => {},
       onConnect: () => {
         const destino = `/topic/chat/${this.consultaId()}`;
-        this.stompClient!.subscribe(destino, (msg) => {
+        this.stompClient!.subscribe(destino, (msg: IMessage) => {
           const body = JSON.parse(msg.body);
           this.mensajes.update(msjs => [...msjs, {
             id: body.id,

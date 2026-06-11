@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Client } from '@stomp/stompjs';
+import { Client, IFrame, IMessage } from '@stomp/stompjs';
 import { AuthService } from '../../../core/services/auth';
 
 export interface Notificacion {
@@ -39,13 +39,13 @@ export class NotificacionService implements OnDestroy {
 
     this.stompClient = new Client({
       brokerURL: 'ws://localhost:8080/ws',
-      debug: (msg) => console.log('[STOMP]', msg),
+      debug: (msg: string) => console.log('[STOMP]', msg),
       onConnect: () => {
         console.log('[NotificacionService] STOMP conectado');
         const rol = user.rol;
         if (rol === 'DOCTOR' || rol === 'MEDICO') {
           console.log('[NotificacionService] suscribiendo a /topic/notificaciones/doctor');
-          this.stompClient!.subscribe('/topic/notificaciones/doctor', (msg) => {
+          this.stompClient!.subscribe('/topic/notificaciones/doctor', (msg: IMessage) => {
             console.log('[NotificacionService] NOTIFICACION RECIBIDA:', msg.body);
             this.agregar(JSON.parse(msg.body));
           });
@@ -53,16 +53,16 @@ export class NotificacionService implements OnDestroy {
         if (rol === 'PACIENTE') {
           const topic = `/topic/notificaciones/paciente/${user.email}`;
           console.log('[NotificacionService] suscribiendo a', topic);
-          this.stompClient!.subscribe(topic, (msg) => {
+          this.stompClient!.subscribe(topic, (msg: IMessage) => {
             console.log('[NotificacionService] NOTIFICACION RECIBIDA:', msg.body);
             this.agregar(JSON.parse(msg.body));
           });
         }
       },
-      onStompError: (frame) => {
+      onStompError: (frame: IFrame) => {
         console.error('[NotificacionService] STOMP error:', frame.headers['message']);
       },
-      onWebSocketClose: (evt) => {
+      onWebSocketClose: (evt: CloseEvent) => {
         console.warn('[NotificacionService] WS cerrado:', evt.code, evt.reason);
       },
     });

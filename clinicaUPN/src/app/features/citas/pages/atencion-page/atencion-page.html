@@ -12,7 +12,30 @@
   }
 
   @if (consulta(); as cx) {
-    <!-- Paso: Diagnóstico -->
+    <!-- Datos del paciente -->
+    @if (pacienteInfo(); as p) {
+      <div class="patient-info-bar">
+        <div class="patient-field">
+          <span class="field-label">Codigo Estudiante</span>
+          <span class="field-value auto-value">{{ p.codigoEstudiante || '—' }}</span>
+          <span class="auto-badge">Auto</span>
+        </div>
+        <div class="patient-field">
+          <span class="field-label">Paciente</span>
+          <span class="field-value">{{ p.nombre }} {{ p.apellido }}</span>
+        </div>
+        <div class="patient-field">
+          <span class="field-label">Edad / Sexo</span>
+          <span class="field-value">{{ p.fechaNacimiento | date:'dd/MM/yyyy' }} / {{ p.genero }}</span>
+        </div>
+        <div class="patient-field">
+          <span class="field-label">Doctor</span>
+          <span class="field-value">{{ cx.doctor }}</span>
+        </div>
+      </div>
+    }
+
+    <!-- Paso: Diagnostico -->
     @if (paso() === 'diagnostico') {
       <section class="form-section">
         <h2>Registrar Diagnóstico</h2>
@@ -92,6 +115,12 @@
               <span>{{ cx.prescripcion }}</span>
             </div>
           }
+          @if (pacienteInfo(); as p) {
+            <div class="resumen-item">
+              <strong>Código Estudiante:</strong>
+              <span>{{ p.codigoEstudiante || '—' }}</span>
+            </div>
+          }
         </div>
         <button class="btn-primary" (click)="volverAgenda()">Volver a la Agenda</button>
       </section>
@@ -99,9 +128,9 @@
 
     <!-- Indicador de progreso -->
     <div class="progress-bar">
-      <span [class.active]="paso() === 'diagnostico' || paso() === 'tratamiento' || paso() === 'prescripcion' || paso() === 'completo'">Diagnóstico</span>
+      <span [class.active]="paso() === 'diagnostico' || paso() === 'tratamiento' || paso() === 'prescripcion' || paso() === 'completo'">Diagnostico</span>
       <span [class.active]="paso() === 'tratamiento' || paso() === 'prescripcion' || paso() === 'completo'">Tratamiento</span>
-      <span [class.active]="paso() === 'prescripcion' || paso() === 'completo'">Prescripción</span>
+      <span [class.active]="paso() === 'prescripcion' || paso() === 'completo'">Prescripcion</span>
       <span [class.active]="paso() === 'completo'">Completado</span>
     </div>
   }

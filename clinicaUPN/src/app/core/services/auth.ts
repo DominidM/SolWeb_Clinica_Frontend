@@ -4,11 +4,6 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-// ============================================================
-//  auth.service.ts
-//  core/services/auth.service.ts
-// ============================================================
-
 export interface LoginRequest {
   email: string;
   password: string;
@@ -22,7 +17,26 @@ export interface LoginResponse {
     rol:   string;
     nombre: string;
     email:  string;
+    passwordDefault: boolean;
   };
+}
+
+export interface UserData {
+  token: string;
+  rol: string;
+  nombre: string;
+  email: string;
+  passwordDefault: boolean;
+}
+
+export interface UsuarioPerfil {
+  id: number;
+  nombre: string;
+  apellido: string;
+  email: string;
+  telefono: string;
+  rol: string;
+  estado: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -34,7 +48,6 @@ export class AuthService {
   private readonly TOKEN_KEY = 'clinica_token';
   private readonly USER_KEY  = 'clinica_user';
 
-  // --- Login ---
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.API}/login`, credentials).pipe(
       tap(res => {
@@ -46,31 +59,50 @@ export class AuthService {
     );
   }
 
-  // --- Logout ---
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
     this.router.navigate(['/login']);
   }
 
-  // --- Obtener token ---
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
-  // --- Obtener usuario actual ---
-  getUser(): LoginResponse['data'] | null {
+  getUser(): UserData | null {
     const raw = localStorage.getItem(this.USER_KEY);
     return raw ? JSON.parse(raw) : null;
   }
 
-  // --- Verificar si está autenticado ---
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
 
-  // --- Obtener rol ---
   getRol(): string | null {
     return this.getUser()?.rol ?? null;
+  }
+
+  isPasswordDefault(): boolean {
+    return this.getUser()?.passwordDefault ?? false;
+  }
+
+  marcarPasswordCambiada(): void {
+    const user = this.getUser();
+    if (user) {
+      user.passwordDefault = false;
+      localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    }
+  }
+
+  obtenerPerfil(): Observable<{ success: boolean; data: UsuarioPerfil }> {
+    return this.http.get<{ success: boolean; data: UsuarioPerfil }>(`${this.API}/perfil`);
+  }
+
+  actualizarPerfil(data: { nombre: string; apellido: string; telefono: string }): Observable<{ success: boolean; data: UsuarioPerfil }> {
+    return this.http.put<{ success: boolean; data: UsuarioPerfil }>(`${this.API}/perfil`, data);
+  }
+
+  cambiarPassword(passwordActual: string, passwordNueva: string): Observable<{ success: boolean; message: string }> {
+    return this.http.put<{ success: boolean; message: string }>(`${this.API}/cambiar-password`, { passwordActual, passwordNueva });
   }
 }

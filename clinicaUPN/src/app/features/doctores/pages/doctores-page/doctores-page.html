@@ -1,5 +1,9 @@
 <app-page-header title="Doctores" subtitle="Gestión de doctores y configuración de especialidades"></app-page-header>
 
+<div class="toolbar">
+  <button class="btn btn-primary" (click)="abrirCrear()">+ Crear Doctor</button>
+</div>
+
 <div *ngIf="loading()" class="loading">Cargando doctores...</div>
 @if (error(); as errMsg) {
   <div class="error">{{ errMsg }}</div>
@@ -13,6 +17,7 @@
           <th>Nombre</th>
           <th>Email</th>
           <th>Especialidad</th>
+          <th>CMP</th>
           <th>Teléfono</th>
           <th>Estado</th>
           <th>Acciones</th>
@@ -30,6 +35,7 @@
                 <input type="text" class="form-control form-control-sm" [(ngModel)]="especialidadEditando" placeholder="Nueva especialidad" />
               }
             </td>
+            <td>{{ doctor.cmp }}</td>
             <td>{{ doctor.telefono }}</td>
             <td>
               <span class="estado-badge" [class.activo]="doctor.estado === 'ACTIVO'" [class.inactivo]="doctor.estado === 'INACTIVO'">
@@ -39,6 +45,10 @@
             <td>
               @if (doctorEditando()?.idDoctor !== doctor.idDoctor) {
                 <button class="btn btn-sm btn-outline-primary" (click)="editarEspecialidad(doctor)">Cambiar especialidad</button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="abrirEditar(doctor)">Editar</button>
+                @if (doctor.estado === 'ACTIVO') {
+                  <button class="btn btn-sm btn-outline-danger" (click)="confirmarEliminar(doctor)">Desactivar</button>
+                }
               } @else {
                 <button class="btn btn-sm btn-success" (click)="guardarEspecialidad()">Guardar</button>
                 <button class="btn btn-sm btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
@@ -55,3 +65,62 @@
   <div class="empty">No hay doctores registrados.</div>
 }
 
+<!-- Modal Crear/Editar Doctor -->
+@if (modalVisible()) {
+  <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ modalTitle() }}</h2>
+      </div>
+
+      @if (error()) {
+        <div class="alert-error">{{ error() }}</div>
+      }
+
+      <div class="form-group">
+        <label>Nombre *</label>
+        <input type="text" class="form-input" [(ngModel)]="formDoctor().nombre" placeholder="Nombre" />
+      </div>
+      <div class="form-group">
+        <label>Apellido *</label>
+        <input type="text" class="form-input" [(ngModel)]="formDoctor().apellido" placeholder="Apellido" />
+      </div>
+      @if (!formDoctor().id) {
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" class="form-input" [(ngModel)]="formDoctor().email" placeholder="correo@ejemplo.com" />
+        </div>
+      }
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input type="text" class="form-input" [(ngModel)]="formDoctor().telefono" placeholder="Teléfono" />
+      </div>
+      <div class="form-group">
+        <label>Especialidad *</label>
+        <select class="form-input" [(ngModel)]="formDoctor().especialidad">
+          <option value="" disabled>Seleccionar especialidad</option>
+          @for (esp of especialidadesDisponibles(); track esp.idEspecialidad) {
+            <option [value]="esp.nombre">{{ esp.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Foto</label>
+        @if (fotoPreview(); as prev) {
+          <div class="foto-preview">
+            <img [src]="prev" alt="Preview" class="foto-preview-img" />
+          </div>
+        }
+        <input type="file" class="form-input" accept="image/*" (change)="onFotoSeleccionada($event)" />
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="cerrarModal()" [disabled]="guardando()">Cancelar</button>
+        <button class="btn-save" (click)="guardarDoctor()" [disabled]="guardando() || !formDoctor().nombre || !formDoctor().apellido || (!formDoctor().id && !formDoctor().email) || !formDoctor().especialidad">
+          {{ guardando() ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

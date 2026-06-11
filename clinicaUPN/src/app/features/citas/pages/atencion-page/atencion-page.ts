@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
 import { ConsultaService, ConsultaResponse } from '../../services/consulta.service';
 import { CitaService, AgendaItem } from '../../services/cita';
+import { PacienteService, PacienteDTO } from '../../../pacientes/services/paciente';
 
 @Component({
   selector: 'app-atencion-page',
@@ -18,9 +19,11 @@ export class AtencionPageComponent implements OnInit {
   private router = inject(Router);
   private consultaService = inject(ConsultaService);
   private citaService = inject(CitaService);
+  private pacienteService = inject(PacienteService);
 
   cita = signal<AgendaItem | null>(null);
   consulta = signal<ConsultaResponse | null>(null);
+  pacienteInfo = signal<PacienteDTO | null>(null);
   loading = signal(true);
   error = signal('');
 
@@ -55,6 +58,7 @@ export class AtencionPageComponent implements OnInit {
         const encontrada = citas.find(c => c.idCita === idCita);
         if (encontrada) {
           this.cita.set(encontrada);
+          this.cargarPaciente(encontrada.idPaciente);
           this.iniciarConsulta(idCita);
         } else {
           this.error.set('Cita no encontrada en la agenda de hoy');
@@ -65,6 +69,12 @@ export class AtencionPageComponent implements OnInit {
         this.error.set('Error al cargar la cita');
         this.loading.set(false);
       },
+    });
+  }
+
+  private cargarPaciente(idPaciente: number): void {
+    this.pacienteService.buscarPorId(idPaciente).subscribe({
+      next: (paciente) => this.pacienteInfo.set(paciente),
     });
   }
 

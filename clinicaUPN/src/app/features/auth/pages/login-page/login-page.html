@@ -44,4 +44,8 @@
     </div>
 
   </div>
+
+  @if (showPasswordModal()) {
+    <app-change-password-modal (onClose)="onModalClose()" />
+  }
 </div>

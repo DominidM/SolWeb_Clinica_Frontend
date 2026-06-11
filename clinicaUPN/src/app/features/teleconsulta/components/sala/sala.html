@@ -24,31 +24,25 @@
     </div>
 
     <div class="sala-main">
-      <!-- Video -->
-      <div class="sala-video">
-        <div class="video-placeholder">
-          <i class="bi bi-camera-video-fill"></i>
-          <p class="mt-2 mb-0 small text-muted">Video en vivo</p>
-          <p class="small text-muted mb-0">{{ c.medico }} | {{ c.fecha | date:'dd/MM/yyyy' }} {{ c.hora }} hrs</p>
-        </div>
-
-        <div class="sala-controls">
-          <button class="control-btn" [class.active]="micActivo()" (click)="toggleMic()" title="Micrófono">
-            <i class="bi" [class.bi-mic-fill]="micActivo()" [class.bi-mic-mute-fill]="!micActivo()"></i>
-          </button>
-          <button class="control-btn" [class.active]="camActivo()" (click)="toggleCam()" title="Cámara">
-            <i class="bi" [class.bi-camera-video-fill]="camActivo()" [class.bi-camera-video-off-fill]="!camActivo()"></i>
-          </button>
-          <button class="control-btn control-btn--danger" (click)="salir()" title="Colgar">
-            <i class="bi bi-telephone-x-fill"></i>
-          </button>
-        </div>
-      </div>
+      <!-- Jitsi Meet -->
+      <div class="sala-video" #jitsiContainer></div>
 
       <!-- Chat -->
       <div class="sala-chat">
         <app-chat [consultaId]="c.idTeleconsulta ?? 0" />
       </div>
+    </div>
+
+    <div class="sala-controls">
+      <button class="control-btn" [class.active]="micActivo()" (click)="toggleMic()" title="Micrófono">
+        <i class="bi" [class.bi-mic-fill]="micActivo()" [class.bi-mic-mute-fill]="!micActivo()"></i>
+      </button>
+      <button class="control-btn" [class.active]="camActivo()" (click)="toggleCam()" title="Cámara">
+        <i class="bi" [class.bi-camera-video-fill]="camActivo()" [class.bi-camera-video-off-fill]="!camActivo()"></i>
+      </button>
+      <button class="control-btn control-btn--danger" (click)="salir()" title="Colgar">
+        <i class="bi bi-telephone-x-fill"></i>
+      </button>
     </div>
   }
 </div>

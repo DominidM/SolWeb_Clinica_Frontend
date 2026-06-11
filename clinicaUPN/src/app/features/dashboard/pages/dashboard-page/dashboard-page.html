@@ -1,5 +1,10 @@
 <div class="dashboard-container">
-  <app-page-header title="Dashboard" subtitle="Panel de control general"></app-page-header>
+  <app-page-header title="Dashboard" subtitle="Panel de control general">
+    <button class="btn-refresh" (click)="cargarReporte()">
+      <i data-lucide="activity" style="width:16px;height:16px"></i>
+      Actualizar
+    </button>
+  </app-page-header>
 
   @if (loading()) {
     <div class="loading">Cargando dashboard...</div>
@@ -10,54 +15,57 @@
   }
 
   @if (reporte(); as r) {
-    <div class="fecha-info">Reporte del: <strong>{{ r.fecha }}</strong></div>
+    <div class="fecha-info">
+      <i data-lucide="calendar" style="width:16px;height:16px;vertical-align:middle;margin-right:6px"></i>
+      Reporte del:
+      <input type="date" [value]="fecha()" (change)="fecha.set($any($event.target).value); cargarReporte()" class="fecha-input">
+    </div>
 
-    <!-- Tarjetas de resumen -->
     <div class="cards-grid">
       <div class="stat-card card-total">
-        <div class="stat-icon">📋</div>
+        <div class="stat-icon icon-total"><i data-lucide="clipboard-list" style="width:28px;height:28px"></i></div>
         <div class="stat-info">
           <span class="stat-value">{{ r.resumen.totalCitas }}</span>
           <span class="stat-label">Total Citas</span>
         </div>
       </div>
       <div class="stat-card card-confirmadas">
-        <div class="stat-icon">✅</div>
+        <div class="stat-icon icon-confirm"><i data-lucide="check-circle" style="width:28px;height:28px"></i></div>
         <div class="stat-info">
           <span class="stat-value">{{ r.resumen.confirmadas }}</span>
           <span class="stat-label">Confirmadas</span>
         </div>
       </div>
       <div class="stat-card card-atendidas">
-        <div class="stat-icon">🩺</div>
+        <div class="stat-icon icon-atend"><i data-lucide="stethoscope" style="width:28px;height:28px"></i></div>
         <div class="stat-info">
           <span class="stat-value">{{ r.resumen.atendidas }}</span>
           <span class="stat-label">Atendidas</span>
         </div>
       </div>
       <div class="stat-card card-canceladas">
-        <div class="stat-icon">❌</div>
+        <div class="stat-icon icon-cancel"><i data-lucide="x-circle" style="width:28px;height:28px"></i></div>
         <div class="stat-info">
           <span class="stat-value">{{ r.resumen.canceladas }}</span>
           <span class="stat-label">Canceladas</span>
         </div>
       </div>
-      <div class="stat-card card-no-asistieron">
-        <div class="stat-icon">🚫</div>
+      <div class="stat-card card-noasistio">
+        <div class="stat-icon icon-noasist"><i data-lucide="calendar-x" style="width:28px;height:28px"></i></div>
         <div class="stat-info">
           <span class="stat-value">{{ r.resumen.noAsistieron }}</span>
           <span class="stat-label">No Asistieron</span>
         </div>
       </div>
       <div class="stat-card card-pacientes">
-        <div class="stat-icon">👤</div>
+        <div class="stat-icon icon-pac"><i data-lucide="users" style="width:28px;height:28px"></i></div>
         <div class="stat-info">
           <span class="stat-value">{{ r.resumen.pacientesAtendidos }}</span>
           <span class="stat-label">Pacientes Atendidos</span>
         </div>
       </div>
       <div class="stat-card card-doctores">
-        <div class="stat-icon">👨‍⚕️</div>
+        <div class="stat-icon icon-doc"><i data-lucide="user-check" style="width:28px;height:28px"></i></div>
         <div class="stat-info">
           <span class="stat-value">{{ r.resumen.doctoresActivos }}</span>
           <span class="stat-label">Doctores Activos</span>
@@ -65,61 +73,199 @@
       </div>
     </div>
 
-    <div class="dashboard-grid">
-      <!-- Tabla por especialidad -->
-      <div class="dashboard-section">
-        <h3 class="section-title">Citas por Especialidad</h3>
-        @if (r.porEspecialidad.length > 0) {
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Especialidad</th>
-                  <th class="text-right">Cantidad</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (item of r.porEspecialidad; track $index) {
-                  <tr>
-                    <td>{{ item.especialidad }}</td>
-                    <td class="text-right"><span class="badge badge-primary">{{ item.cantidad }}</span></td>
-                  </tr>
-                }
-              </tbody>
-            </table>
+    <div class="charts-row">
+      <div class="dashboard-section chart-section">
+        <div class="section-header">
+          <h3 class="section-title">
+            <i data-lucide="check-circle" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"></i>
+            Distribucion de Citas
+          </h3>
+        </div>
+        <div class="donut-wrapper">
+          @let total = r.resumen.totalCitas;
+          @let atendidas = r.resumen.atendidas;
+          @let confirmadas = r.resumen.confirmadas;
+          @let canceladas = r.resumen.canceladas;
+          @let noAsistieron = r.resumen.noAsistieron;
+          @let pAtend = total > 0 ? (atendidas / total * 100) : 0;
+          @let pConfirm = total > 0 ? (confirmadas / total * 100) : 0;
+          @let pCancel = total > 0 ? (canceladas / total * 100) : 0;
+          @let pNoShow = total > 0 ? (noAsistieron / total * 100) : 0;
+          @let donut = 'conic-gradient(#22c55e 0% ' + pAtend + '%, #3b82f6 ' + pAtend + '% ' + (pAtend + pConfirm) + '%, #f59e0b ' + (pAtend + pConfirm) + '% ' + (pAtend + pConfirm + pNoShow) + '%, #ef4444 ' + (pAtend + pConfirm + pNoShow) + '% 100%)';
+          <div class="donut-chart" [style.background]="donut">
+            <div class="donut-center">
+              <span class="donut-total">{{ total }}</span>
+              <span class="donut-label">citas</span>
+            </div>
           </div>
-        } @else {
-          <div class="empty-section">Sin datos</div>
-        }
+          <div class="donut-legend">
+            <div class="legend-item">
+              <span class="legend-dot" style="background:#22c55e"></span>
+              <span class="legend-label">Atendidas</span>
+              <span class="legend-val">{{ atendidas }} ({{ pAtend | number:'1.0-0' }}%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background:#3b82f6"></span>
+              <span class="legend-label">Confirmadas</span>
+              <span class="legend-val">{{ confirmadas }} ({{ pConfirm | number:'1.0-0' }}%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background:#f59e0b"></span>
+              <span class="legend-label">No Asistieron</span>
+              <span class="legend-val">{{ noAsistieron }} ({{ pNoShow | number:'1.0-0' }}%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background:#ef4444"></span>
+              <span class="legend-label">Canceladas</span>
+              <span class="legend-val">{{ canceladas }} ({{ pCancel | number:'1.0-0' }}%)</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Tabla por doctor -->
-      <div class="dashboard-section">
-        <h3 class="section-title">Citas por Doctor</h3>
-        @if (r.porDoctor.length > 0) {
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Doctor</th>
-                  <th>Especialidad</th>
-                  <th class="text-right">Cantidad</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (item of r.porDoctor; track $index) {
-                  <tr>
-                    <td>{{ item.nombreDoctor }}</td>
-                    <td>{{ item.especialidad }}</td>
-                    <td class="text-right"><span class="badge badge-primary">{{ item.cantidad }}</span></td>
-                  </tr>
-                }
-              </tbody>
-            </table>
+      <div class="dashboard-section chart-section">
+        <div class="section-header">
+          <h3 class="section-title">
+            <i data-lucide="clipboard-list" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"></i>
+            Citas por Especialidad
+          </h3>
+          <span class="section-count">{{ r.porEspecialidad.length }}</span>
+        </div>
+        @if (r.porEspecialidad.length > 0) {
+          <div class="hbars">
+            @for (item of r.porEspecialidad; track $index) {
+              @let pct = (item.cantidad / maxCantidad(r.porEspecialidad)) * 100;
+              @let rank = $index + 1;
+              <div class="hbar-row">
+                <span class="hbar-rank" [class.rank-gold]="rank === 1" [class.rank-silver]="rank === 2" [class.rank-bronze]="rank === 3">{{ rank }}</span>
+                <div class="hbar-info">
+                  <span class="hbar-label">{{ item.especialidad }}</span>
+                  <div class="hbar-track">
+                    <div class="hbar-fill hbar-purple" [style.width.%]="pct"></div>
+                  </div>
+                </div>
+                <span class="hbar-value">{{ item.cantidad }}</span>
+              </div>
+            }
           </div>
         } @else {
-          <div class="empty-section">Sin datos</div>
+          <div class="empty-section">
+            <i data-lucide="clipboard-list" style="width:32px;height:32px;margin-bottom:8px;color:#ccc"></i>
+            <p>Sin datos</p>
+          </div>
         }
+      </div>
+    </div>
+
+    <div class="dashboard-section section-full">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i data-lucide="user-check" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"></i>
+          Citas por Doctor
+        </h3>
+        <span class="section-count">{{ r.porDoctor.length }} doctores</span>
+      </div>
+      @if (r.porDoctor.length > 0) {
+        <div class="table-responsive">
+          <table class="table table-doctor">
+            <thead>
+              <tr>
+                <th class="col-rank">#</th>
+                <th>Doctor</th>
+                <th>Especialidad</th>
+                <th class="text-right">Citas</th>
+                <th>Proporcion</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of r.porDoctor; track $index) {
+                @let rank = $index + 1;
+                <tr>
+                  <td class="col-rank">
+                    @if (rank <= 3) {
+                      <span class="rank-badge" [class.rank-gold]="rank === 1" [class.rank-silver]="rank === 2" [class.rank-bronze]="rank === 3">{{ rank }}</span>
+                    } @else {
+                      <span class="rank-plain">{{ rank }}</span>
+                    }
+                  </td>
+                  <td>
+                    <span class="cell-primary">{{ item.nombreDoctor }}</span>
+                  </td>
+                  <td><span class="cell-tag">{{ item.especialidad }}</span></td>
+                  <td class="text-right">
+                    <span class="badge badge-primary">{{ item.cantidad }}</span>
+                  </td>
+                  <td>
+                    <div class="bar-wrapper">
+                      <div class="bar-fill bar-green" [style.width.%]="(item.cantidad / maxCantidad(r.porDoctor)) * 100"></div>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-section">
+          <i data-lucide="user-check" style="width:32px;height:32px;margin-bottom:8px;color:#ccc"></i>
+          <p>Sin datos</p>
+        </div>
+      }
+    </div>
+
+    <div class="dashboard-section section-full">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i data-lucide="arrow-up-right" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"></i>
+          Indicadores Clave
+        </h3>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon-box" style="background:#eef2ff;color:#6366f1"><i data-lucide="clipboard-list" style="width:22px;height:22px"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{ r.resumen.totalCitas }}</span>
+            <span class="kpi-label">Total Citas</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon-box" style="background:#dcfce7;color:#22c55e"><i data-lucide="stethoscope" style="width:22px;height:22px"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{ r.resumen.atendidas }}</span>
+            <span class="kpi-label">Atendidas</span>
+          </div>
+          <div class="kpi-trend positive">{{ total > 0 ? (atendidas / total * 100 | number:'1.0-0') : 0 }}%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon-box" style="background:#fef3c7;color:#f59e0b"><i data-lucide="calendar-x" style="width:22px;height:22px"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{ r.resumen.noAsistieron }}</span>
+            <span class="kpi-label">No Asistieron</span>
+          </div>
+          <div class="kpi-trend negative">{{ total > 0 ? (noAsistieron / total * 100 | number:'1.0-0') : 0 }}%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon-box" style="background:#fee2e2;color:#ef4444"><i data-lucide="x-circle" style="width:22px;height:22px"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{ r.resumen.canceladas }}</span>
+            <span class="kpi-label">Canceladas</span>
+          </div>
+          <div class="kpi-trend negative">{{ total > 0 ? (canceladas / total * 100 | number:'1.0-0') : 0 }}%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon-box" style="background:#f3e8ff;color:#8b5cf6"><i data-lucide="users" style="width:22px;height:22px"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{ r.resumen.pacientesAtendidos }}</span>
+            <span class="kpi-label">Pacientes</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon-box" style="background:#cffafe;color:#06b6d4"><i data-lucide="user-check" style="width:22px;height:22px"></i></div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{ r.resumen.doctoresActivos }}</span>
+            <span class="kpi-label">Doctores</span>
+          </div>
+        </div>
       </div>
     </div>
   }

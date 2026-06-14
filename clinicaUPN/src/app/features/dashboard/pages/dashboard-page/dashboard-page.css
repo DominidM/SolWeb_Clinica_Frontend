@@ -491,6 +491,131 @@
 }
 
 /* -------- responsive -------- */
+/* -------- filtros avanzados director -------- */
+.filtros-avanzados {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+.filtro-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.filtro-group label {
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.form-select-sm, .form-input-sm {
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: .35rem .7rem;
+  font-size: .82rem;
+}
+
+/* -------- strategic reports (director) -------- */
+.strategic-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+.strategic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.strategic-card {
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.strategic-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--accent);
+}
+.strategic-card-header h4 {
+  margin: 0;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.strategic-body {
+  padding: 12px 16px;
+}
+.cie10-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: .82rem;
+}
+.cie10-code {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-size: .75rem;
+  background: var(--bg-active);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--accent);
+  font-weight: 600;
+  min-width: 56px;
+  text-align: center;
+}
+.cie10-desc {
+  flex: 1;
+  color: var(--text-primary);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cie10-bar-track {
+  width: 80px;
+  height: 6px;
+  background: var(--bg-card);
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.cie10-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f43f5e, #e11d48);
+  border-radius: 3px;
+  transition: width .4s;
+}
+.cie10-count {
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 24px;
+  text-align: right;
+}
+.puntaje-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: .8rem;
+  font-weight: 700;
+}
+.puntaje-badge.alto { background: #dcfce7; color: #16a34a; }
+.puntaje-badge.medio { background: #fef3c7; color: #d97706; }
+
 @media (max-width: 768px) {
   .charts-row {
     grid-template-columns: 1fr;

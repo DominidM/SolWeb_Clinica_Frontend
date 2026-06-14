@@ -70,9 +70,14 @@ export class SidebarComponent {
   // Visibilidad de ítems del menú
   // ──────────────────────────────────────────
 
-  /** Dashboard/KPIs: solo director y admin */
+  /** Dashboard/KPIs: solo admin */
   get verDashboard(): boolean {
-    return this.esDirector || this.esAdmin;
+    return this.esAdmin;
+  }
+
+  /** BI Dashboard: solo director */
+  get verBIDashboard(): boolean {
+    return this.esDirector;
   }
 
   /** Pacientes: admin, doctor, administrativo, director */
@@ -143,6 +148,21 @@ export class SidebarComponent {
   /** Evaluaciones de Practicantes: admin, doctor, director */
   get verEvaluaciones(): boolean {
     return this.esAdmin || this.esDoctor || this.esDirector;
+  }
+
+  /** Gestión de Citas: solo administrativo */
+  get verGestionCitas(): boolean {
+    return this.esAdministrativo;
+  }
+
+  /** Registro de Pacientes: solo administrativo */
+  get verRegistroPacientes(): boolean {
+    return this.esAdministrativo;
+  }
+
+  /** Reportes Diarios: solo administrativo */
+  get verReportesDiarios(): boolean {
+    return this.esAdministrativo;
   }
 
   /** Reportes: admin, director, administrativo */

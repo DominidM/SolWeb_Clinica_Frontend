@@ -31,6 +31,12 @@ const LABEL_MAP: Record<string, string> = {
   'registrar-consulta': 'Registrar Consulta',
   evaluaciones: 'Evaluaciones',
   'evaluaciones-practicantes': 'Evaluaciones',
+  administrativo: 'Administrativo',
+  'gestion-citas': 'Gestión de Citas',
+  'registro-pacientes': 'Registro de Pacientes',
+  'reportes-diarios': 'Reportes Diarios',
+  director: 'Director',
+  'bi-dashboard': 'BI Dashboard',
 };
 
 function buildCrumbs(url: string): Crumb[] {

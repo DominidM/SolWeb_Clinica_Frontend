@@ -24,7 +24,7 @@
     <p class="nav-label">Menú</p>
     <ul>
 
-      <!-- Dashboard — admin y director -->
+      <!-- Dashboard — solo admin -->
       <li *ngIf="verDashboard">
         <a class="nav-link" routerLink="/app/dashboard" routerLinkActive="active">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
@@ -34,6 +34,19 @@
             <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
           </svg>
           <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- BI Dashboard — solo director -->
+      <li *ngIf="verBIDashboard">
+        <a class="nav-link" routerLink="/app/director/bi-dashboard" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M4 20V14M8 20V10M12 20V6M16 20V12M20 20V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M14 2l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M10 18l-3-3M7 15l-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span>BI Dashboard</span>
         </a>
       </li>
 
@@ -163,6 +176,42 @@
             <path d="M9 10h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
           <span>Consultorios</span>
+        </a>
+      </li>
+
+      <!-- Gestión de Citas — solo administrativo -->
+      <li *ngIf="verGestionCitas">
+        <a class="nav-link" routerLink="/app/administrativo/gestion-citas" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M8 14h.01M12 14h.01M16 14h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M10 18l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Gestión de Citas</span>
+        </a>
+      </li>
+
+      <!-- Registro de Pacientes — solo administrativo -->
+      <li *ngIf="verRegistroPacientes">
+        <a class="nav-link" routerLink="/app/administrativo/registro-pacientes" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M17 4l4 4M21 4l-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Registro Pacientes</span>
+        </a>
+      </li>
+
+      <!-- Reportes Diarios — solo administrativo -->
+      <li *ngIf="verReportesDiarios">
+        <a class="nav-link" routerLink="/app/administrativo/reportes-diarios" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M4 20V14M8 20V10M12 20V6M16 20V12M20 20V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M14 2l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Reportes Diarios</span>
         </a>
       </li>
 

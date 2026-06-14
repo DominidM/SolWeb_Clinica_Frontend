@@ -1,0 +1,200 @@
+<div class="bi-container">
+
+  <app-page-header title="Inteligencia de Negocio"
+                   subtitle="Panel ejecutivo — Indicadores clave y reportes estratégicos">
+    <button class="btn btn-outline-primary btn-sm" (click)="aplicarFiltros()" [disabled]="loading()">
+      <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+    </button>
+  </app-page-header>
+
+  <!-- Barra de filtros -->
+  <div class="filtros-bar">
+    <div class="filtro-item">
+      <label>Período</label>
+      <select class="filtro-select" [ngModel]="periodo()" (ngModelChange)="periodo.set($event); aplicarFiltros()">
+        @for (p of periodos; track p.value) {
+          <option [value]="p.value">{{ p.label }}</option>
+        }
+      </select>
+    </div>
+    <div class="filtro-divider"></div>
+    <div class="filtro-item">
+      <label>Especialidad</label>
+      <select class="filtro-select" [ngModel]="especialidad()" (ngModelChange)="especialidad.set($event); aplicarFiltros()">
+        <option value="">Todas las especialidades</option>
+        @for (esp of especialidades; track esp) {
+          <option [value]="esp">{{ esp }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p>Cargando dashboard de inteligencia de negocio...</p>
+    </div>
+  }
+
+  @if (data(); as d) {
+    <!-- KPI Cards Grid -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-blue">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-val">{{ d.kpi.totalAtenciones }}</span>
+          <span class="kpi-lbl">Total Atenciones</span>
+        </div>
+        <span class="kpi-badge kpi-badge-up">
+          <svg viewBox="0 0 24 24" fill="none" width="12" height="12">
+            <path d="M12 5v14M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {{ d.kpi.variacionAtenciones }}%
+        </span>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-indigo">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M8 14h.01M12 14h.01M16 14h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-val">{{ d.kpi.citasAgendadas }}</span>
+          <span class="kpi-lbl">Citas Agendadas</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-rose">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-val">{{ d.kpi.tasaCancelacion }}%</span>
+          <span class="kpi-lbl">Tasa de Cancelación</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-emerald">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <rect x="2" y="4" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 22h8M12 18v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M9 11l3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-val">{{ d.kpi.teleconsultasActivas }}</span>
+          <span class="kpi-lbl">Teleconsultas Activas</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reportes Clínicos y Tendencias -->
+    <div class="reportes-grid">
+      <!-- Enfermedades Frecuentes (CUS_53) -->
+      <div class="reporte-card">
+        <div class="reporte-header">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+            <rect x="4" y="2" width="16" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 7h8M8 11h8M8 15h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <h3>Enfermedades Frecuentes</h3>
+          <span class="reporte-badge">Top 5 CIE-10</span>
+        </div>
+        <div class="reporte-body">
+          @let maxEnf = d.enfermedades.length > 0 ? d.enfermedades[0].cantidad : 1;
+          @for (enf of d.enfermedades; track enf.codigo) {
+            <div class="enf-row">
+              <div class="enf-left">
+                <span class="cie10-tag">{{ enf.codigo }}</span>
+                <span class="enf-desc">{{ enf.descripcion }}</span>
+              </div>
+              <div class="enf-bar-track">
+                <div class="enf-bar-fill" [style.width.%]="porcentajeBarra(enf.cantidad, maxEnf)"></div>
+              </div>
+              <span class="enf-count">{{ enf.cantidad }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Tendencias de Atención (CUS_54) -->
+      <div class="reporte-card">
+        <div class="reporte-header">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+            <path d="M4 20V14M8 20V10M12 20V6M16 20V12M20 20V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <h3>Tendencias de Atención</h3>
+          <span class="reporte-badge">Distribución</span>
+        </div>
+        <div class="reporte-body">
+          @for (item of d.distribucion; track item.especialidad) {
+            <div class="tendencia-row">
+              <span class="tendencia-badge" [style.background]="especialidadColor(item.especialidad)">
+                {{ item.especialidad }}
+              </span>
+              <div class="tendencia-bar-track">
+                <div class="tendencia-bar-fill" [style.width.%]="item.porcentaje" [style.background]="especialidadColor(item.especialidad)"></div>
+              </div>
+              <span class="tendencia-pct">{{ item.porcentaje }}%</span>
+              <span class="tendencia-val">{{ item.cantidad }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Control Académico de Practicantes (CUS_55 / CUS_56) -->
+    <div class="practicantes-section">
+      <div class="practicantes-header">
+        <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+          <path d="M12 3L2 8l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Control Académico de Practicantes</h3>
+        <span class="reporte-badge">Rendimiento</span>
+      </div>
+      <div class="table-wrapper">
+        <table class="bi-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Código</th>
+              <th class="text-center">Consultas Registradas</th>
+              <th class="text-center">Envíos a Revisión</th>
+              <th class="text-center">Promedio Evaluación</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of d.practicantes; track p.codigo) {
+              <tr>
+                <td><strong>{{ p.nombre }}</strong></td>
+                <td><code class="codigo-tag">{{ p.codigo }}</code></td>
+                <td class="text-center">{{ p.consultasRegistradas }}</td>
+                <td class="text-center">{{ p.enviosRevision }}</td>
+                <td class="text-center">
+                  <span class="nota-badge {{ notaColor(p.promedioEvaluacion) }}">
+                    {{ p.promedioEvaluacion | number:'1.1-1' }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,17 @@
+.form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.form-label {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+}

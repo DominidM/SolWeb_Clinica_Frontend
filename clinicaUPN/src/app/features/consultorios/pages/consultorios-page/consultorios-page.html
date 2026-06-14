@@ -1,4 +1,124 @@
-<div class="consultorios-container">
-  <app-page-header title="Consultorios" subtitle="Gestión de consultorios"></app-page-header>
+<div class="page-container">
+
+  <app-page-header title="Asignación de Consultorios"
+                   subtitle="Administra la asignación de médicos y especialidades a consultorios">
+    <button class="btn btn-outline-primary btn-sm" (click)="cargar()">
+      <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+    </button>
+  </app-page-header>
+
+  @if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+  }
+
+  @if (mensaje()) {
+    <div class="alert" [class.alert-success]="!esError()" [class.alert-danger]="esError()">
+      {{ mensaje() }}
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary"></div>
+    </div>
+  }
+
+  @if (!loading()) {
+    <div class="consultorios-grid">
+      @for (c of consultorios(); track c.idConsultorio) {
+        <div class="consultorio-card">
+          <div class="card-top">
+            <div class="card-icon">
+              <i class="bi bi-building"></i>
+            </div>
+            <div>
+              <h5 class="card-nombre">{{ c.nombre }}</h5>
+              <span class="card-ubicacion">{{ c.ubicacion }}</span>
+            </div>
+            <span class="badge ms-auto" [class]="getEstadoClass(!!c.asignacion)">
+              {{ getEstadoLabel(!!c.asignacion) }}
+            </span>
+          </div>
+
+          @if (c.asignacion; as a) {
+            <div class="asignacion-detalle">
+              <div class="detalle-row">
+                <i class="bi bi-person-badge"></i>
+                <span>{{ a.doctorNombre }}</span>
+              </div>
+              <div class="detalle-row">
+                <i class="bi bi-stars"></i>
+                <span>{{ a.especialidad }}</span>
+              </div>
+              <div class="detalle-row">
+                <i class="bi bi-clock"></i>
+                <span>{{ a.horario }}</span>
+              </div>
+              <button class="btn btn-sm btn-outline-danger mt-2" (click)="liberar(a.idAsignacion)">
+                <i class="bi bi-x-lg me-1"></i>Liberar
+              </button>
+            </div>
+          } @else {
+            <div class="asignacion-empty">
+              <p class="text-muted small mb-2">Sin asignación</p>
+              <button class="btn btn-sm btn-primary" (click)="abrirAsignar(c)">
+                <i class="bi bi-plus-lg me-1"></i>Asignar
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
 </div>
 
+<!-- Modal Asignar -->
+@if (mostrarFormulario()) {
+  <div class="modal-overlay" (click)="cerrarFormulario()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h6 class="fw-bold mb-0">Asignar Médico a Consultorio</h6>
+        <button class="btn-close" (click)="cerrarFormulario()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Médico</label>
+          <select class="form-select" [ngModel]="idDoctor()" (ngModelChange)="idDoctor.set($event)">
+            <option value="">Seleccionar médico</option>
+            @for (doc of listaDoctores(); track doc.idDoctor) {
+              <option [value]="doc.idDoctor">{{ doc.nombre }} — {{ doc.especialidad }}</option>
+            }
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Especialidad</label>
+          <select class="form-select" [ngModel]="especialidad()" (ngModelChange)="especialidad.set($event)">
+            <option value="">Seleccionar</option>
+            @for (esp of especialidades; track esp) {
+              <option [value]="esp">{{ esp }}</option>
+            }
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Horario</label>
+          <div class="d-flex flex-wrap gap-2">
+            @for (h of horarios; track h) {
+              <button type="button" class="btn btn-sm"
+                      [class.btn-primary]="horario() === h"
+                      [class.btn-outline-secondary]="horario() !== h"
+                      (click)="horario.set(h)">
+                {{ h }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-outline-secondary" (click)="cerrarFormulario()">Cancelar</button>
+        <button class="btn btn-sm btn-primary" (click)="asignar()" [disabled]="guardando()">
+          {{ guardando() ? 'Asignando...' : 'Asignar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

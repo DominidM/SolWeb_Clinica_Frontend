@@ -14,19 +14,20 @@ import { PracticanteService, ConsultaDTO } from '../../services/practicante';
 export class RegistrarConsultaPageComponent {
   private svc = inject(PracticanteService);
 
-  // búsqueda paciente
   termino = signal('');
   resultadosPacientes = signal<any[]>([]);
   pacienteSeleccionado = signal<any | null>(null);
   buscando = signal(false);
 
-  // formulario consulta
-  motivo = signal('');
   diagnostico = signal('');
-  receta = signal('');
+  cie10 = signal('');
+  tratamiento = signal('');
+  prescripcion = signal('');
   guardando = signal(false);
   consultaRegistrada = signal<ConsultaDTO | null>(null);
   mensaje = signal('');
+  esError = signal(false);
+  enviandoRevision = signal(false);
 
   buscarPaciente() {
     const t = this.termino().trim();
@@ -42,51 +43,71 @@ export class RegistrarConsultaPageComponent {
     this.pacienteSeleccionado.set(p);
     this.resultadosPacientes.set([]);
     this.termino.set('');
+    this.mensaje.set('');
+    this.consultaRegistrada.set(null);
   }
 
   registrar() {
-    if (!this.pacienteSeleccionado() || !this.motivo().trim()) return;
+    if (!this.pacienteSeleccionado()) {
+      this.mensaje.set('Selecciona un paciente asignado.');
+      this.esError.set(true);
+      return;
+    }
+    if (!this.diagnostico().trim()) {
+      this.mensaje.set('El diagnóstico es obligatorio.');
+      this.esError.set(true);
+      return;
+    }
     this.guardando.set(true);
     this.mensaje.set('');
+    this.esError.set(false);
 
     const dto: Partial<ConsultaDTO> = {
       idPaciente: this.pacienteSeleccionado()!.id,
-      motivo: this.motivo(),
       diagnostico: this.diagnostico(),
-      receta: this.receta(),
+      cie10: this.cie10(),
+      tratamiento: this.tratamiento(),
+      prescripcion: this.prescripcion(),
     };
 
     this.svc.registrarConsulta(dto).subscribe({
       next: (res) => {
         this.consultaRegistrada.set(res);
-        this.mensaje.set('Consulta registrada exitosamente.');
+        this.mensaje.set('Consulta registrada bajo supervisión. Pendiente de revisión tutora.');
+        this.guardando.set(false);
       },
       error: () => {
         this.mensaje.set('Error al registrar la consulta.');
+        this.esError.set(true);
+        this.guardando.set(false);
       },
-      complete: () => this.guardando.set(false),
     });
   }
 
   enviarARevision() {
     const id = this.consultaRegistrada()?.idConsulta;
     if (!id) return;
+    this.enviandoRevision.set(true);
     this.svc.enviarARevision(id).subscribe({
       next: () => {
-        this.mensaje.set('Consulta enviada a revisión del médico.');
+        this.mensaje.set('Consulta enviada a revisión del Dr. Carlos Mendoza.');
         this.limpiarFormulario();
+        this.enviandoRevision.set(false);
       },
       error: () => {
         this.mensaje.set('Error al enviar a revisión.');
+        this.esError.set(true);
+        this.enviandoRevision.set(false);
       },
     });
   }
 
   limpiarFormulario() {
     this.consultaRegistrada.set(null);
-    this.motivo.set('');
     this.diagnostico.set('');
-    this.receta.set('');
+    this.cie10.set('');
+    this.tratamiento.set('');
+    this.prescripcion.set('');
     this.pacienteSeleccionado.set(null);
   }
 }

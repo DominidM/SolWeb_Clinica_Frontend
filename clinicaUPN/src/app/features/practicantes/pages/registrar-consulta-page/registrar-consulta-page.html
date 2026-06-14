@@ -1,85 +1,122 @@
-<div class="registrar-container">
-  <app-page-header title="Registrar Consulta"></app-page-header>
+<div class="page-container">
 
-  <div class="msg" *ngIf="mensaje()" [class.success]="consultaRegistrada() && mensaje() !== 'Error al registrar la consulta.' && mensaje() !== 'Error al enviar a revisión.'">
-    {{ mensaje() }}
+  <app-page-header title="Registrar Consulta"
+                   subtitle="Registro clínico bajo supervisión — CUS-25">
+  </app-page-header>
+
+  @if (mensaje()) {
+    <div class="alert" [class.alert-success]="!esError()" [class.alert-danger]="esError()">
+      <i class="bi" [class.bi-check-circle-fill]="!esError()" [class.bi-exclamation-triangle-fill]="esError()"></i>
+      {{ mensaje() }}
+    </div>
+  }
+
+  <!-- Badge: Bajo Supervisión -->
+  <div class="supervision-badge">
+    <i class="bi bi-shield-check"></i>
+    <div>
+      <strong>Bajo Supervisión</strong>
+      <span>Estado: Pendiente de Revisión Tutora</span>
+    </div>
   </div>
 
   <!-- Paso 1: Buscar paciente asignado -->
   <section class="form-section">
-    <h2>Paciente</h2>
+    <h5 class="section-title">
+      <i class="bi bi-person-search me-2"></i>Paciente asignado
+    </h5>
     <div class="search-box">
-      <input
-        type="text"
-        [ngModel]="termino()"
-        (ngModelChange)="termino.set($event)"
-        placeholder="Buscar paciente por nombre, DNI o código..."
-        (keyup.enter)="buscarPaciente()"
-      />
-      <button (click)="buscarPaciente()" [disabled]="buscando()">Buscar</button>
+      <input type="text" class="form-control"
+             [ngModel]="termino()" (ngModelChange)="termino.set($event)"
+             placeholder="Buscar por nombre, DNI o código..."
+             (keyup.enter)="buscarPaciente()" />
+      <button class="btn btn-primary" (click)="buscarPaciente()" [disabled]="buscando()">
+        <i class="bi bi-search me-1"></i>Buscar
+      </button>
     </div>
-    <div class="search-results" *ngIf="resultadosPacientes().length > 0">
-      <div
-        class="result-item"
-        *ngFor="let p of resultadosPacientes()"
-        (click)="seleccionarPaciente(p)"
-      >
-        <strong>{{ p.nombre }}</strong>
-        <span>{{ p.documento }}</span>
+    @if (resultadosPacientes().length > 0) {
+      <div class="search-results">
+        @for (p of resultadosPacientes(); track $index) {
+          <div class="result-item" (click)="seleccionarPaciente(p)">
+            <div>
+              <strong>{{ p.nombre }}</strong>
+              <span class="text-muted small">{{ p.documento }}</span>
+            </div>
+            <i class="bi bi-chevron-right text-muted"></i>
+          </div>
+        }
       </div>
-    </div>
-    <div class="paciente-seleccionado" *ngIf="pacienteSeleccionado()">
-      <span class="badge-ok">Seleccionado</span>
-      <strong>{{ pacienteSeleccionado()?.nombre }}</strong>
-      <span>{{ pacienteSeleccionado()?.documento }}</span>
-    </div>
+    }
+    @if (pacienteSeleccionado()) {
+      <div class="paciente-seleccionado">
+        <i class="bi bi-check-circle-fill text-success"></i>
+        <strong>{{ pacienteSeleccionado()?.nombre }}</strong>
+        <span class="text-muted small">{{ pacienteSeleccionado()?.documento }}</span>
+        <button class="btn btn-sm btn-outline-secondary ms-auto" (click)="pacienteSeleccionado.set(null)">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    }
   </section>
 
-  <!-- Paso 2: Datos de la consulta -->
-  <section class="form-section" *ngIf="pacienteSeleccionado()">
-    <h2>Datos de la consulta</h2>
-    <div class="form-group">
-      <label>Motivo de consulta *</label>
-      <textarea
-        [ngModel]="motivo()"
-        (ngModelChange)="motivo.set($event)"
-        rows="3"
-        placeholder="Describe el motivo de la consulta..."
-      ></textarea>
-    </div>
-    <div class="form-group">
-      <label>Diagnóstico</label>
-      <textarea
-        [ngModel]="diagnostico()"
-        (ngModelChange)="diagnostico.set($event)"
-        rows="3"
-        placeholder="Diagnóstico (opcional)"
-      ></textarea>
-    </div>
-    <div class="form-group">
-      <label>Receta</label>
-      <textarea
-        [ngModel]="receta()"
-        (ngModelChange)="receta.set($event)"
-        rows="3"
-        placeholder="Receta médica (opcional)"
-      ></textarea>
-    </div>
-    <div class="form-actions">
-      <button
-        class="btn-primary"
-        (click)="registrar()"
-        [disabled]="guardando() || !motivo().trim()"
-      >
-        {{ guardando() ? 'Guardando...' : 'Registrar Consulta' }}
-      </button>
-      <button
-        class="btn-secondary"
-        *ngIf="consultaRegistrada()"
-        (click)="enviarARevision()"
-      >
-        Enviar a Revisión
-      </button>
-    </div>
-  </section>
+  <!-- Paso 2: Datos clínicos -->
+  @if (pacienteSeleccionado()) {
+    <section class="form-section">
+      <h5 class="section-title">
+        <i class="bi bi-clipboard2-pulse me-2"></i>Datos de la consulta
+      </h5>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Diagnóstico <span class="text-danger">*</span></label>
+          <textarea class="form-control" rows="2"
+                    [ngModel]="diagnostico()" (ngModelChange)="diagnostico.set($event)"
+                    placeholder="Descripción del diagnóstico"></textarea>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Código CIE-10</label>
+          <input type="text" class="form-control"
+                 [ngModel]="cie10()" (ngModelChange)="cie10.set($event)"
+                 placeholder="Ej: J45.0, I10, E11.9" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Prescripción</label>
+          <input type="text" class="form-control"
+                 [ngModel]="prescripcion()" (ngModelChange)="prescripcion.set($event)"
+                 placeholder="Medicación recetada" />
+        </div>
+        <div class="col-12">
+          <label class="form-label">Tratamiento</label>
+          <textarea class="form-control" rows="3"
+                    [ngModel]="tratamiento()" (ngModelChange)="tratamiento.set($event)"
+                    placeholder="Indicaciones del tratamiento"></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions mt-4">
+        <button class="btn btn-primary" (click)="registrar()" [disabled]="guardando()">
+          @if (guardando()) { <span class="spinner-border spinner-border-sm me-1"></span> }
+          {{ guardando() ? 'Registrando...' : 'Registrar Consulta' }}
+        </button>
+      </div>
+    </section>
+  }
+
+  <!-- Botón Enviar a Revisión -->
+  @if (consultaRegistrada()) {
+    <section class="form-section enviar-section">
+      <div class="d-flex align-items-center gap-3">
+        <i class="bi bi-send-check fs-2 text-primary"></i>
+        <div class="flex-grow-1">
+          <strong class="d-block">Consulta registrada correctamente</strong>
+          <span class="text-muted small">Debe ser revisada por tu supervisor antes de su validación final.</span>
+        </div>
+        <button class="btn btn-success" (click)="enviarARevision()" [disabled]="enviandoRevision()">
+          @if (enviandoRevision()) { <span class="spinner-border spinner-border-sm me-1"></span> }
+          <i class="bi bi-send me-1"></i>
+          {{ enviandoRevision() ? 'Enviando...' : 'Enviar a Revisión' }}
+        </button>
+      </div>
+    </section>
+  }
 </div>

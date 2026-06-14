@@ -234,9 +234,12 @@ export class HcePageComponent implements OnInit {
   cargando = signal(true);
   error = signal('');
   esAdmin = signal(false);
+  esStaff = signal(false);
 
   ngOnInit() {
-    this.esAdmin.set(this.auth.getRol() === 'ADMINISTRADOR');
+    const rol = this.auth.getRol();
+    this.esAdmin.set(rol === 'ADMINISTRADOR');
+    this.esStaff.set(this.esAdmin() || rol === 'DOCTOR' || rol === 'MEDICO' || rol === 'DIRECTOR' || rol === 'PRACTICANTE');
     this.cargar();
   }
 
@@ -244,7 +247,7 @@ export class HcePageComponent implements OnInit {
     this.cargando.set(true);
     this.error.set('');
 
-    const obs = this.esAdmin()
+    const obs = this.esStaff()
       ? this.hceService.listarTodas()
       : this.hceService.listarDocumentos();
 

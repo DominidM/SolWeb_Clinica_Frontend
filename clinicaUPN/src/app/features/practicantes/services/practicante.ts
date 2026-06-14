@@ -20,9 +20,11 @@ export interface ConsultaDTO {
   idConsulta?: number;
   idPaciente: number;
   paciente: string;
-  motivo: string;
+  motivo?: string;
   diagnostico?: string;
-  receta?: string;
+  cie10?: string;
+  tratamiento?: string;
+  prescripcion?: string;
   estado: string;
   fecha: string;
   supervisor?: string;

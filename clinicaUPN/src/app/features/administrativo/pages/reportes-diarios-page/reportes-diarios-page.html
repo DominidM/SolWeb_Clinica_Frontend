@@ -1,0 +1,85 @@
+<div class="page-container">
+
+  <app-page-header title="Reportes Diarios" subtitle="Reporte operativo diario de atenciones">
+    <button class="btn btn-outline-primary btn-sm" (click)="cargarReporte()" [disabled]="loading()">
+      <i class="bi bi-search me-1"></i>Generar reporte
+    </button>
+  </app-page-header>
+
+  <div class="filtro-fecha">
+    <label>Fecha del reporte:</label>
+    <input type="date" class="form-input" [ngModel]="fecha()" (ngModelChange)="fecha.set($event)">
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary"></div>
+      <p class="text-muted mt-2">Generando reporte...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+  }
+
+  @if (reporte(); as r) {
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <i class="bi bi-clipboard-check fs-3 text-primary"></i>
+        <div>
+          <span class="kpi-val">{{ r.totalAtenciones }}</span>
+          <span class="kpi-lbl">Atenciones</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <i class="bi bi-x-circle fs-3 text-danger"></i>
+        <div>
+          <span class="kpi-val">{{ r.totalCanceladas }}</span>
+          <span class="kpi-lbl">Canceladas</span>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <i class="bi bi-arrow-clockwise fs-3 text-warning"></i>
+        <div>
+          <span class="kpi-val">{{ r.totalReprogramadas }}</span>
+          <span class="kpi-lbl">Reprogramadas</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="export-bar">
+      <button class="btn btn-success btn-sm" (click)="exportarCSV()">
+        <i class="bi bi-download me-1"></i>Exportar CSV
+      </button>
+    </div>
+
+    @if (r.citas.length > 0) {
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Paciente</th>
+              <th>Doctor</th>
+              <th>Especialidad</th>
+              <th>Hora</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of r.citas; track c.idCita) {
+              <tr>
+                <td>{{ c.paciente }}</td>
+                <td>{{ c.doctor }}</td>
+                <td>{{ c.especialidad }}</td>
+                <td>{{ c.hora }}</td>
+                <td><span class="badge bg-secondary">{{ c.estado }}</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="empty-state">No hay atenciones registradas para esta fecha.</div>
+    }
+  }
+</div>

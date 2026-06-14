@@ -1,16 +1,25 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
+import { Cie10SearchComponent } from '../../../../shared/components/clinical/cie10-search/cie10-search';
+import { VitalSignsComponent } from '../../../../shared/components/clinical/vital-signs/vital-signs';
+import { MedicationListComponent, MedicationEntry } from '../../../../shared/components/clinical/medication-list/medication-list';
 import { ConsultaService, ConsultaResponse } from '../../services/consulta.service';
+import { RecetaService, RecetaRequest } from '../../services/receta.service';
 import { CitaService, AgendaItem } from '../../services/cita';
 import { PacienteService, PacienteDTO } from '../../../pacientes/services/paciente';
+
+type TabId = 'subjetivo' | 'objetivo' | 'diagnostico' | 'plan';
 
 @Component({
   selector: 'app-atencion-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, PageHeaderComponent],
+  imports: [
+    CommonModule, FormsModule, PageHeaderComponent,
+    Cie10SearchComponent, VitalSignsComponent, MedicationListComponent
+  ],
   templateUrl: './atencion-page.html',
   styleUrl: './atencion-page.css',
 })
@@ -18,6 +27,7 @@ export class AtencionPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private consultaService = inject(ConsultaService);
+  private recetaService = inject(RecetaService);
   private citaService = inject(CitaService);
   private pacienteService = inject(PacienteService);
 
@@ -26,21 +36,28 @@ export class AtencionPageComponent implements OnInit {
   pacienteInfo = signal<PacienteDTO | null>(null);
   loading = signal(true);
   error = signal('');
-
-  // formulario diagnóstico
-  diagnosticoCie10 = signal('');
-  descripcionDiagnostico = signal('');
-
-  // formulario tratamiento
-  tratamiento = signal('');
-
-  // formulario prescripción
-  prescripcion = signal('');
-
   guardando = signal(false);
   guardado = signal(false);
-  paso = signal<'iniciar' | 'diagnostico' | 'tratamiento' | 'prescripcion' | 'completo'>('iniciar');
+  tabActivo = signal<TabId>('subjetivo');
   consultaId = signal<number | null>(null);
+  completado = signal(false);
+
+  motivoConsulta = signal('');
+  enfermedadActual = signal('');
+  sintomas = signal('');
+  tratamiento = signal('');
+  recetaCreada = signal(false);
+
+  cie10Codigo = signal('');
+  cie10Descripcion = signal('');
+  descripcionDiagnostico = signal('');
+
+  readonly tabs: { id: TabId; label: string; icon: string }[] = [
+    { id: 'subjetivo', label: 'Subjetivo', icon: 'bi-chat-quote' },
+    { id: 'objetivo', label: 'Objetivo', icon: 'bi-activity' },
+    { id: 'diagnostico', label: 'Diagnóstico', icon: 'bi-clipboard2-pulse' },
+    { id: 'plan', label: 'Plan', icon: 'bi-journal-text' },
+  ];
 
   ngOnInit(): void {
     const idCita = Number(this.route.snapshot.paramMap.get('idCita'));
@@ -83,8 +100,13 @@ export class AtencionPageComponent implements OnInit {
       next: (res) => {
         this.consulta.set(res);
         this.consultaId.set(res.idConsulta);
+        if (res.motivoConsulta) this.motivoConsulta.set(res.motivoConsulta);
+        if (res.enfermedadActual) this.enfermedadActual.set(res.enfermedadActual);
+        if (res.sintomas) this.sintomas.set(res.sintomas);
+        if (res.tratamiento) this.tratamiento.set(res.tratamiento);
+        if (res.diagnosticoCie10) this.cie10Codigo.set(res.diagnosticoCie10);
+        if (res.descripcionDiagnostico) this.descripcionDiagnostico.set(res.descripcionDiagnostico);
         this.loading.set(false);
-        this.paso.set('diagnostico');
       },
       error: (err) => {
         this.error.set('Error al iniciar consulta: ' + (err.error?.message || 'Intente de nuevo'));
@@ -93,68 +115,103 @@ export class AtencionPageComponent implements OnInit {
     });
   }
 
+  guardarSubjetivo(): void {
+    this.guardando.set(true);
+    this.consultaService.registrarNotasSOAP(this.consultaId()!, {
+      motivoConsulta: this.motivoConsulta(),
+      enfermedadActual: this.enfermedadActual(),
+      sintomas: this.sintomas()
+    }).subscribe({
+      next: (res) => {
+        this.consulta.set(res);
+        this.guardando.set(false);
+        this.guardado.set(true);
+        setTimeout(() => this.guardado.set(false), 2000);
+      },
+      error: () => { this.guardando.set(false); this.error.set('Error al guardar notas subjetivas'); }
+    });
+  }
+
+  guardarSignosVitales(vitalComp: VitalSignsComponent): void {
+    this.guardando.set(true);
+    this.consultaService.registrarSignosVitales(this.consultaId()!, {
+      presionArterial: vitalComp.presionArterial(),
+      frecuenciaCardiaca: vitalComp.frecuenciaCardiaca(),
+      temperatura: vitalComp.temperatura(),
+      frecuenciaRespiratoria: vitalComp.frecuenciaRespiratoria(),
+      saturacionOxigeno: vitalComp.saturacionOxigeno()
+    }).subscribe({
+      next: (res) => {
+        this.consulta.set(res);
+        this.guardando.set(false);
+        this.guardado.set(true);
+        setTimeout(() => this.guardado.set(false), 2000);
+      },
+      error: () => { this.guardando.set(false); this.error.set('Error al guardar signos vitales'); }
+    });
+  }
+
   guardarDiagnostico(): void {
-    if (!this.diagnosticoCie10().trim() && !this.descripcionDiagnostico().trim()) return;
     this.guardando.set(true);
-    this.consultaService.registrarDiagnostico(this.consultaId()!, this.diagnosticoCie10(), this.descripcionDiagnostico()).subscribe({
+    this.consultaService.registrarDiagnostico(
+      this.consultaId()!,
+      this.cie10Codigo(),
+      this.descripcionDiagnostico()
+    ).subscribe({
       next: (res) => {
         this.consulta.set(res);
         this.guardando.set(false);
         this.guardado.set(true);
-        this.paso.set('tratamiento');
+        setTimeout(() => this.guardado.set(false), 2000);
       },
-      error: () => {
-        this.guardando.set(false);
-        this.error.set('Error al guardar diagnóstico');
-      },
+      error: () => { this.guardando.set(false); this.error.set('Error al guardar diagnóstico'); }
     });
   }
 
-  guardarTratamiento(): void {
-    if (!this.tratamiento().trim()) return;
+  guardarPlan(medComp: MedicationListComponent): void {
     this.guardando.set(true);
-    this.consultaService.registrarTratamiento(this.consultaId()!, this.tratamiento()).subscribe({
-      next: (res) => {
-        this.consulta.set(res);
-        this.guardando.set(false);
-        this.guardado.set(true);
-        this.paso.set('prescripcion');
-      },
-      error: () => {
-        this.guardando.set(false);
-        this.error.set('Error al guardar tratamiento');
-      },
-    });
-  }
-
-  guardarPrescripcion(): void {
-    if (!this.prescripcion().trim()) return;
-    this.guardando.set(true);
-    this.consultaService.prescribir(this.consultaId()!, this.prescripcion()).subscribe({
-      next: (res) => {
-        this.consulta.set(res);
-        this.guardando.set(false);
-        this.guardado.set(true);
-        this.paso.set('completo');
-      },
-      error: () => {
-        this.guardando.set(false);
-        this.error.set('Error al guardar prescripción');
-      },
-    });
-  }
-
-  saltarPaso(): void {
-    const pasos = ['diagnostico', 'tratamiento', 'prescripcion'] as const;
-    const idx = pasos.indexOf(this.paso() as typeof pasos[number]);
-    if (idx < pasos.length - 1) {
-      this.paso.set(pasos[idx + 1]);
+    const items = medComp.items();
+    if (items.length > 0) {
+      this.recetaService.crear({
+        idConsulta: this.consultaId()!,
+        indicaciones: this.tratamiento(),
+        detalles: items.map(i => ({
+          nombreMedicamento: i.nombreMedicamento,
+          dosis: i.dosis,
+          frecuencia: i.frecuencia,
+          duracion: i.duracion,
+          via: i.via
+        }))
+      }).subscribe({
+        next: () => {
+          this.recetaCreada.set(true);
+          this.finalizar();
+        },
+        error: () => { this.guardando.set(false); this.error.set('Error al crear receta'); }
+      });
     } else {
-      this.paso.set('completo');
+      this.consultaService.registrarTratamiento(this.consultaId()!, this.tratamiento()).subscribe({
+        next: () => this.finalizar(),
+        error: () => { this.guardando.set(false); this.error.set('Error al guardar plan'); }
+      });
     }
+  }
+
+  private finalizar(): void {
+    this.completado.set(true);
+    this.guardando.set(false);
+    this.guardado.set(true);
   }
 
   volverAgenda(): void {
     this.router.navigate(['/app/citas']);
+  }
+
+  getEstadoClass(estado: string): string {
+    const map: Record<string, string> = {
+      'CONFIRMADA': 'badge-primary', 'EN_ATENCION': 'badge-warning',
+      'ATENDIDA': 'badge-success', 'CANCELADA': 'badge-danger'
+    };
+    return map[estado] || 'badge-secondary';
   }
 }

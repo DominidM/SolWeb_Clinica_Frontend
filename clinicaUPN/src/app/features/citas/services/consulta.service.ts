@@ -14,6 +14,14 @@ export interface ConsultaResponse {
   descripcionDiagnostico: string | null;
   tratamiento: string | null;
   prescripcion: string | null;
+  presionArterial: string | null;
+  frecuenciaCardiaca: string | null;
+  temperatura: string | null;
+  frecuenciaRespiratoria: string | null;
+  saturacionOxigeno: string | null;
+  motivoConsulta: string | null;
+  enfermedadActual: string | null;
+  sintomas: string | null;
   createdAt: string;
 }
 
@@ -49,6 +57,16 @@ export class ConsultaService {
 
   prescribir(id: number, prescripcion: string): Observable<ConsultaResponse> {
     return this.http.put<ApiResponse<ConsultaResponse>>(`${this.API}/${id}/prescripcion`, { prescripcion })
+      .pipe(map(res => res.data));
+  }
+
+  registrarSignosVitales(id: number, data: { presionArterial?: string; frecuenciaCardiaca?: string; temperatura?: string; frecuenciaRespiratoria?: string; saturacionOxigeno?: string }): Observable<ConsultaResponse> {
+    return this.http.put<ApiResponse<ConsultaResponse>>(`${this.API}/${id}/signos-vitales`, data)
+      .pipe(map(res => res.data));
+  }
+
+  registrarNotasSOAP(id: number, data: { motivoConsulta?: string; enfermedadActual?: string; sintomas?: string }): Observable<ConsultaResponse> {
+    return this.http.put<ApiResponse<ConsultaResponse>>(`${this.API}/${id}/notas-soap`, data)
       .pipe(map(res => res.data));
   }
 }

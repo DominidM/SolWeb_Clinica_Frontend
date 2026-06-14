@@ -1,0 +1,80 @@
+<div class="page-container">
+
+  <app-page-header title="Registro de Pacientes"
+                   subtitle="Mesa de partes — Registro de nuevos pacientes">
+    <button class="btn btn-outline-secondary btn-sm" (click)="limpiar()">
+      <i class="bi bi-eraser me-1"></i>Limpiar
+    </button>
+  </app-page-header>
+
+  @if (mensaje()) {
+    <div class="alert" [class.alert-success]="!esError()" [class.alert-danger]="esError()">
+      <i class="bi" [class.bi-check-circle-fill]="!esError()" [class.bi-exclamation-triangle-fill]="esError()"></i>
+      {{ mensaje() }}
+    </div>
+  }
+
+  <div class="form-card">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Nombres <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" placeholder="Nombres"
+               [ngModel]="form().nombre" (ngModelChange)="form.update(f => ({...f, nombre: $event}))">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Apellidos <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" placeholder="Apellidos"
+               [ngModel]="form().apellido" (ngModelChange)="form.update(f => ({...f, apellido: $event}))">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Email <span class="text-danger">*</span></label>
+        <input type="email" class="form-control" placeholder="paciente@correo.com"
+               [ngModel]="form().email" (ngModelChange)="form.update(f => ({...f, email: $event}))">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Teléfono</label>
+        <input type="text" class="form-control" placeholder="999888777"
+               [ngModel]="form().telefono" (ngModelChange)="form.update(f => ({...f, telefono: $event}))">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Código Estudiante</label>
+        <input type="text" class="form-control" placeholder="UPN001234"
+               [ngModel]="form().codigoEstudiante" (ngModelChange)="form.update(f => ({...f, codigoEstudiante: $event}))">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Fecha de Nacimiento <span class="text-danger">*</span></label>
+        <input type="date" class="form-control"
+               [ngModel]="form().fechaNacimiento" (ngModelChange)="form.update(f => ({...f, fechaNacimiento: $event}))">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Género <span class="text-danger">*</span></label>
+        <select class="form-select"
+                [ngModel]="form().genero" (ngModelChange)="form.update(f => ({...f, genero: $event}))">
+          <option value="">Seleccionar</option>
+          <option value="M">Masculino</option>
+          <option value="F">Femenino</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Tipo de Sangre</label>
+        <select class="form-select"
+                [ngModel]="form().tipoSangre" (ngModelChange)="form.update(f => ({...f, tipoSangre: $event}))">
+          <option value="">Seleccionar</option>
+          <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Alergias</label>
+        <textarea class="form-control" rows="2" placeholder="Alergias conocidas (opcional)"
+                  [ngModel]="form().alergias" (ngModelChange)="form.update(f => ({...f, alergias: $event}))"></textarea>
+      </div>
+    </div>
+    <div class="form-actions mt-4">
+      <button class="btn btn-primary" (click)="registrar()" [disabled]="guardando()">
+        @if (guardando()) { <span class="spinner-border spinner-border-sm me-1"></span> }
+        {{ guardando() ? 'Registrando...' : 'Registrar Paciente' }}
+      </button>
+    </div>
+  </div>
+</div>

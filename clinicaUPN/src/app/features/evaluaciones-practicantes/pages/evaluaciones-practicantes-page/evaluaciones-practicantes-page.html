@@ -1,4 +1,162 @@
 <div class="evaluaciones-container">
-  <app-page-header title="Evaluaciones" subtitle="Evaluación de practicantes"></app-page-header>
-</div>
+  <app-page-header title="Evaluación de Practicantes" subtitle="Supervisión y asignación de actividades"></app-page-header>
 
+  <div class="mensaje" *ngIf="mensaje()" [class.error]="mensaje().startsWith('Error')">
+    {{ mensaje() }}
+    <button class="btn-close-msg" (click)="mensaje.set('')">&times;</button>
+  </div>
+
+  <div class="layout-split">
+    <!-- Panel izquierdo: lista de practicantes -->
+    <aside class="panel-practicantes">
+      <h3>Mis Practicantes</h3>
+      <div class="loading-sm" *ngIf="loading()">Cargando...</div>
+      <div class="practicante-card" *ngFor="let p of practicantes()"
+           [class.selected]="practicanteSeleccionado()?.idPracticante === p.idPracticante"
+           (click)="seleccionarPracticante(p)">
+        <div class="prac-info">
+          <span class="prac-nombre">{{ p.nombre }}</span>
+          <span class="prac-email">{{ p.email }}</span>
+        </div>
+        <div class="prac-stats">
+          <span class="badge-pendientes" title="Pendientes">{{ p.consultasPendientes }} pend.</span>
+          <span class="badge-revisadas" title="Revisadas">{{ p.consultasRevisadas }} rev.</span>
+        </div>
+        <button class="prac-remove" (click)="removerPracticante($event, p)" title="Remover practicante">
+          <i data-lucide="x" style="width:14px;height:14px"></i>
+        </button>
+      </div>
+      <div class="empty-sm" *ngIf="!loading() && practicantes().length === 0">
+        No tienes practicantes asignados.
+      </div>
+
+      <!-- Asignar nuevo practicante -->
+      <div class="asignar-section">
+        <h4>Asignar practicante</h4>
+        <div class="asignar-search">
+          <input type="text" [(ngModel)]="busquedaPracticante" (input)="buscarPracticantes()"
+                 placeholder="Buscar por nombre, email o ID..." />
+          <div class="resultados-busqueda" *ngIf="resultadosBusqueda().length > 0">
+            <div class="resultado-item" *ngFor="let r of resultadosBusqueda()"
+                 (click)="asignarPracticante(r)">
+              <span class="res-nombre">{{ r.nombre }}</span>
+              <span class="res-email">{{ r.email }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Panel derecho: detalle del practicante seleccionado -->
+    <main class="panel-detalle" *ngIf="practicanteSeleccionado()">
+      <div class="detalle-header">
+        <h2>{{ practicanteSeleccionado()?.nombre }}</h2>
+        <button class="btn-back" (click)="cerrarDetalle()">Cerrar</button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn" [class.active]="tabActivo === 'actividades'" (click)="tabActivo = 'actividades'">
+          Asignar Actividad
+        </button>
+        <button class="tab-btn" [class.active]="tabActivo === 'consultas'" (click)="tabActivo = 'consultas'">
+          Consultas Pendientes ({{ consultasPendientes().length }})
+        </button>
+        <button class="tab-btn" [class.active]="tabActivo === 'evaluaciones'" (click)="tabActivo = 'evaluaciones'">
+          Evaluaciones
+        </button>
+      </div>
+
+      <!-- Tab: Asignar actividad -->
+      <div class="tab-content" *ngIf="tabActivo === 'actividades'">
+        <div class="form-actividad">
+          <div class="form-row">
+            <label>Título *</label>
+            <input type="text" [(ngModel)]="actTitulo" placeholder="Ej: Revisión de caso clínico" />
+          </div>
+          <div class="form-row">
+            <label>Descripción</label>
+            <textarea [(ngModel)]="actDescripcion" rows="3" placeholder="Instrucciones detalladas..."></textarea>
+          </div>
+          <div class="form-row">
+            <label>Tipo</label>
+            <select [(ngModel)]="actTipo">
+              <option value="REVISION_VIRTUAL">Revisión Virtual</option>
+              <option value="ATENCION_SUPERVISADA">Atención Supervisada</option>
+              <option value="ESTUDIO_CASO">Estudio de Caso</option>
+              <option value="INFORME">Informe</option>
+            </select>
+          </div>
+          <div class="form-row row-cols-2">
+            <div>
+              <label>Fecha</label>
+              <input type="date" [(ngModel)]="actFecha" />
+            </div>
+            <div>
+              <label>Hora</label>
+              <input type="time" [(ngModel)]="actHora" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label>ID Paciente (opcional)</label>
+            <input type="number" [(ngModel)]="actPacienteId" placeholder="Ej: 123" />
+          </div>
+          <button class="btn-primary" (click)="asignarActividad()" [disabled]="!actTitulo.trim()">
+            Asignar Actividad
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab: Consultas pendientes -->
+      <div class="tab-content" *ngIf="tabActivo === 'consultas'">
+        <div class="loading-sm" *ngIf="loadingConsultas()">Cargando consultas...</div>
+        <div class="consulta-card" *ngFor="let c of consultasPendientes()">
+          <div class="consulta-header">
+            <strong>{{ c.paciente }}</strong>
+            <span class="consulta-fecha">{{ c.fecha | date:'shortDate' }}</span>
+          </div>
+          <div class="consulta-body">
+            <p><label>Motivo:</label> {{ c.motivo }}</p>
+            <p *ngIf="c.diagnostico"><label>Diagnóstico:</label> {{ c.diagnostico }}</p>
+            <p *ngIf="c.tratamiento"><label>Tratamiento:</label> {{ c.tratamiento }}</p>
+            <p *ngIf="c.prescripcion"><label>Prescripción:</label> {{ c.prescripcion }}</p>
+          </div>
+          <div class="consulta-actions">
+            <textarea class="obs-input" [(ngModel)]="evalObservaciones"
+                      placeholder="Observaciones (opcional)" rows="2"></textarea>
+            <div class="action-btns">
+              <button class="btn-approve" (click)="evaluarConsulta(c, 'APROBADO')">Aprobar</button>
+              <button class="btn-reject" (click)="evaluarConsulta(c, 'RECHAZADO')">Rechazar</button>
+            </div>
+          </div>
+        </div>
+        <div class="empty-sm" *ngIf="!loadingConsultas() && consultasPendientes().length === 0">
+          No hay consultas pendientes de revisión.
+        </div>
+      </div>
+
+      <!-- Tab: Evaluaciones previas -->
+      <div class="tab-content" *ngIf="tabActivo === 'evaluaciones'">
+        <div class="eval-card" *ngFor="let e of evaluaciones()">
+          <div class="eval-header">
+            <span class="eval-estado" [class.aprobado]="e.estado === 'APROBADO'"
+                  [class.rechazado]="e.estado === 'RECHAZADO'">
+              {{ e.estado }}
+            </span>
+            <span class="eval-fecha">{{ e.createdAt | date:'short' }}</span>
+          </div>
+          <p *ngIf="e.idConsulta"><label>Consulta #{{ e.idConsulta }}</label></p>
+          <p *ngIf="e.observaciones">{{ e.observaciones }}</p>
+        </div>
+        <div class="empty-sm" *ngIf="evaluaciones().length === 0">
+          No hay evaluaciones registradas.
+        </div>
+      </div>
+    </main>
+
+    <!-- Estado vacío cuando no hay selección -->
+    <main class="panel-detalle panel-empty" *ngIf="!practicanteSeleccionado()">
+      <p>Selecciona un practicante para ver su detalle</p>
+    </main>
+  </div>
+</div>

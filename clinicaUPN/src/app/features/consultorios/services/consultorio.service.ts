@@ -3,27 +3,35 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export interface ConsultorioDTO {
+export interface ConsultorioConAsignacion {
   idConsultorio: number;
   nombre: string;
   ubicacion: string;
-  asignacion?: AsignacionDTO;
+  estado: string;
+  asignacion?: AsignacionDetalle;
 }
 
-export interface AsignacionDTO {
+export interface AsignacionDetalle {
   idAsignacion: number;
   idDoctor: number;
   doctorNombre: string;
   especialidad: string;
+  diaSemana: string;
   horario: string;
-  fechaAsignacion: string;
 }
 
-export interface RegistrarAsignacionRequest {
+export interface AsignarRequest {
   idConsultorio: number;
   idDoctor: number;
+  diaSemana: string;
+  horaInicio: string;
+  horaFin: string;
+}
+
+export interface DoctorItem {
+  idDoctor: number;
+  nombre: string;
   especialidad: string;
-  horario: string;
 }
 
 export interface ApiResponse<T> {
@@ -35,16 +43,21 @@ export interface ApiResponse<T> {
 @Injectable({ providedIn: 'root' })
 export class ConsultorioService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/admin/consultorios';
+  private readonly API = 'http://localhost:8080/api/operaciones/consultorios';
 
-  listar(): Observable<ConsultorioDTO[]> {
-    return this.http.get<ApiResponse<ConsultorioDTO[]>>(this.API)
+  listarConDetalle(): Observable<ConsultorioConAsignacion[]> {
+    return this.http.get<ApiResponse<ConsultorioConAsignacion[]>>(`${this.API}/con-detalle`)
       .pipe(map(r => r.data));
   }
 
-  asignar(dto: RegistrarAsignacionRequest): Observable<AsignacionDTO> {
-    return this.http.post<ApiResponse<AsignacionDTO>>(`${this.API}/asignar`, dto)
+  listarDoctores(): Observable<DoctorItem[]> {
+    return this.http.get<ApiResponse<DoctorItem[]>>('http://localhost:8080/api/admin/doctores')
       .pipe(map(r => r.data));
+  }
+
+  asignar(dto: AsignarRequest): Observable<void> {
+    return this.http.post<ApiResponse<void>>(`${this.API}/asignar`, dto)
+      .pipe(map(() => void 0));
   }
 
   liberar(idAsignacion: number): Observable<void> {

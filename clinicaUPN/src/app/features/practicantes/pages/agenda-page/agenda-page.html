@@ -5,14 +5,22 @@
     </button>
   </app-page-header>
 
+  <div class="mensaje" *ngIf="mensaje()" [class.error]="mensaje().startsWith('Error')">
+    {{ mensaje() }}
+    <button class="btn-close-msg" (click)="mensaje.set('')">&times;</button>
+  </div>
+
   <div class="loading" *ngIf="loading()">Cargando actividades...</div>
 
   <div class="agenda-grid" *ngIf="!loading()">
     <div class="agenda-card" *ngFor="let act of actividades()" (click)="verDetalle(act)">
       <div class="card-header">
-        <div class="card-badge" [class.programada]="act.estado === 'PROGRAMADA'" [class.completada]="act.estado === 'COMPLETADA'">
+        <div class="card-badge"
+             [class.programada]="act.estado === 'PROGRAMADA'"
+             [class.en-progreso]="act.estado === 'EN_PROGRESO'"
+             [class.completada]="act.estado === 'COMPLETADA'">
           <i data-lucide="badge-check" style="width:12px;height:12px;margin-right:3px"></i>
-          {{ act.estado }}
+          {{ act.estado === 'EN_PROGRESO' ? 'En Progreso' : act.estado }}
         </div>
         <i data-lucide="chevron-right" class="card-arrow" style="width:16px;height:16px"></i>
       </div>
@@ -58,7 +66,7 @@
       </div>
       <div class="detalle-item">
         <label><i data-lucide="badge-check" style="width:14px;height:14px;margin-right:4px;vertical-align:middle"></i>Estado</label>
-        <span>{{ actividadSeleccionada()?.estado }}</span>
+        <span>{{ getEstadoLabel(actividadSeleccionada()?.estado) }}</span>
       </div>
       <div class="detalle-item" *ngIf="actividadSeleccionada()?.paciente">
         <label><i data-lucide="user" style="width:14px;height:14px;margin-right:4px;vertical-align:middle"></i>Paciente</label>
@@ -72,5 +80,18 @@
     <p class="detalle-desc" *ngIf="actividadSeleccionada()?.descripcion">
       {{ actividadSeleccionada()?.descripcion }}
     </p>
+
+    <div class="detalle-actions" *ngIf="actividadSeleccionada()">
+      <ng-container [ngSwitch]="actividadSeleccionada()?.estado">
+        <button *ngSwitchCase="'PROGRAMADA'" class="btn-action btn-start"
+                (click)="iniciarActividad(actividadSeleccionada()!)">
+          <i data-lucide="play" style="width:16px;height:16px;margin-right:4px"></i>Iniciar Actividad
+        </button>
+        <button *ngSwitchCase="'EN_PROGRESO'" class="btn-action btn-complete"
+                (click)="completarActividad(actividadSeleccionada()!)">
+          <i data-lucide="check-circle" style="width:16px;height:16px;margin-right:4px"></i>Marcar Completada
+        </button>
+      </ng-container>
+    </div>
   </div>
 </div>

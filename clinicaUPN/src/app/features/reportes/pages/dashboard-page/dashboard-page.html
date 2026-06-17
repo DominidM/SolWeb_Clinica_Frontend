@@ -1,4 +1,111 @@
-<div class="reportes-container">
-  <app-page-header title="Reportes" subtitle="Reportes y estadísticas"></app-page-header>
-</div>
+<div class="page-container">
+  <app-page-header title="Reporte de Supervisión" subtitle="Supervisión de practicantes por doctor">
+    <button class="btn btn-outline-primary btn-sm" (click)="cargar()" [disabled]="loading()">
+      <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+    </button>
+  </app-page-header>
 
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary"></div>
+      <p class="text-muted mt-2">Cargando reporte...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+  }
+
+  @if (reporte(); as r) {
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <i class="bi bi-person-badge fs-3 text-primary"></i>
+        <div><span class="kpi-val">{{ r.totalDoctores }}</span><span class="kpi-lbl">Doctores con practicantes</span></div>
+      </div>
+      <div class="kpi-card">
+        <i class="bi bi-people fs-3 text-success"></i>
+        <div><span class="kpi-val">{{ r.totalPracticantesAsignados }}</span><span class="kpi-lbl">Practicantes asignados</span></div>
+      </div>
+      <div class="kpi-card">
+        <i class="bi bi-person-plus fs-3 text-warning"></i>
+        <div><span class="kpi-val">{{ r.totalSinSupervisor }}</span><span class="kpi-lbl">Sin supervisor</span></div>
+      </div>
+      <div class="kpi-card">
+        <i class="bi bi-check-circle fs-3 text-info"></i>
+        <div><span class="kpi-val">{{ r.totalEvaluaciones }}</span><span class="kpi-lbl">Evaluaciones aprobadas</span></div>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width:32px"></th>
+            <th>Doctor</th>
+            <th>Especialidad</th>
+            <th class="text-center">Practicantes</th>
+            <th class="text-center">Consultas supervisadas</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (doc of r.doctores; track doc.idDoctor) {
+            <tr class="doctor-row" (click)="toggleDoctor(doc.idDoctor)">
+              <td>
+                <i class="bi" [class.bi-chevron-down]="expandedDoctor().has(doc.idDoctor)" [class.bi-chevron-right]="!expandedDoctor().has(doc.idDoctor)"></i>
+              </td>
+              <td><strong>{{ doc.nombreDoctor }}</strong></td>
+              <td><span class="badge-especialidad">{{ doc.especialidad }}</span></td>
+              <td class="text-center">{{ doc.totalPracticantes }}</td>
+              <td class="text-center">{{ doc.consultasSupervisadas }}</td>
+            </tr>
+            @if (expandedDoctor().has(doc.idDoctor)) {
+              <tr>
+                <td colspan="5" class="p-0">
+                  <div class="sub-table">
+                    <table class="table table-sm mb-0">
+                      <thead>
+                        <tr>
+                          <th>Practicante</th>
+                          <th class="text-center">Consultas</th>
+                          <th class="text-center">Aprobadas</th>
+                          <th class="text-center">Pendientes</th>
+                          <th class="text-center">Puntaje</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (p of doc.practicantes; track p.idPracticante) {
+                          <tr>
+                            <td>{{ p.nombrePracticante }}</td>
+                            <td class="text-center">{{ p.totalConsultas }}</td>
+                            <td class="text-center">{{ p.aprobadas }}</td>
+                            <td class="text-center">{{ p.pendientes }}</td>
+                            <td class="text-center">
+                              @if (p.puntuacionPromedio !== null) {
+                                <span class="puntaje" [class.alto]="p.puntuacionPromedio >= 4.5" [class.medio]="p.puntuacionPromedio >= 4 && p.puntuacionPromedio < 4.5" [class.bajo]="p.puntuacionPromedio < 4">
+                                  {{ p.puntuacionPromedio | number:'1.1-1' }}
+                                </span>
+                              } @else {
+                                <span class="text-muted">—</span>
+                              }
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (r.doctores.length === 0) {
+      <div class="empty-state">
+        <i class="bi bi-people fs-1 text-muted"></i>
+        <p class="mt-2">No hay practicantes asignados a doctores</p>
+      </div>
+    }
+  }
+</div>

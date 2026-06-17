@@ -14,6 +14,7 @@ export interface PracticanteAsignado {
 export interface EvaluacionRequest {
   idPracticante: number;
   idConsulta?: number;
+  estado?: string;
   observaciones?: string;
 }
 
@@ -26,6 +27,28 @@ export interface EvaluacionResponse {
   estado: string;
   observaciones: string;
   createdAt: string;
+}
+
+export interface AsignarActividadRequest {
+  idPracticante: number;
+  titulo: string;
+  descripcion?: string;
+  tipo: string;
+  fecha?: string;
+  hora?: string;
+  idPaciente?: number;
+}
+
+export interface ConsultaPendiente {
+  idConsulta: number;
+  idPaciente: number;
+  paciente: string;
+  motivo: string;
+  diagnostico: string;
+  tratamiento: string;
+  prescripcion: string;
+  fecha: string;
+  estadoRevision: string;
 }
 
 export interface ApiResponse<T> {
@@ -51,5 +74,30 @@ export class SupervisionService {
   evaluar(req: EvaluacionRequest): Observable<EvaluacionResponse> {
     return this.http.post<ApiResponse<EvaluacionResponse>>(`${this.API}/evaluar`, req)
       .pipe(map(res => res.data));
+  }
+
+  asignarActividad(req: AsignarActividadRequest): Observable<void> {
+    return this.http.post<ApiResponse<void>>(`${this.API}/actividades`, req)
+      .pipe(map(() => void 0));
+  }
+
+  listarConsultasPendientes(idPracticante: number): Observable<ConsultaPendiente[]> {
+    return this.http.get<ApiResponse<ConsultaPendiente[]>>(`${this.API}/consultas-pendientes/${idPracticante}`)
+      .pipe(map(res => res.data));
+  }
+
+  buscarPracticantesDisponibles(q: string): Observable<PracticanteAsignado[]> {
+    return this.http.get<ApiResponse<PracticanteAsignado[]>>(`${this.API}/practicantes-disponibles?q=${q}`)
+      .pipe(map(res => res.data));
+  }
+
+  asignarPracticante(idPracticante: number): Observable<void> {
+    return this.http.post<ApiResponse<void>>(`${this.API}/asignar-practicante/${idPracticante}`, {})
+      .pipe(map(() => void 0));
+  }
+
+  removerPracticante(idPracticante: number): Observable<void> {
+    return this.http.delete<ApiResponse<void>>(`${this.API}/asignar-practicante/${idPracticante}`)
+      .pipe(map(() => void 0));
   }
 }

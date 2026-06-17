@@ -33,7 +33,7 @@
         </div>
         <div class="patient-field">
           <span class="field-label">Estado Cita</span>
-          <span class="badge" [class]="getEstadoClass(c.estado)">{{ c.estado }}</span>
+          <span class="badge" [class]="getEstadoClass(cita()!.estado)">{{ cita()!.estado }}</span>
         </div>
       </div>
     }

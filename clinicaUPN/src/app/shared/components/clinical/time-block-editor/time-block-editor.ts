@@ -1,7 +1,7 @@
 import { Component, inject, input, model, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DoctorService, DisponibilidadDTO } from '../../../features/citas/services/doctor/doctor.service';
+import { DoctorService, DisponibilidadDTO } from '../../../../features/citas/services/doctor/doctor.service';
 
 export const DIAS = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
 export const HORAS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];

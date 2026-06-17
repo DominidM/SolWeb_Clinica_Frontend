@@ -176,6 +176,37 @@
       </div>
     </div>
 
+    <div class="dashboard-section chart-section full-width">
+      <div class="section-header">
+        <h3 class="section-title">
+          <i data-lucide="users" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"></i>
+          Citas por Doctor
+        </h3>
+        <span class="section-count">{{ r.porDoctor.length }}</span>
+      </div>
+      @if (r.porDoctor.length > 0) {
+        <div class="hbars">
+          @for (item of r.porDoctor; track $index) {
+            @let pct = (item.cantidad / maxCantidad(r.porDoctor)) * 100;
+            @let rank = $index + 1;
+            <div class="hbar-row">
+              <span class="hbar-rank" [class.rank-gold]="rank === 1" [class.rank-silver]="rank === 2" [class.rank-bronze]="rank === 3">{{ rank }}</span>
+              <div class="hbar-info">
+                <span class="hbar-label">{{ item.nombreDoctor }}</span>
+                <span class="hbar-sub">{{ item.especialidad }}</span>
+                <div class="hbar-track">
+                  <div class="hbar-fill hbar-blue" [style.width.%]="pct"></div>
+                </div>
+              </div>
+              <span class="hbar-value">{{ item.cantidad }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-section">Sin datos</div>
+      }
+    </div>
+
     <!-- Reportes Estratégicos — solo para Director -->
     @if (esDirector) {
       <div class="strategic-section">

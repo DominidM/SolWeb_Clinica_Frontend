@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header';
-import { ConsultorioService, ConsultorioDTO, RegistrarAsignacionRequest } from '../../services/consultorio.service';
+import { ConsultorioService, ConsultorioConAsignacion, AsignarRequest, DoctorItem } from '../../services/consultorio.service';
 
 @Component({
   selector: 'app-consultorios-page',
@@ -14,7 +14,7 @@ import { ConsultorioService, ConsultorioDTO, RegistrarAsignacionRequest } from '
 export class ConsultoriosPageComponent implements OnInit {
   private svc = inject(ConsultorioService);
 
-  consultorios = signal<ConsultorioDTO[]>([]);
+  consultorios = signal<ConsultorioConAsignacion[]>([]);
   loading = signal(false);
   error = signal('');
   mensaje = signal('');
@@ -23,35 +23,35 @@ export class ConsultoriosPageComponent implements OnInit {
   mostrarFormulario = signal(false);
   idConsultorioSel = signal<number | null>(null);
   idDoctor = signal<number | null>(null);
-  especialidad = signal('');
-  horario = signal('');
+  diaSemana = signal('');
+  horaInicio = signal('');
+  horaFin = signal('');
   guardando = signal(false);
 
-  listaDoctores = signal<{ idDoctor: number; nombre: string; especialidad: string }[]>([]);
+  listaDoctores = signal<DoctorItem[]>([]);
 
-  especialidades = [
-    'Medicina General', 'Obstetricia', 'Nutrición',
-    'Psicología', 'Rehabilitación', 'Fisioterapia'
-  ];
-
-  horarios = ['08:00-10:00', '10:00-12:00', '12:00-14:00', '14:00-16:00', '16:00-18:00'];
+  diasSemana = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'];
 
   ngOnInit() { this.cargar(); }
 
   cargar() {
     this.loading.set(true);
     this.error.set('');
-    this.svc.listar().subscribe({
+    this.svc.listarConDetalle().subscribe({
       next: (data) => { this.consultorios.set(data); this.loading.set(false); },
       error: () => { this.error.set('Error al cargar consultorios.'); this.loading.set(false); }
     });
+    this.svc.listarDoctores().subscribe({
+      next: (data) => this.listaDoctores.set(data),
+    });
   }
 
-  abrirAsignar(consultorio: ConsultorioDTO) {
+  abrirAsignar(consultorio: ConsultorioConAsignacion) {
     this.idConsultorioSel.set(consultorio.idConsultorio);
     this.idDoctor.set(null);
-    this.especialidad.set('');
-    this.horario.set('');
+    this.diaSemana.set('');
+    this.horaInicio.set('');
+    this.horaFin.set('');
     this.mostrarFormulario.set(true);
   }
 
@@ -61,7 +61,7 @@ export class ConsultoriosPageComponent implements OnInit {
   }
 
   asignar() {
-    if (!this.idConsultorioSel() || !this.idDoctor() || !this.especialidad() || !this.horario()) {
+    if (!this.idConsultorioSel() || !this.idDoctor() || !this.diaSemana() || !this.horaInicio() || !this.horaFin()) {
       this.mensaje.set('Completa todos los campos.');
       this.esError.set(true);
       return;
@@ -70,11 +70,12 @@ export class ConsultoriosPageComponent implements OnInit {
     this.mensaje.set('');
     this.esError.set(false);
 
-    const dto: RegistrarAsignacionRequest = {
+    const dto: AsignarRequest = {
       idConsultorio: this.idConsultorioSel()!,
       idDoctor: this.idDoctor()!,
-      especialidad: this.especialidad(),
-      horario: this.horario(),
+      diaSemana: this.diaSemana(),
+      horaInicio: this.horaInicio() + ':00',
+      horaFin: this.horaFin() + ':00',
     };
 
     this.svc.asignar(dto).subscribe({
@@ -98,13 +99,5 @@ export class ConsultoriosPageComponent implements OnInit {
       next: () => this.cargar(),
       error: () => this.error.set('Error al liberar consultorio.')
     });
-  }
-
-  getEstadoLabel(asignado: boolean): string {
-    return asignado ? 'Asignado' : 'Disponible';
-  }
-
-  getEstadoClass(asignado: boolean): string {
-    return asignado ? 'badge-primary' : 'badge-success';
   }
 }

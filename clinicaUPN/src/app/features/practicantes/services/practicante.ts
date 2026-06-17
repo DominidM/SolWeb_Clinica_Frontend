@@ -68,6 +68,11 @@ export class PracticanteService {
       .pipe(map(res => res.data));
   }
 
+  actualizarEstadoActividad(id: number, estado: string): Observable<void> {
+    return this.http.put<ApiResponse<void>>(`${this.API}/actividades/${id}/estado?email=${this.email()}`, { estado })
+      .pipe(map(() => void 0));
+  }
+
   enviarARevision(idConsulta: number): Observable<void> {
     return this.http.put<ApiResponse<void>>(`${this.API}/consultas/${idConsulta}/enviar-revision?email=${this.email()}`, {})
       .pipe(map(() => void 0));

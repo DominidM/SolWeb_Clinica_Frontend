@@ -7,5 +7,4 @@ import { Component } from '@angular/core';
   styleUrl: './tablas.css',
 })
 export class Tablas {
-
 }

@@ -7,5 +7,4 @@ import { Component } from '@angular/core';
   styleUrl: './graficos.css',
 })
 export class Graficos {
-
 }

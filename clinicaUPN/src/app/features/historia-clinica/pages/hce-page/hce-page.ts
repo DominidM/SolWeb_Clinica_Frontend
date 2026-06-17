@@ -247,7 +247,7 @@ export class HcePageComponent implements OnInit {
     this.cargando.set(true);
     this.error.set('');
 
-    const obs = this.esStaff()
+    const obs = this.esAdmin()
       ? this.hceService.listarTodas()
       : this.hceService.listarDocumentos();
 

@@ -2,7 +2,7 @@ import { Component, inject, input, model, signal, effect, OnDestroy } from '@ang
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, Subscription } from 'rxjs';
-import { Cie10Service, Cie10Item } from '../../../features/citas/services/cie10.service';
+import { Cie10Service, Cie10Item } from '../../../../features/citas/services/cie10.service';
 
 @Component({
   selector: 'app-cie10-search',

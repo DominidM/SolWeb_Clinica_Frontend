@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MedicamentoService, MedicamentoItem } from '../../../features/citas/services/medicamento.service';
+import { MedicamentoService, MedicamentoItem } from '../../../../features/citas/services/medicamento.service';
 
 export interface MedicationEntry {
   idMedicamento?: number;

@@ -59,7 +59,7 @@ export const routes: Routes = [
       { path: 'citas',            loadChildren: () => import('./features/citas/citas.routes').then(m => m.CITAS_ROUTES) },
       { path: 'historia-clinica', loadChildren: () => import('./features/historia-clinica/historia-clinica.routes').then(m => m.HCE_ROUTES) },
       { path: 'teleconsulta',     loadChildren: () => import('./features/teleconsulta/teleconsulta.routes').then(m => m.TELECONSULTA_ROUTES) },
-      { path: 'reportes',         loadChildren: () => import('./features/reportes/reportes.routes').then(m => m.REPORTES_ROUTES) },
+      { path: 'reportes', canActivate: [roleGuard(['ADMINISTRADOR', 'DIRECTOR', 'ADMINISTRATIVO'])], loadChildren: () => import('./features/reportes/reportes.routes').then(m => m.REPORTES_ROUTES) },
       { path: 'practicantes',     loadChildren: () => import('./features/practicantes/practicantes.routes').then(m => m.PRACTICANTES_ROUTES) },
       { path: 'mis-citas',        loadComponent: () => import('./features/citas/pages/mis-citas-page/mis-citas-page').then(m => m.MisCitasPageComponent) },
       { path: 'mi-perfil',        loadComponent: () => import('./features/pacientes/pages/mi-perfil-page/mi-perfil-page').then(m => m.MiPerfilPageComponent) },

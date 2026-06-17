@@ -14,6 +14,8 @@ export interface ReporteDiario {
   resumen: ResumenGeneral;
   porEspecialidad: CitasPorEspecialidad[];
   porDoctor: CitasPorDoctor[];
+  enfermedadesFrecuentes: EnfermedadFrecuente[];
+  rendimientoPracticantes: RendimientoPracticante[];
 }
 
 export interface ResumenGeneral {
@@ -35,6 +37,20 @@ export interface CitasPorDoctor {
   nombreDoctor: string;
   especialidad: string;
   cantidad: number;
+}
+
+export interface EnfermedadFrecuente {
+  codigo: string;
+  descripcion: string;
+  cantidad: number;
+}
+
+export interface RendimientoPracticante {
+  nombre: string;
+  consultas: number;
+  revisiones: number;
+  aprobadas: number;
+  puntuacion: number;
 }
 
 @Injectable({ providedIn: 'root' })

@@ -1,7 +1,7 @@
 <div class="page-container">
 
   <app-page-header title="Asignación de Consultorios"
-                   subtitle="Administra la asignación de médicos y especialidades a consultorios">
+                   subtitle="Administra la asignación de médicos y horarios a consultorios">
     <button class="btn btn-outline-primary btn-sm" (click)="cargar()">
       <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
     </button>
@@ -35,8 +35,8 @@
               <h5 class="card-nombre">{{ c.nombre }}</h5>
               <span class="card-ubicacion">{{ c.ubicacion }}</span>
             </div>
-            <span class="badge ms-auto" [class]="getEstadoClass(!!c.asignacion)">
-              {{ getEstadoLabel(!!c.asignacion) }}
+            <span class="badge ms-auto" [class.badge-primary]="!!c.asignacion" [class.badge-success]="!c.asignacion">
+              {{ c.asignacion ? 'Asignado' : 'Disponible' }}
             </span>
           </div>
 
@@ -49,6 +49,10 @@
               <div class="detalle-row">
                 <i class="bi bi-stars"></i>
                 <span>{{ a.especialidad }}</span>
+              </div>
+              <div class="detalle-row">
+                <i class="bi bi-calendar-week"></i>
+                <span>{{ a.diaSemana }}</span>
               </div>
               <div class="detalle-row">
                 <i class="bi bi-clock"></i>
@@ -84,33 +88,51 @@
         <div class="mb-3">
           <label class="form-label small fw-semibold">Médico</label>
           <select class="form-select" [ngModel]="idDoctor()" (ngModelChange)="idDoctor.set($event)">
-            <option value="">Seleccionar médico</option>
+            <option [value]="null">Seleccionar médico</option>
             @for (doc of listaDoctores(); track doc.idDoctor) {
               <option [value]="doc.idDoctor">{{ doc.nombre }} — {{ doc.especialidad }}</option>
             }
           </select>
         </div>
         <div class="mb-3">
-          <label class="form-label small fw-semibold">Especialidad</label>
-          <select class="form-select" [ngModel]="especialidad()" (ngModelChange)="especialidad.set($event)">
+          <label class="form-label small fw-semibold">Día de la semana</label>
+          <select class="form-select" [ngModel]="diaSemana()" (ngModelChange)="diaSemana.set($event)">
             <option value="">Seleccionar</option>
-            @for (esp of especialidades; track esp) {
-              <option [value]="esp">{{ esp }}</option>
+            @for (d of diasSemana; track d) {
+              <option [value]="d">{{ d }}</option>
             }
           </select>
         </div>
         <div class="mb-3">
-          <label class="form-label small fw-semibold">Horario</label>
-          <div class="d-flex flex-wrap gap-2">
-            @for (h of horarios; track h) {
-              <button type="button" class="btn btn-sm"
-                      [class.btn-primary]="horario() === h"
-                      [class.btn-outline-secondary]="horario() !== h"
-                      (click)="horario.set(h)">
-                {{ h }}
-              </button>
-            }
-          </div>
+          <label class="form-label small fw-semibold">Hora inicio</label>
+          <select class="form-select" [ngModel]="horaInicio()" (ngModelChange)="horaInicio.set($event)">
+            <option value="">Seleccionar</option>
+            <option value="08:00">08:00</option>
+            <option value="09:00">09:00</option>
+            <option value="10:00">10:00</option>
+            <option value="11:00">11:00</option>
+            <option value="12:00">12:00</option>
+            <option value="13:00">13:00</option>
+            <option value="14:00">14:00</option>
+            <option value="15:00">15:00</option>
+            <option value="16:00">16:00</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">Hora fin</label>
+          <select class="form-select" [ngModel]="horaFin()" (ngModelChange)="horaFin.set($event)">
+            <option value="">Seleccionar</option>
+            <option value="09:00">09:00</option>
+            <option value="10:00">10:00</option>
+            <option value="11:00">11:00</option>
+            <option value="12:00">12:00</option>
+            <option value="13:00">13:00</option>
+            <option value="14:00">14:00</option>
+            <option value="15:00">15:00</option>
+            <option value="16:00">16:00</option>
+            <option value="17:00">17:00</option>
+            <option value="18:00">18:00</option>
+          </select>
         </div>
       </div>
       <div class="modal-footer">
